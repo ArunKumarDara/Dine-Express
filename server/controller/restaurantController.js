@@ -48,6 +48,22 @@ const updateRestaurant = async (req, res) => {
   }
 };
 
+const getRestaurantsByOwnerId = async (req, res) => {
+  try {
+    const restaurants = await restaurantModel.find({ owner: req.body.owner });
+    res.status(200).json({
+      success: true,
+      message: "Restaurants fetched Successfully",
+      data: restaurants,
+    });
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 const deleteRestaurant = async (req, res) => {
   try {
     await restaurantModel.findByIdAndDelete(req.body.restaurantId);
@@ -68,4 +84,5 @@ module.exports = {
   addRestaurant,
   updateRestaurant,
   deleteRestaurant,
+  getRestaurantsByOwnerId,
 };
