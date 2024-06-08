@@ -9,6 +9,7 @@ import Profile from "./pages/profile/Profile";
 import Admin from "./pages/admin/Admin";
 import { useSelector } from "react-redux";
 import { Spin } from "antd";
+import AddRestaurants from "./pages/restaurants/AddRestaurants";
 
 function App() {
   const { loading } = useSelector((state) => state.loader);
@@ -32,7 +33,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route
-            path="/profile"
+            path="/user"
             element={
               <ProtectedRoute>
                 <Profile />
@@ -44,6 +45,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile/addRestaurant"
+            element={
+              <ProtectedRoute>
+                <AddRestaurants />
               </ProtectedRoute>
             }
           />
