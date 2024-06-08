@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
+  deleteRestaurant,
   getUserRestaurants,
-  //   updateRestaurant,
 } from "../../apiCalls/restaurant";
 import {
   message,
@@ -43,9 +43,23 @@ const UserRestaurants = () => {
     }
   };
 
+  const handleDelete = async (values) => {
+    try {
+      values.restaurantId = values._id;
+      const response = await deleteRestaurant(values);
+      if (response.success) {
+        message.success(response.message);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
+
   useEffect(() => {
     getData();
-  }, []);
+  }, [handleDelete]);
 
   console.log(userRestaurants);
   return (
@@ -77,7 +91,10 @@ const UserRestaurants = () => {
                     setUserRestaurant(restaurant);
                   }}
                 />,
-                <DeleteOutlined key={restaurant._id} />,
+                <DeleteOutlined
+                  key={restaurant._id}
+                  onClick={() => handleDelete(restaurant)}
+                />,
                 !restaurant.isActive ? (
                   <Tag
                     icon={<SyncOutlined spin />}
@@ -110,10 +127,15 @@ const UserRestaurants = () => {
                   </Avatar>
                 }
                 title={
-                  <Space direction="vertical" size={0}>
-                    <Typography.Title level={5} style={{ margin: 0 }}>
-                      {restaurant.name}
-                    </Typography.Title>
+                  <Space direction="vertical" size={0} className="w-full">
+                    <Space className="flex justify-between items-center">
+                      <Typography.Title level={5} style={{ margin: 0 }}>
+                        {restaurant.name}
+                      </Typography.Title>
+                      {restaurant.isActive && (
+                        <Button type="link">Add Menu</Button>
+                      )}
+                    </Space>
                     <Typography.Text
                       type="secondary"
                       className="text-sm font-normal"
