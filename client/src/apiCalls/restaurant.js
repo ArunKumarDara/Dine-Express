@@ -11,3 +11,15 @@ export const addRestaurant = async (payload) => {
     return error.response.data || error;
   }
 };
+
+export const getUserRestaurants = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/getRestaurantsByOwner",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error.response.data || error;
+  }
+};
