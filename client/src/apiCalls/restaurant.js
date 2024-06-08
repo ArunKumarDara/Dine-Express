@@ -35,3 +35,15 @@ export const updateRestaurant = async (payload) => {
     return error.response.data || error;
   }
 };
+
+export const deleteRestaurant = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/deleteRestaurant",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
