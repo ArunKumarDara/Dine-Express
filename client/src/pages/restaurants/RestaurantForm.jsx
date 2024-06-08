@@ -1,17 +1,32 @@
+/* eslint-disable react/prop-types */
 import { Modal, Form, Button, Input, message } from "antd";
 import { useSelector } from "react-redux";
-import { addRestaurant } from "../../apiCalls/restaurant";
+import { addRestaurant, updateRestaurant } from "../../apiCalls/restaurant";
 
-// eslint-disable-next-line react/prop-types
-const RestaurantForm = ({ toggleFormModal, setToggleFormModal }) => {
+const RestaurantForm = ({
+  toggleFormModal,
+  setToggleFormModal,
+  userRestaurant,
+  formType,
+  getData,
+  setUserRestaurant,
+}) => {
   const { user } = useSelector((state) => state.users);
   const onFinish = async (values) => {
-    values.owner = user._id;
+    values.restaurantId = userRestaurant._id;
     try {
-      const response = await addRestaurant(values);
+      let response = null;
+      if (formType === "add") {
+        response = await addRestaurant(values);
+      } else {
+        values.owner = user._id;
+        response = await updateRestaurant(values);
+      }
       if (response.success) {
         message.success(response.message);
         setToggleFormModal(false);
+        setUserRestaurant(null);
+        getData();
       } else {
         message.error(response.message);
         setToggleFormModal(false);
@@ -23,13 +38,17 @@ const RestaurantForm = ({ toggleFormModal, setToggleFormModal }) => {
   return (
     <>
       <Modal
-        title="Add Restaurant"
+        title={formType === "add" ? "Add Restaurant" : "Edit Restaurant"}
         open={toggleFormModal}
         onCancel={() => setToggleFormModal(false)}
         footer={null}
         size="small"
       >
-        <Form layout="vertical" onFinish={onFinish}>
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={userRestaurant}
+        >
           <Form.Item
             label="Name"
             name="name"
