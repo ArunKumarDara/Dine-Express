@@ -17,7 +17,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../../redux/loaderSlice";
-import RestaurantForm from "../../pages/restaurants/RestaurantForm";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -62,7 +61,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function ProtectedRoute({ children }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const [toggleFormModal, setToggleFormModal] = useState(false);
   const { user } = useSelector((state) => state.users);
 
   const dispatch = useDispatch();
@@ -160,7 +158,7 @@ export default function ProtectedRoute({ children }) {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <Typography
+        {/* <Typography
           fontSize="16px"
           noWrap
           component="div"
@@ -169,7 +167,7 @@ export default function ProtectedRoute({ children }) {
           }}
         >
           Add Restaurant
-        </Typography>
+        </Typography> */}
       </MenuItem>
       <MenuItem>
         <Typography
@@ -211,7 +209,7 @@ export default function ProtectedRoute({ children }) {
                 />
               </Search>
               <Box sx={{ flexGrow: 1 }} />
-              <Typography
+              {/* <Typography
                 variant="h6"
                 noWrap
                 component="div"
@@ -223,7 +221,7 @@ export default function ProtectedRoute({ children }) {
                 onClick={() => setToggleFormModal(true)}
               >
                 Add Restaurant
-              </Typography>
+              </Typography> */}
               <Typography
                 variant="h6"
                 noWrap
@@ -271,12 +269,6 @@ export default function ProtectedRoute({ children }) {
           {renderMobileMenu}
           {renderMenu}
         </Box>
-        {toggleFormModal && (
-          <RestaurantForm
-            toggleFormModal={toggleFormModal}
-            setToggleFormModal={setToggleFormModal}
-          />
-        )}
         <div className="mt-1 p-1">{children}</div>
       </>
     )
