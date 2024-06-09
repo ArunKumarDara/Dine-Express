@@ -18,14 +18,21 @@ import {
   DeleteOutlined,
   CheckCircleOutlined,
   SyncOutlined,
+  BookOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import RestaurantForm from "../restaurants/RestaurantForm";
+import MenuForm from "../restaurants/MenuForm";
+import MenuItems from "../restaurants/MenuItems";
 
 const UserRestaurants = () => {
   const [userRestaurants, setUserRestaurants] = useState([]);
   const [toggleFormModal, setToggleFormModal] = useState(false);
+  const [toggleMenuModal, setToggleMenuModal] = useState(false);
   const [userRestaurant, setUserRestaurant] = useState(null);
+  const [restaurantId, setRestaurantId] = useState(null);
+  const [menuRestaurantId, setMenuRestaurantId] = useState(null);
+  const [toggleMenuItems, setToggleMenuItems] = useState(false);
   const [formType, setFormType] = useState("add");
   const { user } = useSelector((state) => state.users);
 
@@ -49,6 +56,7 @@ const UserRestaurants = () => {
       const response = await deleteRestaurant(values);
       if (response.success) {
         message.success(response.message);
+        getData();
       } else {
         message.error(response.message);
       }
@@ -59,9 +67,8 @@ const UserRestaurants = () => {
 
   useEffect(() => {
     getData();
-  }, [handleDelete]);
+  }, []);
 
-  console.log(userRestaurants);
   return (
     <>
       <div className="w-full flex justify-end mb-4">
@@ -95,6 +102,17 @@ const UserRestaurants = () => {
                   key={restaurant._id}
                   onClick={() => handleDelete(restaurant)}
                 />,
+                <Button
+                  key={restaurant._id}
+                  disabled={!restaurant.isActive}
+                  size="small"
+                  onClick={() => {
+                    setMenuRestaurantId(restaurant._id);
+                    setToggleMenuItems(true);
+                  }}
+                >
+                  <BookOutlined />
+                </Button>,
                 !restaurant.isActive ? (
                   <Tag
                     icon={<SyncOutlined spin />}
@@ -133,7 +151,15 @@ const UserRestaurants = () => {
                         {restaurant.name}
                       </Typography.Title>
                       {restaurant.isActive && (
-                        <Button type="link">Add Menu</Button>
+                        <Button
+                          type="link"
+                          onClick={() => {
+                            setToggleMenuModal(true);
+                            setRestaurantId(restaurant._id);
+                          }}
+                        >
+                          Add Menu
+                        </Button>
                       )}
                     </Space>
                     <Typography.Text
@@ -160,6 +186,22 @@ const UserRestaurants = () => {
           formType={formType}
           setUserRestaurant={setUserRestaurant}
           getData={getData}
+        />
+      )}
+      {toggleMenuModal && (
+        <MenuForm
+          toggleMenuModal={toggleMenuModal}
+          setToggleMenuModal={setToggleMenuModal}
+          restaurantId={restaurantId}
+          setRestaurantId={setRestaurantId}
+        />
+      )}
+      {toggleMenuItems && (
+        <MenuItems
+          toggleMenuItems={toggleMenuItems}
+          setToggleMenuItems={setToggleMenuItems}
+          menuRestaurantId={menuRestaurantId}
+          setMenuRestaurantId={setMenuRestaurantId}
         />
       )}
     </>
