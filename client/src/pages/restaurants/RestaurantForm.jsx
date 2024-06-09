@@ -40,7 +40,10 @@ const RestaurantForm = ({
       <Modal
         title={formType === "add" ? "Add Restaurant" : "Edit Restaurant"}
         open={toggleFormModal}
-        onCancel={() => setToggleFormModal(false)}
+        onCancel={() => {
+          setToggleFormModal(false);
+          setUserRestaurant(null);
+        }}
         footer={null}
         size="small"
       >
