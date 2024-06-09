@@ -24,8 +24,9 @@ const itemsSchema = new Schema({
   },
   rating: {
     type: Number,
+    default: 1,
   },
-  availableIn: [{ type: Schema.Types.ObjectId, ref: "restaurants" }],
+  availableIn: { type: Schema.Types.ObjectId, ref: "restaurants" },
 });
 
 module.exports = mongoose.model("items", itemsSchema);
