@@ -13,13 +13,13 @@ const RestaurantForm = ({
 }) => {
   const { user } = useSelector((state) => state.users);
   const onFinish = async (values) => {
-    values.restaurantId = userRestaurant._id;
+    values.owner = user._id;
     try {
       let response = null;
       if (formType === "add") {
         response = await addRestaurant(values);
       } else {
-        values.owner = user._id;
+        values.restaurantId = userRestaurant._id;
         response = await updateRestaurant(values);
       }
       if (response.success) {
