@@ -2,7 +2,7 @@ const restaurantModel = require("../model/restaurantModel");
 
 const getAllRestaurants = async (req, res) => {
   try {
-    const restaurants = await restaurantModel.find().populate("owner");
+    const restaurants = await restaurantModel.find({ isActive: true });
     res.status(200).json({
       success: true,
       message: "Restaurants fetched Successfully",
