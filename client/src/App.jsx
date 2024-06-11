@@ -58,7 +58,7 @@ function App() {
             }
           />
           <Route
-            path="/order"
+            path="/order/:restaurantId"
             element={
               <ProtectedRoute>
                 <Order />
