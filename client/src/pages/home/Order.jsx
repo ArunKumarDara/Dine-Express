@@ -171,7 +171,8 @@ const Order = () => {
                     className="w-full"
                     onClick={() => setOrderModal(true)}
                   >
-                    Place Order
+                    Proceed
+                    <ArrowRightOutlined size="large" />
                   </Button>
                 </div>
               </>
