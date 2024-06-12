@@ -1,5 +1,14 @@
 import { axiosInstance } from ".";
 
+export const getAllRestaurants = async () => {
+  try {
+    const response = await axiosInstance.get("/app/v1/users/getAllRestaurants");
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 export const addRestaurant = async (payload) => {
   try {
     const response = await axiosInstance.post(
