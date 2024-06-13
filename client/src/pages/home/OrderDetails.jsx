@@ -38,6 +38,7 @@ const OrderDetails = ({
           totalAmount + restaurantCharges + deliveryFee + platformFee,
         user: user._id,
         restaurant: restaurantId,
+        orderItems: orderItems,
       };
       const response = await addOrder(orderSummary);
       if (response.success) {

@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { getMenuItems } from "../../apiCalls/menuItem";
 import { useParams, useNavigate } from "react-router-dom";
 import OrderDetails from "./OrderDetails";
+import Spinner from "../../components/spinner/Spinner";
 
 const { useBreakpoint } = Grid;
 
@@ -80,55 +81,61 @@ const Order = () => {
             <Typography.Title level={4}>Menu Items</Typography.Title>
           </Space>
         </Col>
-        <Col xs={24} sm={24} md={24} lg={16}>
-          <List
-            grid={{
-              gutter: 12,
-              xs: 1,
-              sm: 1,
-              md: 1,
-              lg: 2,
-              xl: 2,
-              xxl: 2,
-            }}
-            dataSource={menuItems}
-            renderItem={(item) => (
-              <List.Item>
-                <Card
-                  title={
-                    <Badge
-                      dot
-                      offset={[12, 12]}
-                      color={item.isVeg ? "green" : "red"}
-                    >
-                      {item.name}
-                    </Badge>
-                  }
-                  extra={
-                    <Typography.Text strong>{`₹${item.price}`}</Typography.Text>
-                  }
-                >
-                  <Space direction="vertical">
-                    <Rate disabled value={item.rating} size="small" />
-                    <Typography.Text type="secondary">
-                      {item.description}
-                    </Typography.Text>
-                  </Space>
-                  <div className="flex justify-center items-center mt-3">
-                    <Button
-                      icon={<PlusOutlined />}
-                      size="middle"
-                      className="w-3/4"
-                      onClick={() => handleAddItem(item)}
-                    >
-                      Add
-                    </Button>
-                  </div>
-                </Card>
-              </List.Item>
-            )}
-          />
-        </Col>
+        {menuItems.length == 0 ? (
+          <Spinner />
+        ) : (
+          <Col xs={24} sm={24} md={24} lg={16}>
+            <List
+              grid={{
+                gutter: 12,
+                xs: 1,
+                sm: 1,
+                md: 1,
+                lg: 2,
+                xl: 2,
+                xxl: 2,
+              }}
+              dataSource={menuItems}
+              renderItem={(item) => (
+                <List.Item>
+                  <Card
+                    title={
+                      <Badge
+                        dot
+                        offset={[12, 12]}
+                        color={item.isVeg ? "green" : "red"}
+                      >
+                        {item.name}
+                      </Badge>
+                    }
+                    extra={
+                      <Typography.Text
+                        strong
+                      >{`₹${item.price}`}</Typography.Text>
+                    }
+                  >
+                    <Space direction="vertical">
+                      <Rate disabled value={item.rating} size="small" />
+                      <Typography.Text type="secondary">
+                        {item.description}
+                      </Typography.Text>
+                    </Space>
+                    <div className="flex justify-center items-center mt-3">
+                      <Button
+                        icon={<PlusOutlined />}
+                        size="middle"
+                        className="w-3/4"
+                        onClick={() => handleAddItem(item)}
+                      >
+                        Add
+                      </Button>
+                    </div>
+                  </Card>
+                </List.Item>
+              )}
+            />
+          </Col>
+        )}
         {screens.md ? (
           <Col span={8}>
             {orderItems.length > 0 && (
