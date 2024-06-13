@@ -1,22 +1,62 @@
 const orderModel = require("../model/orderModel");
+const orderItemsModel = require("../model/orderItemsModel");
 
 const addOrder = async (req, res) => {
   try {
-    const order = new orderModel(req.body);
-    const response = order.save();
+    console.log(req.body);
+    const order = new orderModel(req.body.payload1);
+    const response = await order.save();
+
+    for (let i = 0; i < req.body.payload2.length; i++) {
+      const orderItems = new orderItemsModel({
+        orderId: response._id,
+        itemId: req.body.payload2[i]._id,
+        quantity: req.body.payload2[i].quantity,
+      });
+      await orderItems.save();
+    }
     res.status(200).json({
       success: true,
       message: "Order created Successfully, please wait...",
       data: response,
     });
   } catch (error) {
-    res.status(200).json({
+    res.status(400).json({
       success: false,
       message: error.message,
     });
   }
 };
 
+const getOrdersByUserId = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find({ user: req.body.userId })
+      .populate("restaurant")
+      .lean();
+
+    for (let each of orders) {
+      const items = await orderItemsModel
+        .find({ orderId: each._id })
+        .populate("itemId")
+        .lean();
+      each.menuItems = items.map((orderItem) => orderItem.itemId);
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Orders fetched Successfully",
+      data: orders,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error fetching orders" || error.message,
+    });
+  }
+};
+
 module.exports = {
   addOrder,
+  getOrdersByUserId,
 };
