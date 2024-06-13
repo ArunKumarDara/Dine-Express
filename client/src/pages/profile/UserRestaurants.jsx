@@ -24,6 +24,7 @@ import { useSelector } from "react-redux";
 import RestaurantForm from "../restaurants/RestaurantForm";
 import MenuForm from "../restaurants/MenuForm";
 import MenuItems from "../restaurants/MenuItems";
+import Spinner from "../../components/spinner/Spinner";
 
 const UserRestaurants = () => {
   const [userRestaurants, setUserRestaurants] = useState([]);
@@ -74,110 +75,115 @@ const UserRestaurants = () => {
       <div className="w-full flex justify-end mb-4">
         <Button onClick={() => setToggleFormModal(true)}>Add Restaurant</Button>
       </div>
-      <List
-        grid={{
-          gutter: 16,
-          xs: 1,
-          sm: 1,
-          md: 1,
-          lg: 2,
-          xl: 2,
-          xxl: 2,
-        }}
-        dataSource={userRestaurants}
-        renderItem={(restaurant) => (
-          <List.Item key={restaurant._id}>
-            <Card
-              size="large"
-              actions={[
-                <EditOutlined
-                  key={restaurant._id}
-                  onClick={() => {
-                    setToggleFormModal(true);
-                    setFormType("edit");
-                    setUserRestaurant(restaurant);
-                  }}
-                />,
-                <DeleteOutlined
-                  key={restaurant._id}
-                  onClick={() => handleDelete(restaurant)}
-                />,
-                <Button
-                  key={restaurant._id}
-                  disabled={!restaurant.isActive}
-                  size="small"
-                  onClick={() => {
-                    setMenuRestaurantId(restaurant._id);
-                    setToggleMenuItems(true);
-                  }}
-                >
-                  <BookOutlined />
-                </Button>,
-                !restaurant.isActive ? (
-                  <Tag
-                    icon={<SyncOutlined spin />}
-                    color="processing"
+      {userRestaurants.length == 0 ? (
+        <Spinner />
+      ) : (
+        <List
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 1,
+            md: 1,
+            lg: 2,
+            xl: 2,
+            xxl: 2,
+          }}
+          dataSource={userRestaurants}
+          renderItem={(restaurant) => (
+            <List.Item key={restaurant._id}>
+              <Card
+                size="large"
+                actions={[
+                  <EditOutlined
                     key={restaurant._id}
-                  >
-                    Pending
-                  </Tag>
-                ) : (
-                  <Tag
-                    icon={<CheckCircleOutlined />}
-                    color="success"
-                    key={restaurant._id}
-                  >
-                    Active
-                  </Tag>
-                ),
-              ]}
-            >
-              <Card.Meta
-                avatar={
-                  <Avatar
-                    style={{
-                      backgroundColor: "#f56a00",
-                      verticalAlign: "middle",
+                    onClick={() => {
+                      setToggleFormModal(true);
+                      setFormType("edit");
+                      setUserRestaurant(restaurant);
                     }}
-                    size="large"
+                  />,
+                  <DeleteOutlined
+                    key={restaurant._id}
+                    onClick={() => handleDelete(restaurant)}
+                  />,
+                  <Button
+                    key={restaurant._id}
+                    disabled={!restaurant.isActive}
+                    size="small"
+                    onClick={() => {
+                      setMenuRestaurantId(restaurant._id);
+                      setToggleMenuItems(true);
+                    }}
                   >
-                    {restaurant.name[0]}
-                  </Avatar>
-                }
-                title={
-                  <Space direction="vertical" size={0} className="w-full">
-                    <Space className="flex justify-between items-center">
-                      <Typography.Title level={5} style={{ margin: 0 }}>
-                        {restaurant.name}
-                      </Typography.Title>
-                      {restaurant.isActive && (
-                        <Button
-                          type="link"
-                          onClick={() => {
-                            setToggleMenuModal(true);
-                            setRestaurantId(restaurant._id);
-                          }}
-                        >
-                          Add Menu
-                        </Button>
-                      )}
-                    </Space>
-                    <Typography.Text
-                      type="secondary"
-                      className="text-sm font-normal"
+                    <BookOutlined />
+                  </Button>,
+                  !restaurant.isActive ? (
+                    <Tag
+                      icon={<SyncOutlined spin />}
+                      color="processing"
+                      key={restaurant._id}
                     >
-                      {restaurant.address}
-                    </Typography.Text>
-                  </Space>
-                }
-                description={
-                  <Typography.Text>{restaurant.description}</Typography.Text>
-                }
-              />
-            </Card>
-          </List.Item>
-        )}
-      />
+                      Pending
+                    </Tag>
+                  ) : (
+                    <Tag
+                      icon={<CheckCircleOutlined />}
+                      color="success"
+                      key={restaurant._id}
+                    >
+                      Active
+                    </Tag>
+                  ),
+                ]}
+              >
+                <Card.Meta
+                  avatar={
+                    <Avatar
+                      style={{
+                        backgroundColor: "#f56a00",
+                        verticalAlign: "middle",
+                      }}
+                      size="large"
+                    >
+                      {restaurant.name[0]}
+                    </Avatar>
+                  }
+                  title={
+                    <Space direction="vertical" size={0} className="w-full">
+                      <Space className="flex justify-between items-center">
+                        <Typography.Title level={5} style={{ margin: 0 }}>
+                          {restaurant.name}
+                        </Typography.Title>
+                        {restaurant.isActive && (
+                          <Button
+                            type="link"
+                            onClick={() => {
+                              setToggleMenuModal(true);
+                              setRestaurantId(restaurant._id);
+                            }}
+                          >
+                            Add Menu
+                          </Button>
+                        )}
+                      </Space>
+                      <Typography.Text
+                        type="secondary"
+                        className="text-sm font-normal"
+                      >
+                        {restaurant.address}
+                      </Typography.Text>
+                    </Space>
+                  }
+                  description={
+                    <Typography.Text>{restaurant.description}</Typography.Text>
+                  }
+                />
+              </Card>
+            </List.Item>
+          )}
+        />
+      )}
+
       {toggleFormModal && (
         <RestaurantForm
           toggleFormModal={toggleFormModal}
