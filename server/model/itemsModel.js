@@ -30,12 +30,6 @@ const itemsSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "restaurants",
   },
-  orders: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "orders",
-    },
-  ],
 });
 
 module.exports = mongoose.model("items", itemsSchema);
