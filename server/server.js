@@ -5,6 +5,7 @@ const userRouter = require("./routes/userRouter");
 const cors = require("cors");
 const restaurantRouter = require("./routes/restaurantRouter");
 const menuItemRouter = require("./routes/menuItemsRouter");
+const orderRouter = require("./routes/orderRouter");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.use(cors());
 app.use("/app/v1/users", userRouter);
 app.use("/app/v1/users", restaurantRouter);
 app.use("/app/v1/users", menuItemRouter);
+app.use("/app/v1/users", orderRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");

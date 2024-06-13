@@ -17,12 +17,6 @@ const orderSchema = new Schema(
       ref: "restaurants",
       required: true,
     },
-    orderItems: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "items",
-      },
-    ],
     status: {
       type: String,
       enum: [
