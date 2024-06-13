@@ -1,7 +1,19 @@
 /* eslint-disable react/prop-types */
-import { Modal, List, Typography, Card, Space, Divider, Button } from "antd";
+import {
+  Modal,
+  List,
+  Typography,
+  Card,
+  Space,
+  Divider,
+  Button,
+  message,
+} from "antd";
 import { PhoneOutlined, HomeOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { addOrder } from "../../apiCalls/order";
+import { useNavigate } from "react-router-dom";
 
 let restaurantCharges = 0;
 let deliveryFee = 50;
@@ -16,6 +28,31 @@ const OrderDetails = ({
   setTotalAmount,
 }) => {
   const { user } = useSelector((state) => state.users);
+  const { restaurantId } = useParams();
+  const navigate = useNavigate();
+
+  const handlePlaceOrder = async () => {
+    try {
+      const orderSummary = {
+        totalAmount:
+          totalAmount + restaurantCharges + deliveryFee + platformFee,
+        user: user._id,
+        restaurant: restaurantId,
+      };
+      const response = await addOrder(orderSummary);
+      if (response.success) {
+        message.success(response.message);
+        setOrderModal(false);
+        setOrderItems([]);
+        setTotalAmount(0);
+        navigate("/user");
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
   return (
     <>
       <Modal
@@ -96,7 +133,7 @@ const OrderDetails = ({
             type="primary"
             size="large"
             className="w-full"
-            // onClick={() => setOrderModal(true)}
+            onClick={handlePlaceOrder}
           >
             Place Order
           </Button>
