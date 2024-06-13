@@ -13,6 +13,10 @@ const orderItemsSchema = new Schema({
     ref: "items",
     required: true,
   },
+  quantity: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("orderItems", orderItemsSchema);
