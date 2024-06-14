@@ -97,7 +97,7 @@ const Order = () => {
   useEffect(() => {
     getData();
   }, []);
-  console.log(orderItems);
+
   return (
     <>
       <Row className="m-4">
