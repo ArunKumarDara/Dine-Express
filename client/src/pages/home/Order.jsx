@@ -16,6 +16,7 @@ import {
   PlusOutlined,
   ArrowLeftOutlined,
   ArrowRightOutlined,
+  MinusOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getMenuItems } from "../../apiCalls/menuItem";
@@ -60,6 +61,31 @@ const Order = () => {
         updatedItems = [...prevItems, { ...item, quantity: 1 }];
       }
       const newTotalAmount = updatedItems.reduce(
+        (sum, each) => sum + each.quantity * each.price,
+        0
+      );
+      setTotalAmount(newTotalAmount);
+      return updatedItems;
+    });
+  };
+  const handleRemoveItem = (item) => {
+    setOrderItems((prevItems) => {
+      const existingItem = prevItems.find((each) => each._id === item._id);
+      let updatedItems;
+      if (existingItem) {
+        if (existingItem.quantity > 1) {
+          updatedItems = prevItems.map((each) =>
+            each._id === item._id
+              ? { ...each, quantity: each.quantity - 1 }
+              : each
+          );
+        } else {
+          updatedItems = prevItems.filter((each) => each._id !== item._id);
+        }
+      } else {
+        updatedItems = [...prevItems];
+      }
+      const newTotalAmount = updatedItems?.reduce(
         (sum, each) => sum + each.quantity * each.price,
         0
       );
@@ -120,16 +146,27 @@ const Order = () => {
                         {item.description}
                       </Typography.Text>
                     </Space>
-                    <div className="flex justify-center items-center mt-3">
+                    {/* <div className="flex justify-center items-center mt-3"> */}
+                    <Space.Compact
+                      block
+                      className="flex justify-center items-center mt-3"
+                    >
+                      <Button
+                        icon={<MinusOutlined />}
+                        size="middle"
+                        onClick={() => handleRemoveItem(item)}
+                      >
+                        Remove
+                      </Button>
                       <Button
                         icon={<PlusOutlined />}
                         size="middle"
-                        className="w-3/4"
                         onClick={() => handleAddItem(item)}
                       >
                         Add
                       </Button>
-                    </div>
+                    </Space.Compact>
+                    {/* </div> */}
                   </Card>
                 </List.Item>
               )}
