@@ -159,7 +159,7 @@ export default function ProtectedRoute({ children }) {
                   if (user.isAdmin) {
                     navigate("/admin");
                   } else {
-                    navigate("/user");
+                    navigate("/profile");
                   }
                 }}
               >
