@@ -3,7 +3,6 @@ const orderItemsModel = require("../model/orderItemsModel");
 
 const addOrder = async (req, res) => {
   try {
-    console.log(req.body);
     const order = new orderModel(req.body.payload1);
     const response = await order.save();
 
@@ -38,9 +37,13 @@ const getOrdersByUserId = async (req, res) => {
     for (let each of orders) {
       const items = await orderItemsModel
         .find({ orderId: each._id })
-        .populate("itemId")
-        .lean();
-      each.menuItems = items.map((orderItem) => orderItem.itemId);
+        .populate("itemId");
+      each.menuItems = items.map((item) => {
+        return {
+          item: item.itemId,
+          quantity: item.quantity,
+        };
+      });
     }
 
     res.status(200).json({
