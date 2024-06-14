@@ -146,7 +146,6 @@ const Order = () => {
                         {item.description}
                       </Typography.Text>
                     </Space>
-                    {/* <div className="flex justify-center items-center mt-3"> */}
                     <Space.Compact
                       block
                       className="flex justify-center items-center mt-3"
@@ -166,7 +165,6 @@ const Order = () => {
                         Add
                       </Button>
                     </Space.Compact>
-                    {/* </div> */}
                   </Card>
                 </List.Item>
               )}
