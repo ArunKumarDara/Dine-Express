@@ -6,6 +6,7 @@ const cors = require("cors");
 const restaurantRouter = require("./routes/restaurantRouter");
 const menuItemRouter = require("./routes/menuItemsRouter");
 const orderRouter = require("./routes/orderRouter");
+const addressRouter = require("./routes/addressRouter");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ app.use("/app/v1/users", userRouter);
 app.use("/app/v1/users", restaurantRouter);
 app.use("/app/v1/users", menuItemRouter);
 app.use("/app/v1/users", orderRouter);
+app.use("/app/v1/users", addressRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
