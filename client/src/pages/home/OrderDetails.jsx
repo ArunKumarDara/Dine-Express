@@ -46,7 +46,7 @@ const OrderDetails = ({
         setOrderModal(false);
         setOrderItems([]);
         setTotalAmount(0);
-        navigate("/user");
+        navigate("/profile");
       } else {
         message.error(response.message);
       }
