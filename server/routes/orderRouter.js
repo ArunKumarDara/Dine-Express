@@ -7,6 +7,6 @@ const {
 const validateJwtToken = require("../middleware/authMiddleware");
 
 orderRouter.post("/addOrder", validateJwtToken, addOrder);
-orderRouter.get("/getOrdersByUserId", validateJwtToken, getOrdersByUserId);
+orderRouter.post("/getOrdersByUserId", validateJwtToken, getOrdersByUserId);
 
 module.exports = orderRouter;
