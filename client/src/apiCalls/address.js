@@ -23,3 +23,15 @@ export const getAllAddressByUser = async (payload) => {
     return error || error.message;
   }
 };
+
+export const editAddress = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/editAddress",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || error.message;
+  }
+};
