@@ -1,40 +1,69 @@
 /* eslint-disable react/prop-types */
 import { Form, Modal, Input, Button, Select, message } from "antd";
 import { useSelector } from "react-redux";
-import { addAddress } from "../../apiCalls/address";
+import { addAddress, editAddress } from "../../apiCalls/address";
 
 const AddressForm = ({
   toggleAddressModal,
   setToggleAddressModal,
   getData,
+  selectedAddress,
+  title,
+  setTitle,
 }) => {
   const { user } = useSelector((state) => state.users);
   const onFinish = async (values) => {
-    try {
-      const response = await addAddress({ ...values, userId: user._id });
-      if (response.success) {
-        message.success(response.message);
-        setToggleAddressModal(false);
-        getData();
-      } else {
-        message.error(response.message);
-        setToggleAddressModal(false);
+    if (title === "add") {
+      try {
+        const response = await addAddress({ ...values, userId: user._id });
+        if (response.success) {
+          message.success(response.message);
+          setToggleAddressModal(false);
+          getData();
+        } else {
+          message.error(response.message);
+          setToggleAddressModal(false);
+        }
+      } catch (error) {
+        message.error(error);
       }
-    } catch (error) {
-      message.error(error);
+    } else {
+      try {
+        const response = await editAddress({
+          addressId: selectedAddress._id,
+          address: values,
+        });
+        if (response.success) {
+          message.success(response.message);
+          setToggleAddressModal(false);
+          setTitle("add");
+          getData();
+        } else {
+          message.error(response.message);
+          setToggleAddressModal(false);
+        }
+      } catch (error) {
+        message.error(error);
+      }
     }
   };
 
   return (
     <>
       <Modal
-        title="Create your Address"
+        title={title === "add" ? "Create Address" : "Edit Address"}
         open={toggleAddressModal}
-        onCancel={() => setToggleAddressModal(false)}
+        onCancel={() => {
+          setToggleAddressModal(false), setTitle("add");
+        }}
         footer={null}
         size="small"
       >
-        <Form layout="vertical" onFinish={onFinish}>
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={selectedAddress}
+        >
           <Form.Item
             label="Address Line 1"
             name="addressLine1"
