@@ -34,7 +34,28 @@ const getAllAddressByUser = async (req, res) => {
   }
 };
 
+const editAddress = async (req, res) => {
+  console.log(req.body);
+  try {
+    const response = await addressModel.findByIdAndUpdate(
+      req.body.addressId,
+      req.body.address
+    );
+    res.status(200).json({
+      success: true,
+      message: "Address updated successfully",
+      data: response,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message || "Cannot update address",
+    });
+  }
+};
+
 module.exports = {
   addAddress,
   getAllAddressByUser,
+  editAddress,
 };
