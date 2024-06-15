@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useSelector } from "react-redux";
 import {
   Card,
@@ -15,22 +16,23 @@ import { useState, useEffect } from "react";
 import AddressForm from "./AddressForm";
 import { getAllAddressByUser } from "../../apiCalls/address";
 
-const content = (
-  <div className="flex flex-col justify-start items-start">
-    <Button type="link">
-      <EditOutlined />
-      Edit
-    </Button>
-    <Button type="link" danger>
-      <DeleteOutlined />
-      Delete
-    </Button>
-  </div>
-);
-
 // eslint-disable-next-line react/prop-types
-export const AddressBook = ({ address }) => {
-  console.log(address);
+export const AddressBook = ({
+  address,
+  setToggleAddressModal,
+  setSelectedAddress,
+  setTitle,
+}) => {
+  const handleEdit = (item) => {
+    setToggleAddressModal(true);
+    setSelectedAddress(item);
+    setTitle("edit");
+  };
+
+  const handleDelete = (item) => {
+    console.log(item);
+  };
+
   return (
     <>
       <List
@@ -47,11 +49,31 @@ export const AddressBook = ({ address }) => {
         renderItem={(item) => (
           <List.Item>
             <Card size="small">
-              <Space direction="vertical" size={0}>
-                <Space className="flex justify-between items-center w-full">
+              <Space direction="vertical" size={0} className="w-full">
+                <Space className="flex justify-between">
                   <Typography.Text>{`${item.addressLine1},`}</Typography.Text>
-                  <Popover content={content} placement="leftBottom">
-                    <Button type="link">{<MoreOutlined size="large" />}</Button>
+                  <Popover
+                    content={
+                      <div className="flex flex-col justify-start items-start">
+                        <Button type="link" onClick={() => handleEdit(item)}>
+                          <EditOutlined />
+                          Edit
+                        </Button>
+                        <Button
+                          type="link"
+                          danger
+                          onClick={() => handleDelete(item)}
+                        >
+                          <DeleteOutlined />
+                          Delete
+                        </Button>
+                      </div>
+                    }
+                    placement="leftBottom"
+                  >
+                    <Button type="link">
+                      <MoreOutlined size="large" />
+                    </Button>
                   </Popover>
                 </Space>
                 <Typography.Text>{`${item?.addressLine2},`}</Typography.Text>
@@ -71,6 +93,8 @@ const MyAccount = () => {
   const { user } = useSelector((state) => state.users);
   const [toggleAddressModal, setToggleAddressModal] = useState(false);
   const [address, setAddress] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [title, setTitle] = useState("add");
 
   const handleAddress = (e) => {
     e.stopPropagation();
@@ -131,7 +155,14 @@ const MyAccount = () => {
                 </div>
               </Space>
             ),
-            children: <AddressBook address={address} />,
+            children: (
+              <AddressBook
+                address={address}
+                setToggleAddressModal={setToggleAddressModal}
+                setSelectedAddress={setSelectedAddress}
+                setTitle={setTitle}
+              />
+            ),
           },
         ]}
         defaultActiveKey={["1"]}
@@ -141,6 +172,9 @@ const MyAccount = () => {
           toggleAddressModal={toggleAddressModal}
           setToggleAddressModal={setToggleAddressModal}
           getData={getData}
+          selectedAddress={selectedAddress}
+          title={title}
+          setTitle={setTitle}
         />
       )}
     </>
