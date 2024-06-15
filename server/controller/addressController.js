@@ -35,7 +35,6 @@ const getAllAddressByUser = async (req, res) => {
 };
 
 const editAddress = async (req, res) => {
-  console.log(req.body);
   try {
     const response = await addressModel.findByIdAndUpdate(
       req.body.addressId,
