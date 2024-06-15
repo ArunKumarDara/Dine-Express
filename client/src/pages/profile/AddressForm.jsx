@@ -1,9 +1,13 @@
+/* eslint-disable react/prop-types */
 import { Form, Modal, Input, Button, Select, message } from "antd";
 import { useSelector } from "react-redux";
 import { addAddress } from "../../apiCalls/address";
 
-// eslint-disable-next-line react/prop-types
-const AddressForm = ({ toggleAddressModal, setToggleAddressModal }) => {
+const AddressForm = ({
+  toggleAddressModal,
+  setToggleAddressModal,
+  getData,
+}) => {
   const { user } = useSelector((state) => state.users);
   const onFinish = async (values) => {
     try {
@@ -11,6 +15,7 @@ const AddressForm = ({ toggleAddressModal, setToggleAddressModal }) => {
       if (response.success) {
         message.success(response.message);
         setToggleAddressModal(false);
+        getData();
       } else {
         message.error(response.message);
         setToggleAddressModal(false);
