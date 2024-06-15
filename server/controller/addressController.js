@@ -54,8 +54,24 @@ const editAddress = async (req, res) => {
   }
 };
 
+const deleteAddress = async (req, res) => {
+  try {
+    await addressModel.findByIdAndDelete(req.body.addressId);
+    res.status(200).json({
+      success: true,
+      message: "Address deleted successfully",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message || "Cannot delete address",
+    });
+  }
+};
+
 module.exports = {
   addAddress,
   getAllAddressByUser,
   editAddress,
+  deleteAddress,
 };
