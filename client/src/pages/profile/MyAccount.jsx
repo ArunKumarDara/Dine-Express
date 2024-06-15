@@ -10,11 +10,12 @@ import {
   message,
   List,
   Popover,
+  Tag,
 } from "antd";
 import { DeleteOutlined, EditOutlined, MoreOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import AddressForm from "./AddressForm";
-import { getAllAddressByUser } from "../../apiCalls/address";
+import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
 
 // eslint-disable-next-line react/prop-types
 export const AddressBook = ({
@@ -22,6 +23,7 @@ export const AddressBook = ({
   setToggleAddressModal,
   setSelectedAddress,
   setTitle,
+  getData,
 }) => {
   const handleEdit = (item) => {
     setToggleAddressModal(true);
@@ -29,8 +31,18 @@ export const AddressBook = ({
     setTitle("edit");
   };
 
-  const handleDelete = (item) => {
-    console.log(item);
+  const handleDelete = async (item) => {
+    try {
+      const response = await deleteAddress({ addressId: item._id });
+      if (response.success) {
+        message.success(response.message);
+        getData();
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
   };
 
   return (
@@ -50,6 +62,7 @@ export const AddressBook = ({
           <List.Item>
             <Card size="small">
               <Space direction="vertical" size={0} className="w-full">
+                {item.isPrimary && <Tag color="magenta">Primary Address</Tag>}
                 <Space className="flex justify-between">
                   <Typography.Text>{`${item.addressLine1},`}</Typography.Text>
                   <Popover
@@ -161,6 +174,7 @@ const MyAccount = () => {
                 setToggleAddressModal={setToggleAddressModal}
                 setSelectedAddress={setSelectedAddress}
                 setTitle={setTitle}
+                getData={getData}
               />
             ),
           },
@@ -173,6 +187,7 @@ const MyAccount = () => {
           setToggleAddressModal={setToggleAddressModal}
           getData={getData}
           selectedAddress={selectedAddress}
+          setSelectedAddress={setSelectedAddress}
           title={title}
           setTitle={setTitle}
         />
