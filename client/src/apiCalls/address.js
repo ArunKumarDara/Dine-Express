@@ -35,3 +35,15 @@ export const editAddress = async (payload) => {
     return error || error.message;
   }
 };
+
+export const deleteAddress = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/deleteAddress",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || error.message;
+  }
+};
