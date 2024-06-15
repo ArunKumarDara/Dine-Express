@@ -10,6 +10,7 @@ const AddressForm = ({
   selectedAddress,
   title,
   setTitle,
+  setSelectedAddress,
 }) => {
   const { user } = useSelector((state) => state.users);
   const onFinish = async (values) => {
@@ -18,6 +19,7 @@ const AddressForm = ({
         const response = await addAddress({ ...values, userId: user._id });
         if (response.success) {
           message.success(response.message);
+          setSelectedAddress(null);
           setToggleAddressModal(false);
           getData();
         } else {
@@ -35,8 +37,9 @@ const AddressForm = ({
         });
         if (response.success) {
           message.success(response.message);
-          setToggleAddressModal(false);
+          setSelectedAddress(null);
           setTitle("add");
+          setToggleAddressModal(false);
           getData();
         } else {
           message.error(response.message);
