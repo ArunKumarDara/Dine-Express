@@ -18,6 +18,23 @@ const addAddress = async (req, res) => {
   }
 };
 
+const getAllAddressByUser = async (req, res) => {
+  try {
+    const response = await addressModel.find({ user: req.body.userId });
+    res.status(200).json({
+      success: true,
+      message: "Address fetched successfully",
+      data: response,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message || "Cannot fetch address",
+    });
+  }
+};
+
 module.exports = {
   addAddress,
+  getAllAddressByUser,
 };
