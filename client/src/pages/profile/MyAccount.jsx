@@ -16,6 +16,7 @@ import { DeleteOutlined, EditOutlined, MoreOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import AddressForm from "./AddressForm";
 import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
+import Spinner from "../../components/spinner/Spinner";
 
 // eslint-disable-next-line react/prop-types
 export const AddressBook = ({
@@ -47,57 +48,61 @@ export const AddressBook = ({
 
   return (
     <>
-      <List
-        grid={{
-          gutter: 16,
-          xs: 1,
-          sm: 1,
-          md: 1,
-          lg: 2,
-          xl: 2,
-          xxl: 3,
-        }}
-        dataSource={address}
-        renderItem={(item) => (
-          <List.Item>
-            <Card size="small">
-              <Space direction="vertical" size={0} className="w-full">
-                {item.isPrimary && <Tag color="magenta">Primary Address</Tag>}
-                <Space className="flex justify-between">
-                  <Typography.Text>{`${item.addressLine1},`}</Typography.Text>
-                  <Popover
-                    content={
-                      <div className="flex flex-col justify-start items-start">
-                        <Button type="link" onClick={() => handleEdit(item)}>
-                          <EditOutlined />
-                          Edit
-                        </Button>
-                        <Button
-                          type="link"
-                          danger
-                          onClick={() => handleDelete(item)}
-                        >
-                          <DeleteOutlined />
-                          Delete
-                        </Button>
-                      </div>
-                    }
-                    placement="leftBottom"
-                  >
-                    <Button type="link">
-                      <MoreOutlined size="large" />
-                    </Button>
-                  </Popover>
+      {address.length === 0 ? (
+        <Spinner />
+      ) : (
+        <List
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 1,
+            md: 1,
+            lg: 2,
+            xl: 2,
+            xxl: 3,
+          }}
+          dataSource={address}
+          renderItem={(item) => (
+            <List.Item>
+              <Card size="small">
+                <Space direction="vertical" size={0} className="w-full">
+                  {item.isPrimary && <Tag color="magenta">Primary Address</Tag>}
+                  <Space className="flex justify-between">
+                    <Typography.Text>{`${item.addressLine1},`}</Typography.Text>
+                    <Popover
+                      content={
+                        <div className="flex flex-col justify-start items-start">
+                          <Button type="link" onClick={() => handleEdit(item)}>
+                            <EditOutlined />
+                            Edit
+                          </Button>
+                          <Button
+                            type="link"
+                            danger
+                            onClick={() => handleDelete(item)}
+                          >
+                            <DeleteOutlined />
+                            Delete
+                          </Button>
+                        </div>
+                      }
+                      placement="leftBottom"
+                    >
+                      <Button type="link">
+                        <MoreOutlined size="large" />
+                      </Button>
+                    </Popover>
+                  </Space>
+                  <Typography.Text>{`${item?.addressLine2},`}</Typography.Text>
+                  <Typography.Text>{`${item.state},`}</Typography.Text>
+                  <Typography.Text>{`${item.city}, ${item?.landmark},`}</Typography.Text>
+                  <Typography.Text>{`${item.pinCode}.`}</Typography.Text>
                 </Space>
-                <Typography.Text>{`${item?.addressLine2},`}</Typography.Text>
-                <Typography.Text>{`${item.state},`}</Typography.Text>
-                <Typography.Text>{`${item.city}, ${item?.landmark},`}</Typography.Text>
-                <Typography.Text>{`${item.pinCode}.`}</Typography.Text>
-              </Space>
-            </Card>
-          </List.Item>
-        )}
-      />
+              </Card>
+            </List.Item>
+          )}
+        />
+      )}
     </>
   );
 };
