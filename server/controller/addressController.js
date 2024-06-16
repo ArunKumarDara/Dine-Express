@@ -42,7 +42,6 @@ const getAllAddressByUser = async (req, res) => {
 
 const editAddress = async (req, res) => {
   try {
-    console.log(req.body);
     const userAddresses = await addressModel.find({ user: req.body.userId });
     if (req.body.address.isPrimary) {
       userAddresses.forEach(async (userAddress) => {
