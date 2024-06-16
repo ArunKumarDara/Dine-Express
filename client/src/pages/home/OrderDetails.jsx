@@ -14,6 +14,8 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addOrder } from "../../apiCalls/order";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getPrimaryAddress } from "../../apiCalls/address";
 
 let restaurantCharges = 0;
 let deliveryFee = 50;
@@ -28,8 +30,22 @@ const OrderDetails = ({
   setTotalAmount,
 }) => {
   const { user } = useSelector((state) => state.users);
+  const [primaryAddress, setPrimaryAddress] = useState(null);
   const { restaurantId } = useParams();
   const navigate = useNavigate();
+
+  const fetchPrimaryAddress = async () => {
+    try {
+      const response = await getPrimaryAddress({ userId: user._id });
+      if (response.success) {
+        setPrimaryAddress(response.data);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
 
   const handlePlaceOrder = async () => {
     try {
@@ -54,6 +70,11 @@ const OrderDetails = ({
       message.error(error);
     }
   };
+
+  useEffect(() => {
+    fetchPrimaryAddress();
+  }, []);
+
   return (
     <>
       <Modal
@@ -90,12 +111,22 @@ const OrderDetails = ({
           </Space>
         </Card>
         <Card size="small" className="mt-3">
-          <Space className="flex justify-between items-center">
+          <Space className="flex justify-between items-start">
             <Typography.Text>
               <HomeOutlined className="mr-2" />
               Delivery at:
             </Typography.Text>
-            <Typography.Text>9100401610</Typography.Text>
+            <Space
+              direction="vertical"
+              size={0}
+              className="flex justify-end items-end w-full"
+            >
+              <Typography.Text>{primaryAddress?.addressLine1}</Typography.Text>
+              <Typography.Text>{primaryAddress?.addressLine2}</Typography.Text>
+              <Typography.Text>{primaryAddress?.state}</Typography.Text>
+              <Typography.Text>{`${primaryAddress?.city}, ${primaryAddress?.landmark}`}</Typography.Text>
+              <Typography.Text>{primaryAddress?.pinCode}</Typography.Text>
+            </Space>
           </Space>
         </Card>
         <Card className="mt-3" title="Bill Summary" size="small">
