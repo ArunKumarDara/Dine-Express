@@ -12,11 +12,17 @@ import {
   Popover,
   Tag,
 } from "antd";
-import { DeleteOutlined, EditOutlined, MoreOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  MoreOutlined,
+  PoweroffOutlined,
+} from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import AddressForm from "./AddressForm";
 import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
 import Spinner from "../../components/spinner/Spinner";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
 export const AddressBook = ({
@@ -113,6 +119,7 @@ const MyAccount = () => {
   const [address, setAddress] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [title, setTitle] = useState("add");
+  const navigate = useNavigate();
 
   const handleAddress = (e) => {
     e.stopPropagation();
@@ -184,8 +191,17 @@ const MyAccount = () => {
             ),
           },
         ]}
-        defaultActiveKey={["1"]}
       />
+      <Button
+        className="mt-4 w-full"
+        size="large"
+        danger
+        onClick={() => {
+          localStorage.removeItem("tokenForDineExpress"), navigate("/login");
+        }}
+      >
+        {<PoweroffOutlined />} Logout
+      </Button>
       {toggleAddressModal && (
         <AddressForm
           toggleAddressModal={toggleAddressModal}
