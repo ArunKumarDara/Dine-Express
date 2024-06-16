@@ -47,3 +47,15 @@ export const deleteAddress = async (payload) => {
     return error || error.message;
   }
 };
+
+export const getPrimaryAddress = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/getPrimaryAddress",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || error.message;
+  }
+};
