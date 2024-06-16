@@ -120,7 +120,7 @@ const AddressForm = ({
           <Form.Item label="Make it Primary Address" name="isPrimary">
             <Select
               size="large"
-              defaultValue={false}
+              placeholder="Make it primary address"
               options={[
                 { value: true, label: "Yes" },
                 { value: false, label: "No" },
