@@ -24,7 +24,7 @@ const items = [
 const Profile = () => {
   return (
     <div className="m-4">
-      <Tabs items={items} defaultActiveKey="1" type="card" className="mt-2" />
+      <Tabs items={items} defaultActiveKey="2" type="card" className="mt-2" />
     </div>
   );
 };
