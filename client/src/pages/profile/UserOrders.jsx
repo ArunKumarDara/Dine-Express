@@ -37,6 +37,9 @@ const columns = [
   {
     title: "Amount",
     dataIndex: "totalAmount",
+    render: (text) => {
+      return `₹${text}`;
+    },
   },
   {
     title: "Status",
