@@ -21,6 +21,7 @@ app.use("/app/v1/users", restaurantRouter);
 app.use("/app/v1/users", menuItemRouter);
 app.use("/app/v1/users", orderRouter);
 app.use("/app/v1/users", addressRouter);
+app.use("/app/v1/admin", restaurantRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
