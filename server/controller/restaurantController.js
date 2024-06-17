@@ -1,8 +1,27 @@
 const restaurantModel = require("../model/restaurantModel");
 
-const getAllRestaurants = async (req, res) => {
+const getAllActiveRestaurants = async (req, res) => {
   try {
     const restaurants = await restaurantModel.find({ isActive: true });
+    res.status(200).json({
+      success: true,
+      message: "Active Restaurants fetched Successfully",
+      data: restaurants,
+    });
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getAllRestaurants = async (req, res) => {
+  try {
+    const restaurants = await restaurantModel
+      .find()
+      .populate("owner")
+      .sort({ createdAt: -1 });
     res.status(200).json({
       success: true,
       message: "Restaurants fetched Successfully",
@@ -79,10 +98,32 @@ const deleteRestaurant = async (req, res) => {
   }
 };
 
+const actionOnRestaurant = async (req, res) => {
+  const { _id, isActive } = req.body;
+  try {
+    const response = await restaurantModel.findOneAndUpdate(
+      { _id: _id },
+      { $set: { isActive: !isActive } }
+    );
+    res.send({
+      success: true,
+      message: "Restaurant enable/disable action done Successfully",
+      data: response,
+    });
+  } catch (error) {
+    res.status(200).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 module.exports = {
+  getAllActiveRestaurants,
   getAllRestaurants,
   addRestaurant,
   updateRestaurant,
   deleteRestaurant,
   getRestaurantsByOwnerId,
+  actionOnRestaurant,
 };
