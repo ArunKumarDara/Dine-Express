@@ -8,6 +8,7 @@ import {
   CloseCircleOutlined,
 } from "@ant-design/icons";
 import Spinner from "../../components/spinner/Spinner";
+import moment from "moment";
 
 const columns = [
   {
@@ -15,6 +16,13 @@ const columns = [
     dataIndex: "name",
     render: (text, record) => {
       return record.restaurant.name;
+    },
+  },
+  {
+    title: "Ordered On",
+    dataIndex: "createdAt",
+    render: (text) => {
+      return moment(text).format("MMM,DD,YYYY");
     },
   },
   {
@@ -44,6 +52,8 @@ const columns = [
   {
     title: "Status",
     dataIndex: "status",
+    fixed: "right",
+    width: 120,
     render: (text) => {
       if (text === "Pending" || text === "Confirmed" || text === "Preparing") {
         return (
@@ -71,6 +81,11 @@ const columns = [
 const UserOrders = () => {
   const { user } = useSelector((state) => state.users);
   const [orders, setOrders] = useState([]);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
 
   const getData = async () => {
     try {
@@ -86,6 +101,10 @@ const UserOrders = () => {
     }
   };
 
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -96,7 +115,20 @@ const UserOrders = () => {
       {orders.length === 0 ? (
         <Spinner />
       ) : (
-        <Table columns={columns} dataSource={orders} className="mt-3" />
+        <Table
+          columns={columns}
+          dataSource={orders}
+          className="mt-3"
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+          }}
+          scroll={{
+            x: 800,
+          }}
+          onChange={handleTableChange}
+        />
       )}
     </>
   );
