@@ -22,7 +22,7 @@ const columns = [
     title: "Ordered On",
     dataIndex: "createdAt",
     render: (text) => {
-      return moment(text).format("MMM,DD,YYYY");
+      return moment(text).format("MMMM Do, YYYY");
     },
   },
   {
