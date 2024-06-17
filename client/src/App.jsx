@@ -11,9 +11,11 @@ import { useSelector } from "react-redux";
 import { Spin } from "antd";
 import AddRestaurants from "./pages/restaurants/AddRestaurants";
 import Order from "./pages/home/Order";
+import DashBoard from "./adminDashboard/DashBoard";
 
 function App() {
   const { loading } = useSelector((state) => state.loader);
+  const { user } = useSelector((state) => state.users);
   return (
     <div>
       {loading && (
@@ -27,7 +29,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Home />
+                {!user?.isAdmin ? <Home /> : <DashBoard />}
               </ProtectedRoute>
             }
           />
