@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllRestaurants } from "../../apiCalls/restaurant";
+import { getAllActiveRestaurants } from "../../apiCalls/restaurant";
 import { message, List, Card, Space, Typography, Avatar, Input } from "antd";
 import {
   LikeOutlined,
@@ -13,13 +13,13 @@ import Spinner from "../../components/spinner/Spinner";
 const { Search } = Input;
 
 const Home = () => {
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState(null);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const navigate = useNavigate();
 
   const getData = async () => {
     try {
-      const response = await getAllRestaurants();
+      const response = await getAllActiveRestaurants();
       if (response.success) {
         message.success(response.message);
         setRestaurants(response.data);
@@ -61,7 +61,7 @@ const Home = () => {
         className="w-full md:w-[50vw] mb-4"
         size="large"
       />
-      {restaurants.length == 0 ? (
+      {!restaurants ? (
         <Spinner />
       ) : (
         <List
