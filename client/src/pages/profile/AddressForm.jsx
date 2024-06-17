@@ -37,10 +37,10 @@ const AddressForm = ({
         });
         if (response.success) {
           message.success(response.message);
+          getData();
           setSelectedAddress(null);
           setTitle("add");
           setToggleAddressModal(false);
-          getData();
         } else {
           message.error(response.message);
           setToggleAddressModal(false);
