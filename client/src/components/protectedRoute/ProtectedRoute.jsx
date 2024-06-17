@@ -38,7 +38,11 @@ export default function ProtectedRoute({ children }) {
   };
 
   const handleNavigate = () => {
-    navigate("/profile");
+    if (user.isAdmin) {
+      navigate("/admin");
+    } else {
+      navigate("/profile");
+    }
   };
 
   const getPresentUser = async () => {
