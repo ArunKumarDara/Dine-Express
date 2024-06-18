@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import { getCurrentUser } from "../../apiCalls/user";
-import { message } from "antd";
+import { message, Space } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -112,35 +112,36 @@ export default function ProtectedRoute({ children }) {
                 DineExpress
               </Typography>
               <Box sx={{ flexGrow: 1 }} />
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{
-                  mr: 4,
-                  cursor: "pointer",
-                }}
-                onClick={() => {
-                  if (user.isAdmin) {
-                    navigate("/admin");
-                  } else {
-                    navigate("/profile");
-                  }
-                }}
-              >
-                {user.firstName}
-              </Typography>
-              <IconButton
-                size="large"
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
+              <Space className="flex justify-center items-center">
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  sx={{
+                    cursor: "pointer",
+                  }}
+                  onClick={() => {
+                    if (user.isAdmin) {
+                      navigate("/admin");
+                    } else {
+                      navigate("/profile");
+                    }
+                  }}
+                >
+                  {user.firstName}
+                </Typography>
+                <IconButton
+                  size="large"
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Space>
             </Toolbar>
           </AppBar>
           {renderMenu}
