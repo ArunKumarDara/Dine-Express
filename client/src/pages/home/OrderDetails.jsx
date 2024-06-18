@@ -55,6 +55,7 @@ const OrderDetails = ({
         user: user._id,
         restaurant: restaurantId,
         orderItems: orderItems,
+        deliverTo: primaryAddress._id,
       };
       const response = await addOrder(orderSummary);
       if (response.success) {
