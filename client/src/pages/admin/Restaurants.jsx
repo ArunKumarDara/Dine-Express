@@ -19,6 +19,11 @@ import Spinner from "../../components/spinner/Spinner";
 
 const Restaurants = () => {
   const [restaurants, setRestaurants] = useState([]);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
   //   const [toggleFormModal, setToggleFormModal] = useState(false);
   //   const [toggleMenuModal, setToggleMenuModal] = useState(false);
   //   const [userRestaurant, setUserRestaurant] = useState(null);
@@ -107,6 +112,10 @@ const Restaurants = () => {
     },
   ];
 
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+  };
+
   //   const handleDelete = async (values) => {
   //     try {
   //       values.restaurantId = values._id;
@@ -140,6 +149,12 @@ const Restaurants = () => {
           scroll={{
             x: 700,
           }}
+          pagination={{
+            current: pagination.current,
+            pageSize: pagination.pageSize,
+            total: pagination.total,
+          }}
+          onChange={handleTableChange}
         />
       )}
 
