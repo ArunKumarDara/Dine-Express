@@ -2,8 +2,14 @@ import { Tabs } from "antd";
 import Restaurants from "./Restaurants";
 import Orders from "./Orders";
 import Account from "./Account";
+import UserRestaurants from "../profile/UserRestaurants";
 
 const items = [
+  {
+    key: "0",
+    label: "My Restaurants",
+    children: <UserRestaurants />,
+  },
   {
     key: "1",
     label: "Restaurants",
