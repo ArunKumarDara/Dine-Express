@@ -60,7 +60,43 @@ const getOrdersByUserId = async (req, res) => {
   }
 };
 
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await orderModel
+      .find()
+      .populate("restaurant")
+      .populate("user")
+      .populate("deliverTo")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    for (let each of orders) {
+      const items = await orderItemsModel
+        .find({ orderId: each._id })
+        .populate("itemId");
+      each.menuItems = items.map((item) => {
+        return {
+          item: item.itemId,
+          quantity: item.quantity,
+        };
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Orders fetched Successfully",
+      data: orders,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error fetching orders" || error.message,
+    });
+  }
+};
+
 module.exports = {
   addOrder,
   getOrdersByUserId,
+  getAllOrders,
 };
