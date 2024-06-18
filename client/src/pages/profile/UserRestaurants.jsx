@@ -27,7 +27,7 @@ import MenuItems from "../restaurants/MenuItems";
 import Spinner from "../../components/spinner/Spinner";
 
 const UserRestaurants = () => {
-  const [userRestaurants, setUserRestaurants] = useState([]);
+  const [userRestaurants, setUserRestaurants] = useState(null);
   const [toggleFormModal, setToggleFormModal] = useState(false);
   const [toggleMenuModal, setToggleMenuModal] = useState(false);
   const [userRestaurant, setUserRestaurant] = useState(null);
@@ -75,7 +75,7 @@ const UserRestaurants = () => {
       <div className="w-full flex justify-end mb-4">
         <Button onClick={() => setToggleFormModal(true)}>Add Restaurant</Button>
       </div>
-      {userRestaurants.length == 0 ? (
+      {!userRestaurants ? (
         <Spinner />
       ) : (
         <List
