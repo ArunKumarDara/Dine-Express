@@ -17,7 +17,11 @@ const RestaurantForm = ({
     try {
       let response = null;
       if (formType === "add") {
-        response = await addRestaurant(values);
+        if (user.isAdmin) {
+          response = await addRestaurant({ ...values, isActive: true });
+        } else {
+          response = await addRestaurant(values);
+        }
       } else {
         values.restaurantId = userRestaurant._id;
         response = await updateRestaurant(values);
