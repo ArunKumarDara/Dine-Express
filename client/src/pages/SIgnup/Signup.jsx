@@ -8,6 +8,7 @@ import {
   Row,
   Col,
   Card,
+  InputNumber,
 } from "antd";
 import { registerUser } from "../../apiCalls/user";
 import { Link, useNavigate } from "react-router-dom";
@@ -90,6 +91,24 @@ const Signup = () => {
               ]}
             >
               <Input size="large" type="email" placeholder="Enter your email" />
+            </Form.Item>
+            <Form.Item
+              label="Phone Number"
+              name="phoneNumber"
+              rules={[
+                {
+                  type: "number",
+                  required: true,
+                  message: "Please enter your phone number!",
+                },
+              ]}
+            >
+              <InputNumber
+                addonBefore="+91"
+                size="large"
+                className="w-full"
+                maxLength={10}
+              />
             </Form.Item>
             <Form.Item
               label="Password"
