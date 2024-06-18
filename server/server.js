@@ -11,8 +11,6 @@ const addressRouter = require("./routes/addressRouter");
 const app = express();
 const port = process.env.PORT || 3000;
 
-console.log(dbConfig);
-
 app.use(express.json());
 app.use(cors());
 
@@ -22,6 +20,7 @@ app.use("/app/v1/users", menuItemRouter);
 app.use("/app/v1/users", orderRouter);
 app.use("/app/v1/users", addressRouter);
 app.use("/app/v1/admin", restaurantRouter);
+app.use("/app/v1/admin", orderRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
