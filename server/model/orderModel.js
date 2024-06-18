@@ -17,6 +17,10 @@ const orderSchema = new Schema(
       ref: "restaurants",
       required: true,
     },
+    deliverTo: {
+      type: Schema.Types.ObjectId,
+      ref: "address",
+    },
     status: {
       type: String,
       enum: [
