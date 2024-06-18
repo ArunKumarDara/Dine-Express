@@ -86,6 +86,8 @@ const Restaurants = () => {
     {
       title: "Action",
       key: "action",
+      fixed: "right",
+      width: 100,
       render: (text) => (
         <Button type="link" onClick={() => handleAction(text)}>
           {text.isActive ? "Disable" : "Approve"}
@@ -100,7 +102,7 @@ const Restaurants = () => {
 
   useEffect(() => {
     getData();
-  }, [restaurants]);
+  }, []);
 
   return (
     <>
