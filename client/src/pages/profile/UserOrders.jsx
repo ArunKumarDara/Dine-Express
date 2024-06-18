@@ -80,7 +80,7 @@ const columns = [
 
 const UserOrders = () => {
   const { user } = useSelector((state) => state.users);
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders] = useState(null);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 5,
@@ -112,7 +112,7 @@ const UserOrders = () => {
   return (
     <>
       <Typography.Title level={5}>My Orders</Typography.Title>
-      {orders.length === 0 ? (
+      {!orders ? (
         <Spinner />
       ) : (
         <Table
