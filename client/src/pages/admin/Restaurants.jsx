@@ -1,9 +1,3 @@
-// const Restaurants = () => {
-//   return <div>Restaurants</div>;
-// };
-
-// export default Restaurants;
-
 import { useEffect, useState } from "react";
 import {
   getAllRestaurants,
@@ -11,27 +5,15 @@ import {
 } from "../../apiCalls/restaurant";
 import { message, Tag, Button, Table } from "antd";
 import { CheckCircleOutlined, SyncOutlined } from "@ant-design/icons";
-// import { useSelector } from "react-redux";
-// import RestaurantForm from "../restaurants/RestaurantForm";
-// import MenuForm from "../restaurants/MenuForm";
-// import MenuItems from "../restaurants/MenuItems";
 import Spinner from "../../components/spinner/Spinner";
 
 const Restaurants = () => {
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState(null);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 5,
     total: 0,
   });
-  //   const [toggleFormModal, setToggleFormModal] = useState(false);
-  //   const [toggleMenuModal, setToggleMenuModal] = useState(false);
-  //   const [userRestaurant, setUserRestaurant] = useState(null);
-  //   const [restaurantId, setRestaurantId] = useState(null);
-  //   const [menuRestaurantId, setMenuRestaurantId] = useState(null);
-  //   const [toggleMenuItems, setToggleMenuItems] = useState(false);
-  //   const [formType, setFormType] = useState("add");
-  //   const { user } = useSelector((state) => state.users);
 
   const getData = async () => {
     try {
@@ -116,31 +98,13 @@ const Restaurants = () => {
     setPagination(pagination);
   };
 
-  //   const handleDelete = async (values) => {
-  //     try {
-  //       values.restaurantId = values._id;
-  //       const response = await deleteRestaurant(values);
-  //       if (response.success) {
-  //         message.success(response.message);
-  //         getData();
-  //       } else {
-  //         message.error(response.message);
-  //       }
-  //     } catch (error) {
-  //       message.error(error);
-  //     }
-  //   };
-
   useEffect(() => {
     getData();
-  }, []);
+  }, [restaurants]);
 
   return (
     <>
-      <div className="w-full flex justify-end mb-4">
-        <Button>Add Restaurant</Button>
-      </div>
-      {restaurants.length == 0 ? (
+      {!restaurants ? (
         <Spinner />
       ) : (
         <Table
@@ -157,33 +121,6 @@ const Restaurants = () => {
           onChange={handleTableChange}
         />
       )}
-
-      {/* {toggleFormModal && (
-        <RestaurantForm
-          toggleFormModal={toggleFormModal}
-          setToggleFormModal={setToggleFormModal}
-          userRestaurant={userRestaurant}
-          formType={formType}
-          setUserRestaurant={setUserRestaurant}
-          getData={getData}
-        />
-      )}
-      {toggleMenuModal && (
-        <MenuForm
-          toggleMenuModal={toggleMenuModal}
-          setToggleMenuModal={setToggleMenuModal}
-          restaurantId={restaurantId}
-          setRestaurantId={setRestaurantId}
-        />
-      )}
-      {toggleMenuItems && (
-        <MenuItems
-          toggleMenuItems={toggleMenuItems}
-          setToggleMenuItems={setToggleMenuItems}
-          menuRestaurantId={menuRestaurantId}
-          setMenuRestaurantId={setMenuRestaurantId}
-        />
-      )} */}
     </>
   );
 };
