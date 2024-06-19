@@ -29,6 +29,7 @@ const orderSchema = new Schema(
         "Preparing",
         "Ready",
         "Completed",
+        "Deliver",
         "Cancelled",
       ],
       default: "Pending",
