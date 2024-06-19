@@ -40,3 +40,18 @@ export const getAllOrders = async () => {
     return error;
   }
 };
+
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/admin/updateOrderStatus",
+      {
+        orderId,
+        status,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
