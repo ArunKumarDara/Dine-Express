@@ -55,10 +55,10 @@ const columns = [
     fixed: "right",
     width: 120,
     render: (text) => {
-      if (text === "Pending" || text === "Confirmed" || text === "Preparing") {
+      if (text === "Pending" || text === "Confirm" || text === "Preparing") {
         return (
           <Tag icon={<ClockCircleOutlined />} color="processing">
-            {text}
+            {text === "Confirm" ? "Confirmed" : text}
           </Tag>
         );
       } else if (text === "Cancelled") {
@@ -67,10 +67,14 @@ const columns = [
             {text}
           </Tag>
         );
-      } else if (text === "Completed" || text === "Ready") {
+      } else if (
+        text === "Completed" ||
+        text === "Ready" ||
+        text === "Deliver"
+      ) {
         return (
           <Tag icon={<CheckCircleOutlined />} color="success">
-            {text}
+            {text === "Deliver" ? "Delivered" : text}
           </Tag>
         );
       }
