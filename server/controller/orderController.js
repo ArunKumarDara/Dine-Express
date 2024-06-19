@@ -95,8 +95,29 @@ const getAllOrders = async (req, res) => {
   }
 };
 
+const updateOrderStatus = async (req, res) => {
+  const { orderId, status } = req.body;
+  try {
+    const order = await orderModel.findByIdAndUpdate(
+      { _id: orderId },
+      { $set: { status: status } }
+    );
+    res.status(200).json({
+      success: true,
+      message: "Order status changed Successfully",
+      data: order,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error updating order status" || error.message,
+    });
+  }
+};
+
 module.exports = {
   addOrder,
   getOrdersByUserId,
   getAllOrders,
+  updateOrderStatus,
 };
