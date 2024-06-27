@@ -32,6 +32,8 @@ const getOrdersByUserId = async (req, res) => {
     const orders = await orderModel
       .find({ user: req.body.userId })
       .populate("restaurant")
+      .populate("user")
+      .populate("deliverTo")
       .sort({ createdAt: -1 })
       .lean();
 
