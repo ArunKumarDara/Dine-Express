@@ -3,6 +3,11 @@ const { Schema } = mongoose;
 
 const orderSchema = new Schema(
   {
+    orderNo: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
     totalAmount: {
       type: Number,
       required: true,

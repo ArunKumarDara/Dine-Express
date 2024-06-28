@@ -3,7 +3,16 @@ const orderItemsModel = require("../model/orderItemsModel");
 
 const addOrder = async (req, res) => {
   try {
-    const order = new orderModel(req.body.payload1);
+    const lastOrder = await orderModel.findOne(
+      {},
+      {},
+      { sort: { orderNo: -1 } }
+    );
+    const lastOrderNumber = lastOrder ? lastOrder.orderNo : 0;
+    const order = new orderModel({
+      ...req.body.payload1,
+      orderNo: Number(lastOrderNumber) + 1,
+    });
     const response = await order.save();
 
     for (let i = 0; i < req.body.payload2.length; i++) {
