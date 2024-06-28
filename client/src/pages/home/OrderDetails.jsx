@@ -108,7 +108,7 @@ const OrderDetails = ({
               <PhoneOutlined className="mr-2" />
               {`${user.firstName} ${user.lastName}`}
             </Typography.Text>
-            <Typography.Text>9100401610</Typography.Text>
+            <Typography.Text>{`+91-${user?.phoneNumber}`}</Typography.Text>
           </Space>
         </Card>
         <Card size="small" className="mt-3">
