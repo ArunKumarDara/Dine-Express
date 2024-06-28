@@ -62,8 +62,6 @@ const MenuItems = ({
     getData();
   }, []);
 
-  console.log(menuItems);
-
   return (
     <>
       <Modal
