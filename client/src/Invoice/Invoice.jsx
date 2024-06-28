@@ -91,7 +91,6 @@ const platformFee = 10;
 
 // eslint-disable-next-line react/prop-types
 const Invoice = ({ order }) => {
-  console.log(order);
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -100,7 +99,7 @@ const Invoice = ({ order }) => {
             <Text style={styles.titleText}>Dine-Express</Text>
             <View>
               <Text style={styles.invoice}>Invoice</Text>
-              <Text style={styles.userDetails}>Order No: 2</Text>
+              <Text style={styles.userDetails}>Order No: {order?.orderNo}</Text>
             </View>
           </View>
         </View>
