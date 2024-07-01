@@ -11,12 +11,15 @@ import {
   Rate,
   Grid,
   Affix,
+  Breadcrumb,
+  Input,
 } from "antd";
 import {
   PlusOutlined,
-  ArrowLeftOutlined,
   ArrowRightOutlined,
   MinusOutlined,
+  HomeOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getMenuItems } from "../../apiCalls/menuItem";
@@ -28,7 +31,8 @@ const { useBreakpoint } = Grid;
 
 const Order = () => {
   const screens = useBreakpoint();
-  const [menuItems, setMenuItems] = useState([]);
+  const [menuItems, setMenuItems] = useState(null);
+  const [originalMenuItems, setOriginalMenuItems] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const [orderModal, setOrderModal] = useState(false);
@@ -41,6 +45,7 @@ const Order = () => {
       if (response.success) {
         message.success(response.message);
         setMenuItems(response.data);
+        setOriginalMenuItems(response.data);
       }
     } catch (error) {
       message.error(error);
@@ -98,16 +103,57 @@ const Order = () => {
     getData();
   }, []);
 
+  const handleVegItems = () => {
+    setMenuItems(menuItems.filter((item) => item.isVeg === true));
+  };
+
+  const handleClearFilter = () => {
+    getData();
+  };
+
+  const handleSearchItems = (value) => {
+    const searchedItems = originalMenuItems.filter((r) =>
+      r.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setMenuItems(searchedItems);
+  };
+
+  console.log(menuItems);
+
   return (
     <>
       <Row className="m-4">
         <Col span={24}>
-          <Space className="flex justify-start items-center">
-            <ArrowLeftOutlined onClick={() => navigate(-1)} size="large" />
-            <Typography.Title level={4}>Menu Items</Typography.Title>
+          <Breadcrumb
+            className="mb-4"
+            items={[
+              {
+                title: <HomeOutlined onClick={() => navigate("/")} />,
+              },
+              {
+                title: menuItems && menuItems[0]?.availableIn?.name,
+              },
+              {
+                title: "Menu Items",
+              },
+            ]}
+          />
+        </Col>
+        <Col span={24} className="mb-4">
+          <Space>
+            <Input.Search
+              placeholder="search menu here"
+              allowClear
+              onChange={(e) => handleSearchItems(e.target.value)}
+              onSearch={handleSearchItems}
+            />
+            <Button onClick={handleVegItems}>Pure Veg</Button>
+            <Button onClick={handleClearFilter} icon={<CloseOutlined />}>
+              Filter
+            </Button>
           </Space>
         </Col>
-        {menuItems.length == 0 ? (
+        {!menuItems ? (
           <Spinner />
         ) : (
           <Col xs={24} sm={24} md={24} lg={16}>
