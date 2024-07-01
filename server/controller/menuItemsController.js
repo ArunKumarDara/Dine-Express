@@ -19,9 +19,11 @@ const addMenuItem = async (req, res) => {
 
 const getMenuItems = async (req, res) => {
   try {
-    const response = await itemsModel.find({
-      availableIn: req.body.restaurantId,
-    });
+    const response = await itemsModel
+      .find({
+        availableIn: req.body.restaurantId,
+      })
+      .populate("availableIn");
     res.status(200).json({
       success: true,
       message: "Menu Items fetched Successfully",
