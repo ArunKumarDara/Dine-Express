@@ -1,7 +1,6 @@
 import { Tabs } from "antd";
 import Restaurants from "./Restaurants";
 import Orders from "./Orders";
-import Account from "./Account";
 import UserRestaurants from "../profile/UserRestaurants";
 
 const items = [
@@ -19,11 +18,6 @@ const items = [
     key: "2",
     label: "Orders",
     children: <Orders />,
-  },
-  {
-    key: "3",
-    label: "Account",
-    children: <Account />,
   },
 ];
 
