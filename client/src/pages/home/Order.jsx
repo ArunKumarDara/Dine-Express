@@ -279,7 +279,7 @@ const Order = () => {
                   <Space>
                     {`${orderItems.reduce((acc, curr) => {
                       return acc + curr.quantity;
-                    }, 0)} items added`}
+                    }, 0)} item(s) added`}
                     <ArrowRightOutlined />
                   </Space>
                 </Button>
