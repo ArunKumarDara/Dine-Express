@@ -31,7 +31,7 @@ const Signup = () => {
 
   return (
     <Row className="justify-center items-center h-screen">
-      <Col xs={16} md={12} lg={8}>
+      <Col xs={24} md={12} lg={8}>
         <Card className="shadow-lg">
           <Typography.Title level={5} className="text-center">
             Welcome to Dine Express, Please Sign Up!
