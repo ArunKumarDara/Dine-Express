@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "https://dine-express-backend.onrender.com",
   timeout: 10000,
   headers: {
     credentials: "include",
