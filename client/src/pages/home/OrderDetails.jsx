@@ -8,14 +8,23 @@ import {
   Divider,
   Button,
   message,
+  Form,
+  Input,
 } from "antd";
-import { PhoneOutlined, HomeOutlined } from "@ant-design/icons";
+import {
+  PhoneOutlined,
+  HomeOutlined,
+  DownOutlined,
+  UpOutlined,
+} from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addOrder } from "../../apiCalls/order";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getPrimaryAddress } from "../../apiCalls/address";
+import Spinner from "../../components/spinner/Spinner";
+import { addReceiverDetails, getReceiverDetails } from "../../apiCalls/user";
 
 let restaurantCharges = 0;
 let deliveryFee = 50;
@@ -31,6 +40,8 @@ const OrderDetails = ({
 }) => {
   const { user } = useSelector((state) => state.users);
   const [primaryAddress, setPrimaryAddress] = useState(null);
+  const [receiverDetails, setReceiverDetails] = useState(null);
+  const [arrow, setArrow] = useState(true);
   const { restaurantId } = useParams();
   const navigate = useNavigate();
 
@@ -39,6 +50,19 @@ const OrderDetails = ({
       const response = await getPrimaryAddress({ userId: user._id });
       if (response.success) {
         setPrimaryAddress(response.data);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
+
+  const fetchReceiverDetails = async () => {
+    try {
+      const response = await getReceiverDetails({ userId: user._id });
+      if (response.success) {
+        setReceiverDetails(response.data);
       } else {
         message.error(response.message);
       }
@@ -72,8 +96,24 @@ const OrderDetails = ({
     }
   };
 
+  const handleReceiverDetails = async (values) => {
+    try {
+      const response = await addReceiverDetails({ ...values, status: true });
+      if (response.success) {
+        message.success(response.message);
+        fetchReceiverDetails();
+        setArrow(!arrow);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
+
   useEffect(() => {
     fetchPrimaryAddress();
+    fetchReceiverDetails();
   }, []);
 
   return (
@@ -106,28 +146,72 @@ const OrderDetails = ({
           <Space className="flex justify-between items-center">
             <Typography.Text>
               <PhoneOutlined className="mr-2" />
-              {`${user.firstName} ${user.lastName}`}
+              {receiverDetails?.receiverName}
+              {/* {`${user.firstName} ${user.lastName}`} */}
             </Typography.Text>
-            <Typography.Text>{`+91-${user?.phoneNumber}`}</Typography.Text>
+            <Space>
+              <Typography.Text>{`+91-${receiverDetails?.phoneNumber}`}</Typography.Text>
+              {arrow ? (
+                <DownOutlined
+                  className="cursor-pointer"
+                  onClick={() => setArrow(false)}
+                />
+              ) : (
+                <UpOutlined
+                  className="cursor-pointer"
+                  onClick={() => setArrow(true)}
+                />
+              )}
+            </Space>
           </Space>
+          {!arrow && (
+            <>
+              <Divider />
+              <Typography.Title level={5}>
+                Update receiver details
+              </Typography.Title>
+              <Form layout="vertical" onFinish={handleReceiverDetails}>
+                <Form.Item name="receiverName" label="Receiver Name">
+                  <Input placeholder="Enter receiver name" size="large" />
+                </Form.Item>
+                <Form.Item name="phoneNumber" label="Phone Number">
+                  <Input placeholder="Enter phone number" size="large" />
+                </Form.Item>
+                <Form.Item>
+                  <Button className="w-full" htmlType="submit" type="primary">
+                    Submit
+                  </Button>
+                </Form.Item>
+              </Form>
+            </>
+          )}
         </Card>
+
         <Card size="small" className="mt-3">
           <Space className="flex justify-between items-start">
             <Typography.Text>
               <HomeOutlined className="mr-2" />
               Delivery at:
             </Typography.Text>
-            <Space
-              direction="vertical"
-              size={0}
-              className="flex justify-end items-end w-full"
-            >
-              <Typography.Text>{primaryAddress?.addressLine1}</Typography.Text>
-              <Typography.Text>{primaryAddress?.addressLine2}</Typography.Text>
-              <Typography.Text>{primaryAddress?.state}</Typography.Text>
-              <Typography.Text>{`${primaryAddress?.city}, ${primaryAddress?.landmark}`}</Typography.Text>
-              <Typography.Text>{primaryAddress?.pinCode}</Typography.Text>
-            </Space>
+            {!primaryAddress ? (
+              <Spinner />
+            ) : (
+              <Space
+                direction="vertical"
+                size={0}
+                className="flex justify-end items-end w-full"
+              >
+                <Typography.Text>
+                  {primaryAddress?.addressLine1}
+                </Typography.Text>
+                <Typography.Text>
+                  {primaryAddress?.addressLine2}
+                </Typography.Text>
+                <Typography.Text>{primaryAddress?.state}</Typography.Text>
+                <Typography.Text>{`${primaryAddress?.city}, ${primaryAddress?.landmark}`}</Typography.Text>
+                <Typography.Text>{primaryAddress?.pinCode}</Typography.Text>
+              </Space>
+            )}
           </Space>
         </Card>
         <Card className="mt-3" title="Bill Summary" size="small">
