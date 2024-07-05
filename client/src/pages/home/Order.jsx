@@ -118,8 +118,6 @@ const Order = () => {
     setMenuItems(searchedItems);
   };
 
-  console.log(menuItems);
-
   return (
     <>
       <Row className="m-4">
