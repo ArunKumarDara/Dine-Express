@@ -143,27 +143,30 @@ const OrderDetails = ({
           />
         </Card>
         <Card size="small" className="mt-3">
-          <Space className="flex justify-between items-center">
-            <Typography.Text>
-              <PhoneOutlined className="mr-2" />
-              {receiverDetails?.receiverName}
-              {/* {`${user.firstName} ${user.lastName}`} */}
-            </Typography.Text>
-            <Space>
-              <Typography.Text>{`+91-${receiverDetails?.phoneNumber}`}</Typography.Text>
-              {arrow ? (
-                <DownOutlined
-                  className="cursor-pointer"
-                  onClick={() => setArrow(false)}
-                />
-              ) : (
-                <UpOutlined
-                  className="cursor-pointer"
-                  onClick={() => setArrow(true)}
-                />
-              )}
+          {!receiverDetails ? (
+            <Spinner />
+          ) : (
+            <Space className="flex justify-between items-center">
+              <Typography.Text>
+                <PhoneOutlined className="mr-2" />
+                {receiverDetails?.receiverName}
+              </Typography.Text>
+              <Space>
+                <Typography.Text>{`+91-${receiverDetails?.phoneNumber}`}</Typography.Text>
+                {arrow ? (
+                  <DownOutlined
+                    className="cursor-pointer"
+                    onClick={() => setArrow(false)}
+                  />
+                ) : (
+                  <UpOutlined
+                    className="cursor-pointer"
+                    onClick={() => setArrow(true)}
+                  />
+                )}
+              </Space>
             </Space>
-          </Space>
+          )}
           {!arrow && (
             <>
               <Divider />
