@@ -1,4 +1,5 @@
 const userModel = require("../model/userModel");
+const receiverModel = require("../model/receiverModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -80,8 +81,54 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+const addReceiverDetails = async (req, res) => {
+  try {
+    const userReceivers = await receiverModel.find({ userId: req.body.userId });
+    userReceivers?.forEach(async (userReceiver) => {
+      userReceiver.status = false;
+      await userReceiver.save();
+    });
+    const receiverDetails = new receiverModel({
+      ...req.body,
+      userId: req.body.userId,
+    });
+    const response = await receiverDetails.save();
+    res.status(200).json({
+      success: true,
+      message: "receiver details added successfully",
+      data: response,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error || "Cannot add receiver details",
+    });
+  }
+};
+
+const getReceiverDetails = async (req, res) => {
+  try {
+    const response = await receiverModel.findOne({
+      userId: req.body.userId,
+      status: true,
+    });
+    res.status(200).json({
+      success: true,
+      message: "receiver details fetched successfully",
+      data: response,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error || "Cannot fetch receiver details",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getCurrentUser,
+  addReceiverDetails,
+  getReceiverDetails,
 };
