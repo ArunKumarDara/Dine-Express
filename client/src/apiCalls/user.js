@@ -28,3 +28,27 @@ export const getCurrentUser = async () => {
     return error.response.data || error;
   }
 };
+
+export const addReceiverDetails = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/addReceiverDetails",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error.response.data || error;
+  }
+};
+
+export const getReceiverDetails = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/getReceiverDetails",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || "cannot get receiver details";
+  }
+};
