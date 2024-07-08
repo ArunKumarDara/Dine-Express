@@ -59,3 +59,15 @@ export const getPrimaryAddress = async (payload) => {
     return error || error.message;
   }
 };
+
+export const updatePrimaryAddress = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/updatePrimaryAddress",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || error.message;
+  }
+};
