@@ -12,6 +12,7 @@ import {
   Input,
   Radio,
   Result,
+  Select,
 } from "antd";
 import {
   PhoneOutlined,
@@ -531,7 +532,25 @@ const OrderDetails = ({
                 </Typography.Text>
               </Space>
             </Card>
-            <div className="mt-3">
+            <div className="mt-3 flex justify-center items-center gap-2">
+              <Select
+                defaultValue="upi"
+                size="large"
+                style={{
+                  width: 120,
+                }}
+                // onChange={handleChange}
+                options={[
+                  {
+                    value: "cod",
+                    label: "COD",
+                  },
+                  {
+                    value: "upi",
+                    label: "UPI",
+                  },
+                ]}
+              />
               <Button
                 type="primary"
                 size="large"
