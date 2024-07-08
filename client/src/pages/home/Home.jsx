@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllActiveRestaurants } from "../../apiCalls/restaurant";
-import { message, List, Card, Space, Typography, Avatar, Input } from "antd";
 import {
-  LikeOutlined,
-  MessageOutlined,
-  StarOutlined,
-  RightOutlined,
-} from "@ant-design/icons";
+  message,
+  List,
+  Card,
+  Space,
+  Typography,
+  Avatar,
+  Input,
+  Tag,
+} from "antd";
+import { StarFilled } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Spinner from "../../components/spinner/Spinner";
 
@@ -31,14 +35,6 @@ const Home = () => {
       message.error(error);
     }
   };
-
-  // eslint-disable-next-line react/prop-types
-  const IconText = ({ icon, text }) => (
-    <Space>
-      {React.createElement(icon)}
-      {text}
-    </Space>
-  );
 
   const onSearch = (value) => {
     const searchedRestaurants = restaurants.filter((r) =>
@@ -79,23 +75,6 @@ const Home = () => {
             <List.Item>
               <Card
                 size="large"
-                actions={[
-                  <IconText
-                    icon={StarOutlined}
-                    text={restaurant.rating}
-                    key="list-vertical-star-o"
-                  />,
-                  <IconText
-                    icon={LikeOutlined}
-                    text="156"
-                    key="list-vertical-like-o"
-                  />,
-                  <IconText
-                    icon={MessageOutlined}
-                    text="2"
-                    key="list-vertical-message"
-                  />,
-                ]}
                 className="transform transition duration-200 hover:scale-105 cursor-pointer"
                 onClick={() => navigate(`/order/${restaurant._id}`)}
               >
@@ -117,7 +96,11 @@ const Home = () => {
                         <Typography.Title level={5} style={{ margin: 0 }}>
                           {restaurant.name}
                         </Typography.Title>
-                        <RightOutlined />
+
+                        <Tag color="magenta">
+                          {`${restaurant.rating} `}
+                          <StarFilled size="small" />
+                        </Tag>
                       </Space>
                       <Typography.Text
                         type="secondary"
