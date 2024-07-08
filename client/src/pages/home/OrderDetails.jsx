@@ -543,19 +543,25 @@ const OrderDetails = ({
             </div>
           </>
         ) : (
-          <Result
-            status="success"
-            title="Order Placed Successfully!!"
-            subTitle="it takes 1-2 minutes to confirm your order, please wait."
-            extra={[
-              <Button type="primary" key="console">
-                Track your order
-              </Button>,
-              <Button key="buy" onClick={() => navigate("/")}>
-                Order again
-              </Button>,
-            ]}
-          />
+          <>
+            <Result
+              status="success"
+              title="Order Placed Successfully!!"
+              subTitle="it takes 1-2 minutes to confirm your order, please wait."
+              extra={[
+                <Button
+                  type="primary"
+                  key="track"
+                  onClick={() => navigate("/profile")}
+                >
+                  Track order
+                </Button>,
+                <Button key="buy" onClick={() => navigate("/")}>
+                  Order again
+                </Button>,
+              ]}
+            />
+          </>
         )}
       </Modal>
     </>
