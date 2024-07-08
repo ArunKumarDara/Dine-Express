@@ -100,10 +100,35 @@ const getPrimaryAddress = async (req, res) => {
   }
 };
 
+const updatePrimaryAddress = async (req, res) => {
+  try {
+    const userAddresses = await addressModel.find({ user: req.body.userId });
+    userAddresses.forEach(async (userAddress) => {
+      userAddress.isPrimary = false;
+      await userAddress.save();
+    });
+    const response = await addressModel.findOneAndUpdate(
+      { _id: req.body.addressId, user: req.body.userId },
+      { $set: { isPrimary: true } }
+    );
+    res.status(200).json({
+      success: true,
+      message: "Primary address updated successfully",
+      data: response,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message || "Cannot update primary address",
+    });
+  }
+};
+
 module.exports = {
   addAddress,
   getAllAddressByUser,
   editAddress,
   deleteAddress,
   getPrimaryAddress,
+  updatePrimaryAddress,
 };
