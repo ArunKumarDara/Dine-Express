@@ -16,27 +16,28 @@ import {
 } from "antd";
 import {
   PlusOutlined,
-  ArrowRightOutlined,
   MinusOutlined,
   HomeOutlined,
   CloseOutlined,
+  ArrowRightOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getMenuItems } from "../../apiCalls/menuItem";
 import { useParams, useNavigate } from "react-router-dom";
-import OrderDetails from "./OrderDetails";
 import Spinner from "../../components/spinner/Spinner";
-
+import { useDispatch, useSelector } from "react-redux";
+import { addItems, removeItems } from "../../redux/cartSlice";
+import pluralize from "pluralize";
 const { useBreakpoint } = Grid;
 
 const Order = () => {
-  const screens = useBreakpoint();
+  const { cart } = useSelector((state) => state.cart);
   const [menuItems, setMenuItems] = useState(null);
   const [originalMenuItems, setOriginalMenuItems] = useState(null);
-  const [orderItems, setOrderItems] = useState([]);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [orderModal, setOrderModal] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const screens = useBreakpoint();
 
   const { restaurantId } = useParams();
   const getData = async () => {
@@ -53,55 +54,11 @@ const Order = () => {
   };
 
   const handleAddItem = (item) => {
-    setOrderItems((prevItems) => {
-      const existingItem = prevItems.find((each) => each._id === item._id);
-      let updatedItems;
-      if (existingItem) {
-        updatedItems = prevItems.map((each) =>
-          each._id === item._id
-            ? { ...each, quantity: each.quantity + 1 }
-            : each
-        );
-      } else {
-        updatedItems = [...prevItems, { ...item, quantity: 1 }];
-      }
-      const newTotalAmount = updatedItems.reduce(
-        (sum, each) => sum + each.quantity * each.price,
-        0
-      );
-      setTotalAmount(newTotalAmount);
-      return updatedItems;
-    });
+    dispatch(addItems(item));
   };
   const handleRemoveItem = (item) => {
-    setOrderItems((prevItems) => {
-      const existingItem = prevItems.find((each) => each._id === item._id);
-      let updatedItems;
-      if (existingItem) {
-        if (existingItem.quantity > 1) {
-          updatedItems = prevItems.map((each) =>
-            each._id === item._id
-              ? { ...each, quantity: each.quantity - 1 }
-              : each
-          );
-        } else {
-          updatedItems = prevItems.filter((each) => each._id !== item._id);
-        }
-      } else {
-        updatedItems = [...prevItems];
-      }
-      const newTotalAmount = updatedItems?.reduce(
-        (sum, each) => sum + each.quantity * each.price,
-        0
-      );
-      setTotalAmount(newTotalAmount);
-      return updatedItems;
-    });
+    dispatch(removeItems(item));
   };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const handleVegItems = () => {
     setMenuItems(menuItems.filter((item) => item.isVeg === true));
@@ -117,6 +74,12 @@ const Order = () => {
     );
     setMenuItems(searchedItems);
   };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  console.log(cart);
 
   return (
     <>
@@ -217,12 +180,12 @@ const Order = () => {
         )}
         {screens.md ? (
           <Col span={8}>
-            {orderItems.length > 0 && (
+            {cart.length > 0 && (
               <>
                 <Card title="Order Details" className="ml-3">
                   <List
                     itemLayout="horizontal"
-                    dataSource={orderItems}
+                    dataSource={cart}
                     renderItem={(each) => (
                       <List.Item>
                         <List.Item.Meta
@@ -231,13 +194,13 @@ const Order = () => {
                               <Typography.Text strong>
                                 {each.name}
                               </Typography.Text>
-                              <Typography.Text type="success">{`₹${each.price}`}</Typography.Text>
+                              <Typography.Text type="danger">
+                                {each.quantity}
+                              </Typography.Text>
                             </div>
                           }
                         />
-                        <Typography.Text type="danger">
-                          {each.quantity}
-                        </Typography.Text>
+                        <Typography.Text type="success">{`₹${each.price}`}</Typography.Text>
                       </List.Item>
                     )}
                   />
@@ -246,7 +209,9 @@ const Order = () => {
                   <Space className="flex justify-between items-center">
                     <Typography.Title level={5}>Total Amount</Typography.Title>
                     <Typography.Text type="success" strong>
-                      {`₹${totalAmount}`}
+                      {`₹${cart.reduce((acc, item) => {
+                        return acc + item.price * item.quantity;
+                      }, 0)}`}
                     </Typography.Text>
                   </Space>
                 </Card>
@@ -255,9 +220,9 @@ const Order = () => {
                     type="primary"
                     size="large"
                     className="w-full"
-                    onClick={() => setOrderModal(true)}
+                    onClick={() => navigate("/checkout")}
                   >
-                    Proceed
+                    Checkout
                     <ArrowRightOutlined size="large" />
                   </Button>
                 </div>
@@ -265,20 +230,29 @@ const Order = () => {
             )}
           </Col>
         ) : (
-          orderItems.length > 0 && (
+          cart.length > 0 && (
             <Affix offsetBottom={0} className="w-full">
               <div className="w-full">
                 <Button
                   size="large"
                   className="w-full"
                   type="primary"
-                  onClick={() => setOrderModal(true)}
+                  onClick={() => navigate("/checkout")}
                 >
-                  <Space>
-                    {`${orderItems.reduce((acc, curr) => {
-                      return acc + curr.quantity;
-                    }, 0)} item(s) added`}
-                    <ArrowRightOutlined />
+                  <Space className="flex justify-between items-center w-full">
+                    <Typography.Text strong style={{ color: "white" }}>
+                      {`${cart.reduce((acc, curr) => {
+                        return acc + curr.quantity;
+                      }, 0)} ${pluralize(
+                        "item",
+                        cart.reduce((acc, curr) => {
+                          return acc + curr.quantity;
+                        }, 0)
+                      )} added`}
+                    </Typography.Text>
+                    <Typography.Text strong style={{ color: "white" }}>
+                      <ShoppingCartOutlined /> View cart
+                    </Typography.Text>
                   </Space>
                 </Button>
               </div>
@@ -286,16 +260,6 @@ const Order = () => {
           )
         )}
       </Row>
-      {orderModal && (
-        <OrderDetails
-          orderModal={orderModal}
-          setOrderModal={setOrderModal}
-          orderItems={orderItems}
-          setOrderItems={setOrderItems}
-          totalAmount={totalAmount}
-          setTotalAmount={setTotalAmount}
-        />
-      )}
     </>
   );
 };
