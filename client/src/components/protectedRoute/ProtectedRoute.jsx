@@ -2,31 +2,26 @@ import { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import { getCurrentUser } from "../../apiCalls/user";
-import { message, Space } from "antd";
+import { Avatar, Badge, message, Popover, Space, Typography } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../../redux/loaderSlice";
+import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 
 // eslint-disable-next-line react/prop-types
 export default function ProtectedRoute({ children }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const { user } = useSelector((state) => state.users);
+  const { cart } = useSelector((state) => state.cart);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const isMenuOpen = Boolean(anchorEl);
-
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -71,6 +66,12 @@ export default function ProtectedRoute({ children }) {
       navigate("/login");
     }
   }, []);
+  const content = (
+    <div>
+      <p>Content</p>
+      <p>Content</p>
+    </div>
+  );
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -102,45 +103,51 @@ export default function ProtectedRoute({ children }) {
         <Box sx={{ flexGrow: 1 }}>
           <AppBar position="static">
             <Toolbar>
-              <Typography
-                variant="h6"
-                noWrap
-                component="div"
-                sx={{ cursor: "pointer" }}
+              <Typography.Title
+                level={5}
+                className="cursor-pointer"
+                style={{ color: "white" }}
                 onClick={() => navigate("/")}
               >
                 DineExpress
-              </Typography>
+              </Typography.Title>
               <Box sx={{ flexGrow: 1 }} />
-              <Space className="flex justify-center items-center">
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="div"
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                  onClick={() => {
-                    if (user.isAdmin) {
-                      navigate("/admin");
-                    } else {
-                      navigate("/profile");
-                    }
-                  }}
+              <Space
+                className="flex justify-center items-center cursor-pointer"
+                onClick={() => {
+                  if (user.isAdmin) {
+                    navigate("/admin");
+                  } else {
+                    navigate("/profile");
+                  }
+                }}
+              >
+                <UserOutlined size="large" />
+                <Typography.Title
+                  className="cursor-pointer pt-2"
+                  style={{ color: "white" }}
+                  level={5}
                 >
                   {user.firstName}
-                </Typography>
-                <IconButton
-                  size="large"
-                  edge="end"
-                  aria-label="account of current user"
-                  aria-controls={menuId}
-                  aria-haspopup="true"
-                  onClick={handleProfileMenuOpen}
-                  color="inherit"
+                </Typography.Title>
+              </Space>
+              <Space className="ml-6 mr-3">
+                <Popover
+                  content={content}
+                  title="jshhjsbfjdkbh"
+                  placement="bottomRight"
                 >
-                  <AccountCircle />
-                </IconButton>
+                  <Badge
+                    count={cart.reduce((acc, item) => {
+                      return acc + item.quantity;
+                    }, 0)}
+                  >
+                    <Avatar
+                      size="small"
+                      icon={<ShoppingCartOutlined style={{ color: "white" }} />}
+                    />
+                  </Badge>
+                </Popover>
               </Space>
             </Toolbar>
           </AppBar>
