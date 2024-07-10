@@ -10,17 +10,16 @@ import {
   Card,
 } from "antd";
 import { loginUser } from "../../apiCalls/user";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  const navigate = useNavigate();
   const handleFinish = async (values) => {
     try {
       const response = await loginUser(values);
       if (response.success) {
         message.success(response.message);
         localStorage.setItem("tokenForDineExpress", response.data);
-        navigate("/");
+        window.location.href = "/";
       } else {
         message.error(response.message);
       }
