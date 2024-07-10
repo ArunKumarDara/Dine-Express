@@ -76,7 +76,7 @@ const Home = () => {
               <Card
                 size="large"
                 className="transform transition duration-200 hover:scale-105 cursor-pointer"
-                onClick={() => navigate(`/order/${restaurant._id}`)}
+                onClick={() => navigate(`/restaurants/${restaurant._id}`)}
               >
                 <Card.Meta
                   avatar={
