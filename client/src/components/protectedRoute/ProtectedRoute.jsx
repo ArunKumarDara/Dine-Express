@@ -5,7 +5,15 @@ import Toolbar from "@mui/material/Toolbar";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { getCurrentUser } from "../../apiCalls/user";
-import { Avatar, Badge, message, Popover, Space, Typography } from "antd";
+import {
+  Avatar,
+  Badge,
+  Button,
+  message,
+  Popover,
+  Space,
+  Typography,
+} from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -66,10 +74,49 @@ export default function ProtectedRoute({ children }) {
       navigate("/login");
     }
   }, []);
+
   const content = (
-    <div>
-      <p>Content</p>
-      <p>Content</p>
+    <div className="mt-4">
+      {cart.map((item) => {
+        return (
+          <>
+            <hr />
+            <div className="flex justify-between pt-1 pb-1" key={item._id}>
+              <div className="flex flex-col">
+                <Typography.Text strong>{item.name}</Typography.Text>
+                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                  {item.quantity}
+                </Typography.Text>
+              </div>
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                {`₹${item.price * item.quantity}`}
+              </Typography.Text>
+            </div>
+          </>
+        );
+      })}
+      <hr />
+      <div className="flex justify-between pt-1 pb-1 mt-2">
+        <div className="flex flex-col">
+          <Typography.Text strong>Sub total</Typography.Text>
+          <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+            Extra charges may apply
+          </Typography.Text>
+        </div>
+        <Typography.Text strong>
+          {`₹${cart.reduce((acc, item) => {
+            return acc + item.price * item.quantity;
+          }, 0)}`}
+        </Typography.Text>
+      </div>
+      <Button
+        size="large"
+        type="primary"
+        className="w-full mt-3"
+        onClick={() => navigate("/checkout")}
+      >
+        Checkout
+      </Button>
     </div>
   );
 
@@ -131,13 +178,26 @@ export default function ProtectedRoute({ children }) {
                   {user.firstName}
                 </Typography.Title>
               </Space>
-              <Space className="ml-6 mr-3">
+              <Space className="ml-6 mr-3 cursor-pointer">
                 <Popover
                   content={content}
-                  title="jshhjsbfjdkbh"
                   placement="bottomRight"
+                  title={
+                    <div className="flex flex-col justify-start items-start">
+                      <Typography.Title level={5}>
+                        {cart[0]?.availableIn?.name}
+                      </Typography.Title>
+                      <Typography.Text
+                        type="secondary"
+                        style={{ fontSize: 10 }}
+                      >
+                        {cart[0]?.availableIn?.address}
+                      </Typography.Text>
+                    </div>
+                  }
                 >
                   <Badge
+                    size="small"
                     count={cart.reduce((acc, item) => {
                       return acc + item.quantity;
                     }, 0)}
