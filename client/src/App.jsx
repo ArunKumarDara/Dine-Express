@@ -12,6 +12,7 @@ import { Spin } from "antd";
 import AddRestaurants from "./pages/restaurants/AddRestaurants";
 import Order from "./pages/home/Order";
 import DashBoard from "./adminDashboard/DashBoard";
+import OrderDetails from "./pages/home/OrderDetails";
 
 function App() {
   const { loading } = useSelector((state) => state.loader);
@@ -60,10 +61,18 @@ function App() {
             }
           />
           <Route
-            path="/order/:restaurantId"
+            path="/restaurants/:restaurantId"
             element={
               <ProtectedRoute>
                 <Order />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <OrderDetails />
               </ProtectedRoute>
             }
           />
