@@ -82,7 +82,7 @@ const Home = () => {
                   avatar={
                     <Avatar
                       style={{
-                        backgroundColor: "#f56a00",
+                        backgroundColor: "orange",
                         verticalAlign: "middle",
                       }}
                       size="large"
@@ -97,7 +97,7 @@ const Home = () => {
                           {restaurant.name}
                         </Typography.Title>
 
-                        <Tag color="magenta">
+                        <Tag color="orange">
                           {`${restaurant.rating} `}
                           <StarFilled size="small" />
                         </Tag>
