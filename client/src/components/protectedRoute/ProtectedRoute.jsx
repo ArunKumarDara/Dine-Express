@@ -5,20 +5,14 @@ import Toolbar from "@mui/material/Toolbar";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { getCurrentUser } from "../../apiCalls/user";
-import {
-  Avatar,
-  Badge,
-  Button,
-  message,
-  Popover,
-  Space,
-  Typography,
-} from "antd";
+import { Avatar, Badge, message, Popover, Space, Typography } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 import { showLoading, hideLoading } from "../../redux/loaderSlice";
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
+import nonVeg from "../../assets/nonVeg.png";
+import veg from "../../assets/veg.png";
 
 // eslint-disable-next-line react/prop-types
 export default function ProtectedRoute({ children }) {
@@ -77,22 +71,22 @@ export default function ProtectedRoute({ children }) {
 
   const content = (
     <div className="mt-4">
+      <hr className="pb-3" />
       {cart.map((item) => {
         return (
-          <>
-            <hr />
-            <div className="flex justify-between pt-1 pb-1" key={item._id}>
-              <div className="flex flex-col">
-                <Typography.Text strong>{item.name}</Typography.Text>
-                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-                  {item.quantity}
-                </Typography.Text>
+          <div key={item._id}>
+            <div className="flex justify-between pb-3">
+              <div className="flex justify-start items-center">
+                <img src={item.isVeg ? veg : nonVeg} className="w-4 mr-2" />
+                <Typography.Text
+                  strong
+                >{`${item.name} x ${item.quantity}`}</Typography.Text>
               </div>
               <Typography.Text type="secondary" style={{ fontSize: 12 }}>
                 {`₹${item.price * item.quantity}`}
               </Typography.Text>
             </div>
-          </>
+          </div>
         );
       })}
       <hr />
@@ -109,14 +103,14 @@ export default function ProtectedRoute({ children }) {
           }, 0)}`}
         </Typography.Text>
       </div>
-      <Button
-        size="large"
-        type="primary"
-        className="w-full mt-3"
-        onClick={() => navigate("/checkout")}
-      >
-        Checkout
-      </Button>
+      <div className="w-full mt-4">
+        <button
+          className="w-full font-semibold text-white bg-orange-500 h-9"
+          onClick={() => navigate("/checkout")}
+        >
+          CHECKOUT
+        </button>
+      </div>
     </div>
   );
 
@@ -197,15 +191,13 @@ export default function ProtectedRoute({ children }) {
                   }
                 >
                   <Badge
+                    color="orange"
                     size="small"
                     count={cart.reduce((acc, item) => {
                       return acc + item.quantity;
                     }, 0)}
                   >
-                    <Avatar
-                      size="small"
-                      icon={<ShoppingCartOutlined style={{ color: "white" }} />}
-                    />
+                    <Avatar size="small" icon={<ShoppingCartOutlined />} />
                   </Badge>
                 </Popover>
               </Space>
