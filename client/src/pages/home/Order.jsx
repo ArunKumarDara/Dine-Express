@@ -1,25 +1,18 @@
 import {
   message,
-  Card,
   List,
   Row,
   Col,
   Space,
   Typography,
-  Badge,
-  Button,
-  Rate,
-  Grid,
   Affix,
   Breadcrumb,
   Input,
+  Divider,
 } from "antd";
 import {
   PlusOutlined,
   MinusOutlined,
-  HomeOutlined,
-  CloseOutlined,
-  ArrowRightOutlined,
   ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
@@ -29,7 +22,9 @@ import Spinner from "../../components/spinner/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { addItems, removeItems } from "../../redux/cartSlice";
 import pluralize from "pluralize";
-const { useBreakpoint } = Grid;
+import "./order.css";
+import nonVeg from "../../assets/nonVeg.png";
+import veg from "../../assets/veg.png";
 
 const Order = () => {
   const { cart } = useSelector((state) => state.cart);
@@ -37,7 +32,6 @@ const Order = () => {
   const [originalMenuItems, setOriginalMenuItems] = useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const screens = useBreakpoint();
 
   const { restaurantId } = useParams();
   const getData = async () => {
@@ -51,13 +45,6 @@ const Order = () => {
     } catch (error) {
       message.error(error);
     }
-  };
-
-  const handleAddItem = (item) => {
-    dispatch(addItems(item));
-  };
-  const handleRemoveItem = (item) => {
-    dispatch(removeItems(item));
   };
 
   const handleVegItems = () => {
@@ -79,164 +66,139 @@ const Order = () => {
     getData();
   }, []);
 
-  console.log(cart);
-
   return (
-    <>
-      <Row className="m-4">
-        <Col span={24}>
+    <div className="xs-m-4 lg:mt-4 lg:mb-4 lg:m-0">
+      <Row className="flex justify-center items-center">
+        <Col xs={24} lg={16}>
           <Breadcrumb
-            className="mb-4"
+            className="mb-3"
             items={[
               {
-                title: <HomeOutlined onClick={() => navigate("/")} />,
+                title: (
+                  <Typography.Text
+                    type="secondary"
+                    onClick={() => navigate("/")}
+                  >
+                    Home
+                  </Typography.Text>
+                ),
               },
               {
-                title: menuItems && menuItems[0]?.availableIn?.name,
-              },
-              {
-                title: "Menu Items",
+                title: menuItems && (
+                  <Typography.Text type="secondary">
+                    {menuItems[0]?.availableIn?.name}
+                  </Typography.Text>
+                ),
               },
             ]}
           />
         </Col>
-        <Col span={24} className="mb-4">
-          <Space>
+        <Col xs={24} lg={16}>
+          <div className="w-full text-center">
+            <Divider>
+              <Typography.Text type="secondary" style={{ textAlign: "center" }}>
+                MENU
+              </Typography.Text>
+            </Divider>
+          </div>
+        </Col>
+        <Col xs={24} lg={16} className="mb-4">
+          <div>
             <Input.Search
-              placeholder="search menu here"
+              size="large"
+              placeholder="search for dishes"
               allowClear
               onChange={(e) => handleSearchItems(e.target.value)}
               onSearch={handleSearchItems}
             />
-            <Button onClick={handleVegItems}>Pure Veg</Button>
+            {/* <Button onClick={handleVegItems}>Pure Veg</Button>
             <Button onClick={handleClearFilter} icon={<CloseOutlined />}>
               Filter
-            </Button>
-          </Space>
+            </Button> */}
+          </div>
+        </Col>
+        <Col xs={24} lg={16}>
+          <Divider />
         </Col>
         {!menuItems ? (
           <Spinner />
         ) : (
-          <Col xs={24} sm={24} md={24} lg={16}>
+          <Col xs={24} lg={16}>
             <List
-              grid={{
-                gutter: 12,
-                xs: 1,
-                sm: 1,
-                md: 1,
-                lg: 2,
-                xl: 2,
-                xxl: 2,
-              }}
+              itemLayout="horizontal"
               dataSource={menuItems}
               renderItem={(item) => (
                 <List.Item>
-                  <Card
+                  <List.Item.Meta
                     title={
-                      <Badge
-                        dot
-                        offset={[12, 12]}
-                        color={item.isVeg ? "green" : "red"}
-                      >
-                        {item.name}
-                      </Badge>
+                      <div className="flex justify-between items-center">
+                        <div className="flex flex-col justify-start gap-0">
+                          <img
+                            src={item.isVeg ? veg : nonVeg}
+                            className="w-4"
+                          />
+                          <Typography.Title
+                            level={5}
+                            style={{ marginBottom: 0 }}
+                          >
+                            {item.name}
+                          </Typography.Title>
+                          <Typography.Text
+                            style={{ marginTop: 0 }}
+                            strong
+                          >{`₹${item.price}`}</Typography.Text>
+                        </div>
+                        <div>
+                          {cart.find(
+                            (cartItem) => cartItem._id === item._id
+                          ) ? (
+                            <div className="border p-3 flex justify-between items-center w-28 h-10 cursor-pointer">
+                              <MinusOutlined
+                                className="hover:text-orange-500"
+                                onClick={() => dispatch(removeItems(item))}
+                              />
+                              <Typography.Title
+                                style={{ color: "#60b246" }}
+                                level={5}
+                              >
+                                {cart.map(
+                                  (each) =>
+                                    each._id === item._id && each.quantity
+                                )}
+                              </Typography.Title>
+                              <PlusOutlined
+                                onClick={() => dispatch(addItems(item))}
+                                className="hover:text-[#60b246]"
+                              />
+                            </div>
+                          ) : (
+                            <button
+                              className="text-[#60b246] font-bold w-28 h-10  border border-gray-200 hover:bg-gray-200"
+                              onClick={() => dispatch(addItems(item))}
+                            >
+                              ADD
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     }
-                    extra={
-                      <Typography.Text
-                        strong
-                      >{`₹${item.price}`}</Typography.Text>
-                    }
-                  >
-                    <Space direction="vertical">
-                      <Rate disabled value={item.rating} size="small" />
+                    description={
                       <Typography.Text type="secondary">
                         {item.description}
                       </Typography.Text>
-                    </Space>
-                    <Space.Compact
-                      block
-                      className="flex justify-center items-center mt-3"
-                    >
-                      <Button
-                        icon={<MinusOutlined />}
-                        size="middle"
-                        onClick={() => handleRemoveItem(item)}
-                      >
-                        Remove
-                      </Button>
-                      <Button
-                        icon={<PlusOutlined />}
-                        size="middle"
-                        onClick={() => handleAddItem(item)}
-                      >
-                        Add
-                      </Button>
-                    </Space.Compact>
-                  </Card>
+                    }
+                  />
                 </List.Item>
               )}
             />
           </Col>
         )}
-        {screens.md ? (
-          <Col span={8}>
-            {cart.length > 0 && (
-              <>
-                <Card title="Order Details" className="ml-3">
-                  <List
-                    itemLayout="horizontal"
-                    dataSource={cart}
-                    renderItem={(each) => (
-                      <List.Item>
-                        <List.Item.Meta
-                          title={
-                            <div className="flex flex-col justify-start">
-                              <Typography.Text strong>
-                                {each.name}
-                              </Typography.Text>
-                              <Typography.Text type="danger">
-                                {each.quantity}
-                              </Typography.Text>
-                            </div>
-                          }
-                        />
-                        <Typography.Text type="success">{`₹${each.price}`}</Typography.Text>
-                      </List.Item>
-                    )}
-                  />
-                </Card>
-                <Card className="ml-3 mt-3">
-                  <Space className="flex justify-between items-center">
-                    <Typography.Title level={5}>Total Amount</Typography.Title>
-                    <Typography.Text type="success" strong>
-                      {`₹${cart.reduce((acc, item) => {
-                        return acc + item.price * item.quantity;
-                      }, 0)}`}
-                    </Typography.Text>
-                  </Space>
-                </Card>
-                <div className="ml-3 mt-3">
-                  <Button
-                    type="primary"
-                    size="large"
-                    className="w-full"
-                    onClick={() => navigate("/checkout")}
-                  >
-                    Checkout
-                    <ArrowRightOutlined size="large" />
-                  </Button>
-                </div>
-              </>
-            )}
-          </Col>
-        ) : (
-          cart.length > 0 && (
+        <Col xs={24} lg={16}>
+          {cart.length > 0 && (
             <Affix offsetBottom={0} className="w-full">
               <div className="w-full">
-                <Button
-                  size="large"
-                  className="w-full"
-                  type="primary"
+                <button
+                  className="w-full bg-[#60b246] h-12 font-semibold text-white pl-4 pr-4"
                   onClick={() => navigate("/checkout")}
                 >
                   <Space className="flex justify-between items-center w-full">
@@ -250,17 +212,20 @@ const Order = () => {
                         }, 0)
                       )} added`}
                     </Typography.Text>
-                    <Typography.Text strong style={{ color: "white" }}>
-                      <ShoppingCartOutlined /> View cart
-                    </Typography.Text>
+                    <Space>
+                      <Typography.Text strong style={{ color: "white" }}>
+                        VIEW CART
+                      </Typography.Text>
+                      <ShoppingCartOutlined />
+                    </Space>
                   </Space>
-                </Button>
+                </button>
               </div>
             </Affix>
-          )
-        )}
+          )}
+        </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
