@@ -1,26 +1,25 @@
 /* eslint-disable react/prop-types */
 import {
-  Modal,
   List,
   Typography,
   Card,
   Space,
-  Divider,
-  Button,
   message,
   Form,
   Input,
-  Radio,
-  Result,
-  Select,
+  Row,
+  Col,
+  Modal,
 } from "antd";
 import {
   PhoneOutlined,
   HomeOutlined,
-  DownOutlined,
-  UpOutlined,
+  MinusOutlined,
+  PlusOutlined,
+  CheckCircleFilled,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addOrder } from "../../apiCalls/order";
 import { useNavigate } from "react-router-dom";
@@ -28,46 +27,44 @@ import { useEffect, useState } from "react";
 import {
   getPrimaryAddress,
   updatePrimaryAddress,
+  getAllAddressNotPrimaryByUser,
 } from "../../apiCalls/address";
 import Spinner from "../../components/spinner/Spinner";
 import { addReceiverDetails, getReceiverDetails } from "../../apiCalls/user";
-import { addAddress, getAllAddressByUser } from "../../apiCalls/address";
+import { addAddress } from "../../apiCalls/address";
+import { makePayment } from "../../apiCalls/payment";
+import { loadStripe } from "@stripe/stripe-js";
+import { addItems, removeItems } from "../../redux/cartSlice";
 
 let restaurantCharges = 0;
 let deliveryFee = 50;
 let platformFee = 10;
 
-const OrderDetails = ({
-  orderModal,
-  setOrderModal,
-  orderItems,
-  setOrderItems,
-  totalAmount,
-  setTotalAmount,
-}) => {
+const OrderDetails = () => {
+  const { cart } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.users);
   const [primaryAddress, setPrimaryAddress] = useState(null);
   const [receiverDetails, setReceiverDetails] = useState(null);
   const [userAddress, setUserAddress] = useState(null);
-  const [deliveryLoading, setDeliveryLoading] = useState(false);
-  const [addressLoading, setAddressLoading] = useState(false);
-  const [deliveryArrow, setDeliveryArrow] = useState(true);
-  const [addressArrow, setAddressArrow] = useState(true);
-  const [addressForm, setAddressForm] = useState(false);
-  const [result, setResult] = useState(false);
+  const [changeAddress, setChangeAddress] = useState(false);
+  const [addressModal, setAddressModal] = useState(false);
+  const [deliveryModal, setDeliveryModal] = useState(false);
   const { restaurantId } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const totalAmount = cart.reduce((acc, item) => {
+    return acc + item.quantity * item.price;
+  }, 0);
 
   const fetchPrimaryAddress = async () => {
     try {
-      setAddressLoading(true);
       const response = await getPrimaryAddress({ userId: user._id });
       if (response.success) {
         setPrimaryAddress(response.data);
       } else {
         message.error(response.message);
       }
-      setAddressLoading(false);
     } catch (error) {
       message.error(error);
     }
@@ -75,11 +72,9 @@ const OrderDetails = ({
 
   const fetchReceiverDetails = async () => {
     try {
-      setDeliveryLoading(true);
       const response = await getReceiverDetails({ userId: user._id });
       if (response.success) {
         setReceiverDetails(response.data);
-        setDeliveryLoading(false);
       } else {
         message.error(response.message);
       }
@@ -88,46 +83,44 @@ const OrderDetails = ({
     }
   };
 
-  const handlePlaceOrder = async () => {
-    if (!primaryAddress) {
-      message.error("Please add a primary address.");
-      return;
-    }
+  // const handlePlaceOrder = async () => {
+  //   if (!primaryAddress) {
+  //     message.error("Please add a primary address.");
+  //     return;
+  //   }
 
-    if (!receiverDetails) {
-      message.error("Please add receiver details.");
-      return;
-    }
-    try {
-      const orderSummary = {
-        totalAmount:
-          totalAmount + restaurantCharges + deliveryFee + platformFee,
-        user: user._id,
-        restaurant: restaurantId,
-        orderItems: orderItems,
-        deliverTo: primaryAddress._id,
-      };
-      const response = await addOrder(orderSummary);
-      if (response.success) {
-        message.success(response.message);
-        setOrderItems([]);
-        setTotalAmount(0);
-        setResult(true);
-      } else {
-        message.error(response.message);
-      }
-    } catch (error) {
-      message.error(error);
-    }
-  };
+  //   if (!receiverDetails) {
+  //     message.error("Please add receiver details.");
+  //     return;
+  //   }
+  //   try {
+  //     const orderSummary = {
+  //       totalAmount:
+  //         totalAmount + restaurantCharges + deliveryFee + platformFee,
+  //       user: user._id,
+  //       restaurant: restaurantId,
+  //       orderItems: cart,
+  //       deliverTo: primaryAddress._id,
+  //     };
+  //     const response = await addOrder(orderSummary);
+  //     if (response.success) {
+  //       message.success(response.message);
+  //       setResult(true);
+  //     } else {
+  //       message.error(response.message);
+  //     }
+  //   } catch (error) {
+  //     message.error(error);
+  //   }
+  // };
 
-  const handleReceiverDetails = async (values) => {
+  const updateReceiverDetails = async (values) => {
     try {
       const response = await addReceiverDetails({ ...values, status: true });
       if (response.success) {
         message.success(response.message);
         fetchReceiverDetails();
-        setDeliveryArrow(!deliveryArrow);
+        setDeliveryModal(false);
       } else {
         message.error(response.message);
       }
@@ -137,7 +130,6 @@ const OrderDetails = ({
   };
 
   const onFinish = async (values) => {
-    setAddressLoading(true);
     try {
       const response = await addAddress({
         ...values,
@@ -146,12 +138,12 @@ const OrderDetails = ({
       });
       if (response.success) {
         message.success(response.message);
-        setAddressForm(false);
+        setAddressModal(false);
+        setChangeAddress(false);
         fetchPrimaryAddress();
       } else {
         message.error(response.message);
       }
-      setAddressLoading(false);
     } catch (error) {
       message.error(error);
     }
@@ -159,7 +151,9 @@ const OrderDetails = ({
 
   const getUserAddress = async () => {
     try {
-      const response = await getAllAddressByUser({ userId: user._id });
+      const response = await getAllAddressNotPrimaryByUser({
+        userId: user._id,
+      });
       if (response.success) {
         setUserAddress(response.data);
       } else {
@@ -170,7 +164,7 @@ const OrderDetails = ({
     }
   };
 
-  const handleAddressChange = async (addressId) => {
+  const updateAddress = async (addressId) => {
     try {
       const response = await updatePrimaryAddress({
         addressId,
@@ -186,6 +180,24 @@ const OrderDetails = ({
     }
   };
 
+  // const handlePayment = async () => {
+  //   try {
+  //     const stripe = await loadStripe(
+  //       "pk_test_51PabXORo1Dr4L3hknJ2U6k4E8GMqv1uS1xjvsMmEahzbxmOgRP3sFgRDEqp0aqb2mQd1BiVzl100WtYbo5f0FMEM006QT82veO"
+  //     );
+  //     const body = {
+  //       products: cart,
+  //     };
+  //     const response = await makePayment(body);
+  //     const sessionId = await response.id;
+  //     stripe.redirectToCheckout({
+  //       sessionId: sessionId,
+  //     });
+  //   } catch (error) {
+  //     message.error("Payment failed. Please try again.");
+  //   }
+  // };
+
   useEffect(() => {
     fetchPrimaryAddress();
     fetchReceiverDetails();
@@ -193,396 +205,397 @@ const OrderDetails = ({
 
   return (
     <>
-      <Modal
-        open={orderModal}
-        onCancel={() => setOrderModal(false)}
-        footer={false}
-      >
-        {!result ? (
-          <>
-            <Card className="mt-6" title="Items Added" size="small">
-              <List
-                itemLayout="horizontal"
-                dataSource={orderItems}
-                renderItem={(each) => (
-                  <List.Item>
-                    <List.Item.Meta
-                      title={
-                        <div className="flex flex-col justify-start">
-                          <Typography.Text strong>{each.name}</Typography.Text>
-                          <Typography.Text type="success">{`₹${each.price}`}</Typography.Text>
+      <Row className="m-4">
+        <Col xs={24} md={12} lg={16}>
+          <Card className="mb-4 md:mr-4">
+            <div className="flex justify-between items-center w-full mb-5">
+              <div className="flex justify-center items-center gap-4">
+                <Typography.Title level={5}>
+                  {changeAddress
+                    ? "Choose a delivery address"
+                    : "Delivery address"}
+                </Typography.Title>
+                {!changeAddress && (
+                  <CheckCircleFilled className="text-[#60b246]" size="large" />
+                )}
+              </div>
+              {!changeAddress && (
+                <Typography.Text
+                  strong
+                  className="cursor-pointer"
+                  style={{ color: "orange" }}
+                  onClick={() => {
+                    getUserAddress();
+                    setChangeAddress(true);
+                  }}
+                >
+                  CHANGE
+                </Typography.Text>
+              )}
+            </div>
+            {changeAddress ? (
+              !userAddress ? (
+                <Spinner />
+              ) : (
+                <Row gutter={[12, 12]}>
+                  {userAddress.map((address) => {
+                    return (
+                      <Col key={address._id} xs={24} md={24} lg={12}>
+                        <Card size="small hover:shadow-xl">
+                          <div className="flex justify-start items-start gap-4">
+                            <div>
+                              <HomeOutlined />
+                            </div>
+                            <div className="flex flex-col justify-start items-start">
+                              <Typography.Text type="secondary">
+                                {address?.addressLine1}
+                              </Typography.Text>
+                              <Typography.Text type="secondary">
+                                {address?.addressLine2}
+                              </Typography.Text>
+                              <Typography.Text type="secondary">
+                                {address?.state}
+                              </Typography.Text>
+                              <Typography.Text type="secondary">{`${address?.city}, ${address?.landmark}`}</Typography.Text>
+                              <Typography.Text type="secondary">
+                                {address?.pinCode}
+                              </Typography.Text>
+                              <div className="mt-3">
+                                <button
+                                  className="w-24 h-8 bg-[#60b246] text-white font-semibold"
+                                  onClick={() => {
+                                    updateAddress(address._id);
+                                    setChangeAddress(false);
+                                  }}
+                                >
+                                  Deliver here
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      </Col>
+                    );
+                  })}
+                  <Col xs={24} md={24} lg={12}>
+                    <Card size="small hover:shadow-xl">
+                      <div className="flex justify-start items-start gap-4">
+                        <div>
+                          <HomeOutlined />
                         </div>
-                      }
+                        <div className="flex flex-col justify-start items-start">
+                          <Typography.Text strong>
+                            Add New Address
+                          </Typography.Text>
+                          <div className="mt-3">
+                            <button
+                              className="w-24 h-8 bg-white text-[#60b246] font-semibold border border-[#60b246]"
+                              onClick={() => setAddressModal(true)}
+                            >
+                              Add New
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </Card>
+                  </Col>
+                </Row>
+              )
+            ) : !primaryAddress ? (
+              <div className="flex flex-col justify-center items-center mt-4 gap-4">
+                <Typography.Text type="secondary">
+                  <ExclamationCircleOutlined className="mr-2" />
+                  No addresses found. Please add a new address.
+                </Typography.Text>
+                <div>
+                  <button
+                    className="ml-4 w-24 h-8 bg-white text-[#60b246] font-semibold border border-[#60b246]"
+                    onClick={() => setAddressModal(true)}
+                  >
+                    Add New
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-start items-start gap-3">
+                <div>
+                  <HomeOutlined />
+                </div>
+                <div className="flex flex-col justify-start items-start">
+                  <Typography.Text type="secondary">
+                    {primaryAddress?.addressLine1}
+                  </Typography.Text>
+                  <Typography.Text type="secondary">
+                    {primaryAddress?.addressLine2}
+                  </Typography.Text>
+                  <Typography.Text type="secondary">
+                    {primaryAddress?.state}
+                  </Typography.Text>
+                  <Typography.Text type="secondary">{`${primaryAddress?.city}, ${primaryAddress?.landmark}`}</Typography.Text>
+                  <Typography.Text type="secondary">
+                    {primaryAddress?.pinCode}
+                  </Typography.Text>
+                </div>
+              </div>
+            )}
+          </Card>
+          <Card className="mb-4 md:mr-4">
+            <div className="flex justify-between items-center w-full mb-5">
+              <div className="flex justify-center items-center gap-4">
+                <Typography.Title level={5}>Deliver to</Typography.Title>
+                <CheckCircleFilled className="text-[#60b246]" size="large" />
+              </div>
+              <Typography.Text
+                strong
+                className="cursor-pointer"
+                style={{ color: "orange" }}
+                onClick={() => {
+                  setDeliveryModal(true);
+                }}
+              >
+                UPDATE
+              </Typography.Text>
+            </div>
+            {!receiverDetails ? (
+              <div className="flex flex-col justify-center items-center mt-4 gap-4">
+                <Typography.Text type="secondary">
+                  <ExclamationCircleOutlined className="mr-2" />
+                  No receiver details found. Please add a new receiver details.
+                </Typography.Text>
+                <div>
+                  <button
+                    className="ml-4 w-24 h-8 bg-white text-[#60b246] font-semibold border border-[#60b246]"
+                    onClick={() => setDeliveryModal(true)}
+                  >
+                    Add New
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-start items-start gap-3">
+                <div>
+                  <PhoneOutlined />
+                </div>
+                <div className="flex flex-col justify-start items-start">
+                  <Typography.Text type="secondary">
+                    {receiverDetails?.receiverName}
+                  </Typography.Text>
+                  <Typography.Text type="secondary">
+                    {`+91-${receiverDetails?.phoneNumber}`}
+                  </Typography.Text>
+                </div>
+              </div>
+            )}
+          </Card>
+        </Col>
+        <Col xs={24} md={12} lg={8}>
+          <Card
+            title={
+              <div className="flex flex-col justify-start items-start m-1 mb-2">
+                <Typography.Title level={5}>
+                  {cart[0]?.availableIn?.name}
+                </Typography.Title>
+                <Typography.Text type="secondary" style={{ fontSize: 10 }}>
+                  {cart[0]?.availableIn?.address}
+                </Typography.Text>
+              </div>
+            }
+            size="small"
+          >
+            <List
+              itemLayout="horizontal"
+              dataSource={cart}
+              renderItem={(each) => (
+                <Space className="flex justify-between items-center w-full m-1 mb-4">
+                  <Typography.Text strong className="flex-wrap flex">
+                    {each.name}
+                  </Typography.Text>
+                  <div className="border-2 p-2 flex justify-between items-center w-20 cursor-pointer">
+                    <MinusOutlined
+                      className="hover:text-orange-500"
+                      onClick={() => dispatch(removeItems(each))}
                     />
-                    <Typography.Text type="danger">
+                    <Typography.Text
+                      style={{ color: "#60b246", fontSize: 12 }}
+                      strong
+                    >
                       {each.quantity}
                     </Typography.Text>
-                  </List.Item>
-                )}
-              />
-            </Card>
-            <Card size="small" className="mt-3">
-              {deliveryLoading && <Spinner />}
-              {receiverDetails ? (
-                <>
-                  <Space className="flex justify-between items-center">
-                    <Typography.Text>
-                      <PhoneOutlined className="mr-2" />
-                      {receiverDetails?.receiverName}
-                    </Typography.Text>
-                    <Space>
-                      <Typography.Text>{`+91-${receiverDetails?.phoneNumber}`}</Typography.Text>
-                      {deliveryArrow ? (
-                        <DownOutlined
-                          className="cursor-pointer"
-                          onClick={() => setDeliveryArrow(false)}
-                        />
-                      ) : (
-                        <UpOutlined
-                          className="cursor-pointer"
-                          onClick={() => setDeliveryArrow(true)}
-                        />
-                      )}
-                    </Space>
-                  </Space>
-                </>
-              ) : (
-                !deliveryLoading &&
-                deliveryArrow && (
-                  <Space className="flex justify-center">
-                    <Typography.Text>
-                      No receiver details found,
-                      <Button
-                        type="link"
-                        onClick={() => setDeliveryArrow(false)}
-                      >
-                        Add receiver details
-                      </Button>
-                    </Typography.Text>
-                  </Space>
-                )
-              )}
-              {!deliveryArrow && (
-                <>
-                  <Divider />
-                  <Typography.Title level={5}>
-                    Update receiver details
-                  </Typography.Title>
-                  <Form layout="vertical" onFinish={handleReceiverDetails}>
-                    <Form.Item name="receiverName" label="Receiver Name">
-                      <Input placeholder="Enter receiver name" size="large" />
-                    </Form.Item>
-                    <Form.Item name="phoneNumber" label="Phone Number">
-                      <Input placeholder="Enter phone number" size="large" />
-                    </Form.Item>
-                    <Form.Item>
-                      <Button
-                        className="w-full"
-                        htmlType="submit"
-                        type="primary"
-                      >
-                        Submit
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </>
-              )}
-            </Card>
-            <Card size="small" className="mt-3">
-              <Space className="flex justify-between items-start">
-                <Typography.Text>
-                  <HomeOutlined className="mr-2" />
-                  Delivery at:
-                </Typography.Text>
-                {addressLoading && <Spinner />}
-                {primaryAddress ? (
-                  <Space>
-                    <Space
-                      direction="vertical"
-                      size={0}
-                      className="flex justify-end items-end w-full"
-                    >
-                      <Typography.Text>
-                        {primaryAddress?.addressLine1}
-                      </Typography.Text>
-                      <Typography.Text>
-                        {primaryAddress?.addressLine2}
-                      </Typography.Text>
-                      <Typography.Text>{primaryAddress?.state}</Typography.Text>
-                      <Typography.Text>{`${primaryAddress?.city}, ${primaryAddress?.landmark}`}</Typography.Text>
-                      <Typography.Text>
-                        {primaryAddress?.pinCode}
-                      </Typography.Text>
-                    </Space>
-                    {addressArrow ? (
-                      <DownOutlined
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setAddressArrow(false);
-                          setAddressForm(false);
-                          getUserAddress();
-                        }}
-                      />
-                    ) : (
-                      <UpOutlined
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setAddressArrow(true);
-                          setAddressForm(false);
-                        }}
-                      />
-                    )}
-                  </Space>
-                ) : (
-                  !addressLoading &&
-                  !addressForm && (
-                    <Button type="link" onClick={() => setAddressForm(true)}>
-                      Add Address
-                    </Button>
-                  )
-                )}
-              </Space>
-              {addressForm && (
-                <>
-                  <Divider />
-                  <Typography.Title level={5}>
-                    Add delivery address
-                  </Typography.Title>
-                  <Form layout="vertical" onFinish={onFinish}>
-                    <Form.Item
-                      label="Address Line 1"
-                      name="addressLine1"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter Address line 1",
-                        },
-                      ]}
-                    >
-                      <Input
-                        type="text"
-                        placeholder="enter address line 1"
-                        size="large"
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="Address Line 2"
-                      name="addressLine2"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter Address line 2",
-                        },
-                      ]}
-                    >
-                      <Input
-                        type="text"
-                        placeholder="enter address line 2"
-                        size="large"
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="City"
-                      name="city"
-                      rules={[
-                        { required: true, message: "Please enter your city" },
-                      ]}
-                    >
-                      <Input
-                        type="text"
-                        placeholder="enter your city"
-                        size="large"
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="State"
-                      name="state"
-                      rules={[
-                        { required: true, message: "Please enter your state" },
-                      ]}
-                    >
-                      <Input
-                        type="text"
-                        placeholder="enter your state"
-                        size="large"
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="Landmark"
-                      name="landmark"
-                      rules={[
-                        { required: true, message: "Please enter landmark" },
-                      ]}
-                    >
-                      <Input
-                        type="text"
-                        placeholder="enter landmark"
-                        size="large"
-                      />
-                    </Form.Item>
-                    <Form.Item
-                      label="Pincode"
-                      name="pinCode"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please enter your pincode",
-                        },
-                      ]}
-                    >
-                      <Input
-                        type="text"
-                        placeholder="enter your pincode"
-                        size="large"
-                      />
-                    </Form.Item>
-                    <Form.Item>
-                      <Button
-                        type="primary"
-                        htmlType="submit"
-                        className="w-full"
-                        size="large"
-                      >
-                        Submit
-                      </Button>
-                    </Form.Item>
-                  </Form>
-                </>
-              )}
-              {!addressArrow && (
-                <>
-                  <Divider />
-                  <Space className="flex justify-between">
-                    <Typography.Title level={5}>
-                      Update delivery address
-                    </Typography.Title>
-                    <Button
-                      type="link"
-                      onClick={() => {
-                        setAddressForm(true);
-                        setAddressArrow(true);
-                      }}
-                    >
-                      Add address
-                    </Button>
-                  </Space>
-                  {!userAddress ? (
-                    <Spinner />
-                  ) : (
-                    <List
-                      className="mt-2"
-                      grid={{ gutter: 8, column: 2 }}
-                      dataSource={userAddress}
-                      renderItem={(item) => (
-                        <List.Item>
-                          <Card>
-                            <Space className="flex flex-col justify-start items-start">
-                              <Radio
-                                checked={primaryAddress?._id === item._id}
-                                onChange={() => handleAddressChange(item._id)}
-                              >
-                                Select
-                              </Radio>
-                              <Typography.Text>
-                                {item?.addressLine1}
-                              </Typography.Text>
-                              <Typography.Text>
-                                {item?.addressLine2}
-                              </Typography.Text>
-                              <Typography.Text>{item?.state}</Typography.Text>
-                              <Typography.Text>{`${item?.city}, ${item?.landmark}`}</Typography.Text>
-                              <Typography.Text>{item?.pinCode}</Typography.Text>
-                            </Space>
-                          </Card>
-                        </List.Item>
-                      )}
+                    <PlusOutlined
+                      onClick={() => dispatch(addItems(each))}
+                      className="hover:text-[#60b246]"
                     />
-                  )}
-                </>
+                  </div>
+                  <Typography.Text type="secondary">
+                    {`₹${each.quantity * each.price}`}
+                  </Typography.Text>
+                </Space>
               )}
-            </Card>
-            <Card className="mt-3" title="Bill Summary" size="small">
-              <Space className="flex justify-between items-center">
-                <Typography.Text>Item Total</Typography.Text>
-                <Typography.Text type="success">
+            />
+            <hr className="mb-2 mt-2" />
+            <Typography.Text strong className="mb-2">
+              Bill details
+            </Typography.Text>
+            <div className="flex flex-col m-1 w-full">
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">Item Total</Typography.Text>
+                <Typography.Text type="secondary">
                   {`₹${totalAmount}`}
                 </Typography.Text>
-              </Space>
-              <Space className="flex justify-between items-center">
-                <Typography.Text>GST and restaurant charges</Typography.Text>
-                <Typography.Text type="success">
+              </div>
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">Delivery Fee</Typography.Text>
+                <Typography.Text type="secondary">
+                  {`₹${deliveryFee}`}
+                </Typography.Text>
+              </div>
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">Platform fee</Typography.Text>
+                <Typography.Text type="secondary">
+                  {`₹${platformFee}`}
+                </Typography.Text>
+              </div>
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">
+                  GST and Restaurant Charges
+                </Typography.Text>
+                <Typography.Text type="secondary">
                   {`₹${restaurantCharges}`}
                 </Typography.Text>
-              </Space>
-              <Space className="flex justify-between items-center">
-                <Typography.Text>Delivery partner fee</Typography.Text>
-                <Typography.Text type="success">{`₹${deliveryFee}`}</Typography.Text>
-              </Space>
-              <Space className="flex justify-between items-center">
-                <Typography.Text>Platform fee</Typography.Text>
-                <Typography.Text type="success">{`₹${platformFee}`}</Typography.Text>
-              </Space>
-              <Divider />
-              <Space className="flex justify-between items-center">
-                <Typography.Title level={5}>Grand Total</Typography.Title>
-                <Typography.Text type="success" strong>
-                  {`₹${
-                    restaurantCharges + deliveryFee + platformFee + totalAmount
-                  }`}
-                </Typography.Text>
-              </Space>
-            </Card>
-            <div className="mt-3 flex justify-center items-center gap-2">
-              <Select
-                defaultValue="upi"
-                size="large"
-                style={{
-                  width: 120,
-                }}
-                // onChange={handleChange}
-                options={[
-                  {
-                    value: "cod",
-                    label: "COD",
-                  },
-                  {
-                    value: "upi",
-                    label: "UPI",
-                  },
-                ]}
-              />
-              <Button
-                type="primary"
-                size="large"
-                className="w-full"
-                onClick={handlePlaceOrder}
-              >
-                Place Order
-              </Button>
+              </div>
             </div>
-          </>
-        ) : (
-          <>
-            <Result
-              status="success"
-              title="Order Placed Successfully!!"
-              subTitle="it takes 1-2 minutes to confirm your order, please wait."
-              extra={[
-                <Button
-                  type="primary"
-                  key="track"
-                  onClick={() => navigate("/profile")}
-                >
-                  Track order
-                </Button>,
-                <Button key="buy" onClick={() => navigate("/")}>
-                  Order again
-                </Button>,
+            <hr className="mb-1 bg-black" style={{ height: "2px" }} />
+            <div className="w-full flex justify-between items-center mt-3">
+              <Typography.Text strong>TO PAY</Typography.Text>
+              <Typography.Text strong>
+                {`₹${
+                  restaurantCharges + totalAmount + platformFee + deliveryFee
+                }`}
+              </Typography.Text>
+            </div>
+          </Card>
+          <div className="mt-4">
+            <button className="w-full font-semibold text-white bg-[#60b246] h-10">
+              PROCEED TO PAY
+            </button>
+          </div>
+        </Col>
+      </Row>
+      {addressModal && (
+        <Modal
+          title="Add Delivery Address"
+          open={addressModal}
+          onCancel={() => setAddressModal(false)}
+          footer={null}
+          size="small"
+        >
+          <Form layout="vertical" onFinish={onFinish}>
+            <Form.Item
+              label="Address Line 1"
+              name="addressLine1"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter Address line 1",
+                },
               ]}
-            />
-          </>
-        )}
-      </Modal>
+            >
+              <Input
+                type="text"
+                placeholder="enter address line 1"
+                size="large"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Address Line 2"
+              name="addressLine2"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter Address line 2",
+                },
+              ]}
+            >
+              <Input
+                type="text"
+                placeholder="enter address line 2"
+                size="large"
+              />
+            </Form.Item>
+            <Form.Item
+              label="City"
+              name="city"
+              rules={[{ required: true, message: "Please enter your city" }]}
+            >
+              <Input type="text" placeholder="enter your city" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="State"
+              name="state"
+              rules={[{ required: true, message: "Please enter your state" }]}
+            >
+              <Input type="text" placeholder="enter your state" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="Landmark"
+              name="landmark"
+              rules={[{ required: true, message: "Please enter landmark" }]}
+            >
+              <Input type="text" placeholder="enter landmark" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="Pincode"
+              name="pinCode"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your pincode",
+                },
+              ]}
+            >
+              <Input
+                type="text"
+                placeholder="enter your pincode"
+                size="large"
+              />
+            </Form.Item>
+            <Form.Item>
+              <button
+                type="submit"
+                className="w-full font-semibold text-white bg-orange-500 h-10"
+              >
+                SAVE ADDRESS & PROCEED
+              </button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
+      {deliveryModal && (
+        <Modal
+          open={deliveryModal}
+          onCancel={() => setDeliveryModal(false)}
+          footer={null}
+          size="small"
+          title="Update delivery user details"
+        >
+          <Form layout="vertical" onFinish={updateReceiverDetails}>
+            <Form.Item name="receiverName" label="Receiver Name">
+              <Input placeholder="Enter receiver name" size="large" />
+            </Form.Item>
+            <Form.Item name="phoneNumber" label="Phone Number">
+              <Input placeholder="Enter phone number" size="large" />
+            </Form.Item>
+            <Form.Item>
+              <button
+                type="submit"
+                className="w-full font-semibold text-white bg-orange-500 h-10"
+              >
+                UPDATE
+              </button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
     </>
   );
 };
