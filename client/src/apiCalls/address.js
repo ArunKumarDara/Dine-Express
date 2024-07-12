@@ -71,3 +71,15 @@ export const updatePrimaryAddress = async (payload) => {
     return error || error.message;
   }
 };
+
+export const getAllAddressNotPrimaryByUser = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/getAllAddressNotPrimaryByUser",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || error.message;
+  }
+};
