@@ -30,6 +30,8 @@ const Order = () => {
   const { cart } = useSelector((state) => state.cart);
   const [menuItems, setMenuItems] = useState(null);
   const [originalMenuItems, setOriginalMenuItems] = useState(null);
+  const [filterVeg, setFilterVeg] = useState(false);
+  const [filterNonVeg, setFilterNonVeg] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -45,14 +47,6 @@ const Order = () => {
     } catch (error) {
       message.error(error);
     }
-  };
-
-  const handleVegItems = () => {
-    setMenuItems(menuItems.filter((item) => item.isVeg === true));
-  };
-
-  const handleClearFilter = () => {
-    getData();
   };
 
   const handleSearchItems = (value) => {
@@ -111,10 +105,66 @@ const Order = () => {
               onChange={(e) => handleSearchItems(e.target.value)}
               onSearch={handleSearchItems}
             />
-            {/* <Button onClick={handleVegItems}>Pure Veg</Button>
-            <Button onClick={handleClearFilter} icon={<CloseOutlined />}>
-              Filter
-            </Button> */}
+          </div>
+        </Col>
+        <Col xs={24} lg={16}>
+          <div className="flex justify-start items-center gap-4">
+            {!filterVeg ? (
+              <div
+                className="border rounded-xl h-9 w-16 flex justify-center items-center p-2 cursor-pointer border-gray-300"
+                onClick={() => {
+                  setFilterVeg(true);
+                  setMenuItems(menuItems.filter((item) => item.isVeg === true));
+                }}
+              >
+                <div>
+                  <img src={veg} className="w-7" />
+                </div>
+                <div className="w-7 h-3 bg-gray-300 rounded-r-md"></div>
+              </div>
+            ) : (
+              <div
+                className="border rounded-xl h-9 w-16 flex justify-center items-center p-2 cursor-pointer border-gray-300"
+                onClick={() => {
+                  setFilterVeg(false);
+                  setMenuItems(originalMenuItems);
+                }}
+              >
+                <div className="w-7 h-3 bg-[#60b246] rounded-l-md"></div>
+                <div>
+                  <img src={veg} className="w-7" />
+                </div>
+              </div>
+            )}
+            {!filterNonVeg ? (
+              <div
+                className="border rounded-xl h-9 w-16 flex justify-center items-center p-2 cursor-pointer border-gray-300"
+                onClick={() => {
+                  setFilterNonVeg(true);
+                  setMenuItems(
+                    menuItems.filter((item) => item.isVeg === false)
+                  );
+                }}
+              >
+                <div>
+                  <img src={nonVeg} className="w-7" />
+                </div>
+                <div className="w-7 h-3 bg-gray-300 rounded-r-md"></div>
+              </div>
+            ) : (
+              <div
+                className="border rounded-xl h-9 w-16 flex justify-center items-center p-2 cursor-pointer border-gray-300"
+                onClick={() => {
+                  setFilterNonVeg(false);
+                  setMenuItems(originalMenuItems);
+                }}
+              >
+                <div className="w-7 h-3 bg-red-700 rounded-l-md"></div>
+                <div>
+                  <img src={nonVeg} className="w-7" />
+                </div>
+              </div>
+            )}
           </div>
         </Col>
         <Col xs={24} lg={16}>
