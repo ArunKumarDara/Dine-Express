@@ -126,9 +126,31 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+const updateOrderById = async (req, res) => {
+  const orderId = req.body.params.orderId;
+  try {
+    const order = await orderModel.findOneAndUpdate(
+      { _id: orderId },
+      { $set: { status: "payment_completed" } }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Order fetched Successfully",
+      data: order,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Error fetching order" || error.message,
+    });
+  }
+};
+
 module.exports = {
   addOrder,
   getOrdersByUserId,
   getAllOrders,
   updateOrderStatus,
+  updateOrderById,
 };
