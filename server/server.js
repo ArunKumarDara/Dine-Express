@@ -8,6 +8,7 @@ const menuItemRouter = require("./routes/menuItemsRouter");
 const orderRouter = require("./routes/orderRouter");
 const addressRouter = require("./routes/addressRouter");
 const dashBoardRouter = require("./routes/dashBoardRouter");
+const paymentRouter = require("./routes/makePaymentRouter");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.use(cors());
 app.use("/app/v1/users", userRouter);
 app.use("/app/v1/users", restaurantRouter);
 app.use("/app/v1/users", menuItemRouter);
+app.use("/app/v1/users", paymentRouter);
 app.use("/app/v1/users", orderRouter);
 app.use("/app/v1/users", addressRouter);
 app.use("/app/v1/admin", restaurantRouter);
