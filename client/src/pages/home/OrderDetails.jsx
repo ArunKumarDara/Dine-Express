@@ -3,7 +3,6 @@ import {
   List,
   Typography,
   Card,
-  Space,
   message,
   Form,
   Input,
@@ -21,8 +20,6 @@ import {
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { addOrder } from "../../apiCalls/order";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   getPrimaryAddress,
@@ -35,6 +32,8 @@ import { addAddress } from "../../apiCalls/address";
 import { makePayment } from "../../apiCalls/payment";
 import { loadStripe } from "@stripe/stripe-js";
 import { addItems, removeItems } from "../../redux/cartSlice";
+import nonVeg from "../../assets/nonVeg.png";
+import veg from "../../assets/veg.png";
 
 let restaurantCharges = 0;
 let deliveryFee = 50;
@@ -50,7 +49,6 @@ const OrderDetails = () => {
   const [addressModal, setAddressModal] = useState(false);
   const [deliveryModal, setDeliveryModal] = useState(false);
   const { restaurantId } = useParams();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const totalAmount = cart.reduce((acc, item) => {
@@ -82,37 +80,6 @@ const OrderDetails = () => {
       message.error(error);
     }
   };
-
-  // const handlePlaceOrder = async () => {
-  //   if (!primaryAddress) {
-  //     message.error("Please add a primary address.");
-  //     return;
-  //   }
-
-  //   if (!receiverDetails) {
-  //     message.error("Please add receiver details.");
-  //     return;
-  //   }
-  //   try {
-  //     const orderSummary = {
-  //       totalAmount:
-  //         totalAmount + restaurantCharges + deliveryFee + platformFee,
-  //       user: user._id,
-  //       restaurant: restaurantId,
-  //       orderItems: cart,
-  //       deliverTo: primaryAddress._id,
-  //     };
-  //     const response = await addOrder(orderSummary);
-  //     if (response.success) {
-  //       message.success(response.message);
-  //       setResult(true);
-  //     } else {
-  //       message.error(response.message);
-  //     }
-  //   } catch (error) {
-  //     message.error(error);
-  //   }
-  // };
 
   const updateReceiverDetails = async (values) => {
     try {
@@ -180,23 +147,37 @@ const OrderDetails = () => {
     }
   };
 
-  // const handlePayment = async () => {
-  //   try {
-  //     const stripe = await loadStripe(
-  //       "pk_test_51PabXORo1Dr4L3hknJ2U6k4E8GMqv1uS1xjvsMmEahzbxmOgRP3sFgRDEqp0aqb2mQd1BiVzl100WtYbo5f0FMEM006QT82veO"
-  //     );
-  //     const body = {
-  //       products: cart,
-  //     };
-  //     const response = await makePayment(body);
-  //     const sessionId = await response.id;
-  //     stripe.redirectToCheckout({
-  //       sessionId: sessionId,
-  //     });
-  //   } catch (error) {
-  //     message.error("Payment failed. Please try again.");
-  //   }
-  // };
+  const handlePayment = async () => {
+    if (!primaryAddress) {
+      message.error("Please add a primary address.");
+      return;
+    }
+
+    if (!receiverDetails) {
+      message.error("Please add receiver details.");
+      return;
+    }
+    try {
+      const stripe = await loadStripe(
+        "pk_test_51PabXORo1Dr4L3hknJ2U6k4E8GMqv1uS1xjvsMmEahzbxmOgRP3sFgRDEqp0aqb2mQd1BiVzl100WtYbo5f0FMEM006QT82veO"
+      );
+      const orderSummary = {
+        totalAmount:
+          totalAmount + restaurantCharges + deliveryFee + platformFee,
+        user: user._id,
+        restaurant: restaurantId,
+        orderItems: cart,
+        deliverTo: primaryAddress._id,
+      };
+      const response = await makePayment({ cart, orderSummary });
+      const sessionId = await response.id;
+      stripe.redirectToCheckout({
+        sessionId: sessionId,
+      });
+    } catch (error) {
+      message.error("Payment failed. Please try again.");
+    }
+  };
 
   useEffect(() => {
     fetchPrimaryAddress();
@@ -406,10 +387,11 @@ const OrderDetails = () => {
               itemLayout="horizontal"
               dataSource={cart}
               renderItem={(each) => (
-                <Space className="flex justify-between items-center w-full m-1 mb-4">
-                  <Typography.Text strong className="flex-wrap flex">
-                    {each.name}
-                  </Typography.Text>
+                <div className="flex justify-between items-center w-full m-1 mb-4">
+                  <div className="flex justify-start items-center w-32">
+                    <img src={each.isVeg ? veg : nonVeg} className="w-3 mr-2" />
+                    <Typography.Text strong>{each.name}</Typography.Text>
+                  </div>
                   <div className="border-2 p-2 flex justify-between items-center w-20 cursor-pointer">
                     <MinusOutlined
                       className="hover:text-orange-500"
@@ -426,10 +408,12 @@ const OrderDetails = () => {
                       className="hover:text-[#60b246]"
                     />
                   </div>
-                  <Typography.Text type="secondary">
-                    {`₹${each.quantity * each.price}`}
-                  </Typography.Text>
-                </Space>
+                  <div>
+                    <Typography.Text type="secondary">
+                      {`₹${each.quantity * each.price}`}
+                    </Typography.Text>
+                  </div>
+                </div>
               )}
             />
             <hr className="mb-2 mt-2" />
@@ -475,7 +459,10 @@ const OrderDetails = () => {
             </div>
           </Card>
           <div className="mt-4">
-            <button className="w-full font-semibold text-white bg-[#60b246] h-10">
+            <button
+              className="w-full font-semibold text-white bg-[#60b246] h-10"
+              onClick={handlePayment}
+            >
               PROCEED TO PAY
             </button>
           </div>
