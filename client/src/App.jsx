@@ -13,6 +13,7 @@ import AddRestaurants from "./pages/restaurants/AddRestaurants";
 import Order from "./pages/home/Order";
 import DashBoard from "./adminDashboard/DashBoard";
 import OrderDetails from "./pages/home/OrderDetails";
+import PaymentSuccess from "./pages/payment/Success";
 
 function App() {
   const { loading } = useSelector((state) => state.loader);
@@ -73,6 +74,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/success"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
               </ProtectedRoute>
             }
           />
