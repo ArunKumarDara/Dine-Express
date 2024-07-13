@@ -55,3 +55,14 @@ export const updateOrderStatus = async (orderId, status) => {
     return error;
   }
 };
+
+export const updateOrderById = async (orderId) => {
+  try {
+    const response = await axiosInstance.post("/app/v1/users/updateOrderById", {
+      params: { orderId },
+    });
+    return response.data;
+  } catch (error) {
+    return error;
+  }
+};
