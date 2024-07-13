@@ -6,6 +6,7 @@ const {
   deleteAddress,
   getPrimaryAddress,
   updatePrimaryAddress,
+  getAllAddressNotPrimaryByUser,
 } = require("../controller/addressController");
 const validateJwtToken = require("../middleware/authMiddleware");
 
@@ -25,6 +26,11 @@ addressRouter.post(
   "/updatePrimaryAddress",
   validateJwtToken,
   updatePrimaryAddress
+);
+addressRouter.post(
+  "/getAllAddressNotPrimaryByUser",
+  validateJwtToken,
+  getAllAddressNotPrimaryByUser
 );
 
 module.exports = addressRouter;
