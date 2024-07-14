@@ -48,7 +48,7 @@ const makePayment = async (req, res) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${req.headers.origin}/success?orderId=${saveOrder._id}`,
+      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}&orderId=${saveOrder._id}`,
       cancel_url: `${req.headers.origin}/cancel`,
     });
 
@@ -61,8 +61,6 @@ const makePayment = async (req, res) => {
     await payment.save();
 
     res.redirect(303, session.url);
-    // .status(200)
-    // .json({ success: true, message: "payment successful", id: session.id });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
