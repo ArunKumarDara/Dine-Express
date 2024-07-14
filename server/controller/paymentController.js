@@ -6,7 +6,6 @@ const paymentModel = require("../model/paymentModel");
 const orderModel = require("../model/orderModel");
 
 const makePayment = async (req, res) => {
-  console.log(req.headers.origin);
   try {
     const { cart, orderSummary } = req.body;
     const { totalAmount, user, deliverTo, orderItems } = orderSummary;
