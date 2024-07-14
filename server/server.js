@@ -14,12 +14,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(
-  cors({
-    origin: "https://dine-express.onrender.com",
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use("/app/v1/users", userRouter);
 app.use("/app/v1/users", restaurantRouter);
