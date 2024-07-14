@@ -169,12 +169,14 @@ const OrderDetails = () => {
         orderItems: cart,
         deliverTo: primaryAddress._id,
       };
-      // const response =
-      await makePayment({ cart, orderSummary });
+      const response = await makePayment({ cart, orderSummary });
       // const sessionId = await response.id;
       // stripe.redirectToCheckout({
       //   sessionId: sessionId,
       // });
+      if (response.url) {
+        window.location.href = response.data.url;
+      }
     } catch (error) {
       message.error("Payment failed. Please try again.");
     }

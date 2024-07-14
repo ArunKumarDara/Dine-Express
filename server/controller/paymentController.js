@@ -6,6 +6,7 @@ const paymentModel = require("../model/paymentModel");
 const orderModel = require("../model/orderModel");
 
 const makePayment = async (req, res) => {
+  console.log(req.headers.origin);
   try {
     const { cart, orderSummary } = req.body;
     const { totalAmount, user, deliverTo, orderItems } = orderSummary;
@@ -59,7 +60,11 @@ const makePayment = async (req, res) => {
     });
     await payment.save();
 
-    res.redirect(303, session.url);
+    res.send({
+      success: true,
+      message: "payment successful",
+      url: session.url,
+    });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
   }
