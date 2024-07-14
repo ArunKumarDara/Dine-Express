@@ -47,7 +47,7 @@ const makePayment = async (req, res) => {
       payment_method_types: ["card"],
       line_items: lineItems,
       mode: "payment",
-      success_url: `${req.headers.origin}/success?session_id={CHECKOUT_SESSION_ID}&orderId=${saveOrder._id}`,
+      success_url: `https://dine-express.onrender.com/success?session_id={CHECKOUT_SESSION_ID}&orderId=${saveOrder._id}`,
       cancel_url: `${req.headers.origin}/cancel`,
     });
 
