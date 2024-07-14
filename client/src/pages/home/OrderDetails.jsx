@@ -175,9 +175,8 @@ const OrderDetails = () => {
       //   sessionId: sessionId,
       // });
       console.log(response);
-      if (response.url) {
-        window.location.href = response.url;
-      }
+
+      window.location.href = response.url;
     } catch (error) {
       message.error("Payment failed. Please try again.");
     }
