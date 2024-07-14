@@ -174,8 +174,9 @@ const OrderDetails = () => {
       // stripe.redirectToCheckout({
       //   sessionId: sessionId,
       // });
+      console.log(response);
       if (response.url) {
-        window.location.href = response.data.url;
+        window.location.href = response.url;
       }
     } catch (error) {
       message.error("Payment failed. Please try again.");
