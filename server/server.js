@@ -22,7 +22,7 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "client/dist")));
+app.use(express.static(path.join(__dirname, "../client/dist")));
 
 app.use("/app/v1/users", userRouter);
 app.use("/app/v1/users", restaurantRouter);
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
 
 app.listen(port, () => {
