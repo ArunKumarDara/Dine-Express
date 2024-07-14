@@ -30,7 +30,7 @@ import Spinner from "../../components/spinner/Spinner";
 import { addReceiverDetails, getReceiverDetails } from "../../apiCalls/user";
 import { addAddress } from "../../apiCalls/address";
 import { makePayment } from "../../apiCalls/payment";
-import { loadStripe } from "@stripe/stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 import { addItems, removeItems } from "../../redux/cartSlice";
 import nonVeg from "../../assets/nonVeg.png";
 import veg from "../../assets/veg.png";
@@ -158,9 +158,9 @@ const OrderDetails = () => {
       return;
     }
     try {
-      const stripe = await loadStripe(
-        "pk_test_51PabXORo1Dr4L3hknJ2U6k4E8GMqv1uS1xjvsMmEahzbxmOgRP3sFgRDEqp0aqb2mQd1BiVzl100WtYbo5f0FMEM006QT82veO"
-      );
+      // const stripe = await loadStripe(
+      //   "pk_test_51PabXORo1Dr4L3hknJ2U6k4E8GMqv1uS1xjvsMmEahzbxmOgRP3sFgRDEqp0aqb2mQd1BiVzl100WtYbo5f0FMEM006QT82veO"
+      // );
       const orderSummary = {
         totalAmount:
           totalAmount + restaurantCharges + deliveryFee + platformFee,
@@ -169,11 +169,12 @@ const OrderDetails = () => {
         orderItems: cart,
         deliverTo: primaryAddress._id,
       };
-      const response = await makePayment({ cart, orderSummary });
-      const sessionId = await response.id;
-      stripe.redirectToCheckout({
-        sessionId: sessionId,
-      });
+      // const response =
+      await makePayment({ cart, orderSummary });
+      // const sessionId = await response.id;
+      // stripe.redirectToCheckout({
+      //   sessionId: sessionId,
+      // });
     } catch (error) {
       message.error("Payment failed. Please try again.");
     }
