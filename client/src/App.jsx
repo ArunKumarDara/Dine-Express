@@ -14,6 +14,7 @@ import Order from "./pages/home/Order";
 import DashBoard from "./adminDashboard/DashBoard";
 import OrderDetails from "./pages/home/OrderDetails";
 import PaymentSuccess from "./pages/payment/Success";
+import CancelPayment from "./pages/payment/Cancel";
 
 function App() {
   const { loading } = useSelector((state) => state.loader);
@@ -82,6 +83,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <PaymentSuccess />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cancel"
+            element={
+              <ProtectedRoute>
+                <CancelPayment />
               </ProtectedRoute>
             }
           />
