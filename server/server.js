@@ -17,7 +17,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(
   cors({
-    origin: "https://dine-express-server.vercel.app",
+    origin: "https://dine-express.vercel.app",
   })
 );
 
