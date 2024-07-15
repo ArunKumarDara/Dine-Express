@@ -78,7 +78,7 @@ const Login = () => {
           </Form>
           <Space className="mt-2">
             <Typography.Text>New To DineExpress? </Typography.Text>
-            <Link to="/user-signup">
+            <Link to="/signup">
               <Typography.Text type="danger" className="cursor-pointer">
                 Create account
               </Typography.Text>

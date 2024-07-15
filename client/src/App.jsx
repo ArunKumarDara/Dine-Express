@@ -35,8 +35,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/user-login" element={<Login />} />
-          <Route path="/user-signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="/profile"
             element={
@@ -78,7 +78,7 @@ function App() {
             }
           />
           <Route
-            path="/payment-success"
+            path="/success"
             element={
               <ProtectedRoute>
                 <PaymentSuccess />
@@ -86,7 +86,7 @@ function App() {
             }
           />
           <Route
-            path="/payment-cancel"
+            path="/cancel"
             element={
               <ProtectedRoute>
                 <CancelPayment />
