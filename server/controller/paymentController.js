@@ -1,6 +1,4 @@
-const stripe = require("stripe")(
-  "sk_test_51PabXORo1Dr4L3hkCO5IULuHppta66BLims5OdU0ZPMZTbOxIxKZs625JtWyvTIUirBV2tdWFRKnEB3LXkEdi2OZ00IhwQQ4pB"
-);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const orderItemsModel = require("../model/orderItemsModel");
 const paymentModel = require("../model/paymentModel");
 const orderModel = require("../model/orderModel");
