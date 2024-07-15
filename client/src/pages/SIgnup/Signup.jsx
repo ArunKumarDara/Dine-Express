@@ -137,7 +137,7 @@ const Signup = () => {
           </Form>
           <Space className="mt-2">
             <Typography.Text>Already have an account? </Typography.Text>
-            <Link to="/login">
+            <Link to="/user-login">
               <Typography.Text type="danger" className="cursor-pointer">
                 Login
               </Typography.Text>

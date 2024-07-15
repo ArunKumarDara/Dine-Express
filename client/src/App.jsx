@@ -1,5 +1,4 @@
 import "./App.css";
-// import Navbar from "./components/navbar/Navbar";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Login from "./pages/Login/Login";
@@ -36,8 +35,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/user-login" element={<Login />} />
+          <Route path="/user-signup" element={<Signup />} />
           <Route
             path="/profile"
             element={
@@ -78,8 +77,22 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/payment-cancel" element={<CancelPayment />} />
+          <Route
+            path="/payment-success"
+            element={
+              <ProtectedRoute>
+                <PaymentSuccess />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/payment-cancel"
+            element={
+              <ProtectedRoute>
+                <CancelPayment />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Router>
     </div>
