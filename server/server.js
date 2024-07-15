@@ -15,12 +15,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(
-  cors({
-    origin: ["https://dine-express.onrender.com", "http://localhost:5173"],
-    credentials: true,
-  })
-);
+app.use(cors());
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
 
