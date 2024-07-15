@@ -9,7 +9,6 @@ const orderRouter = require("./routes/orderRouter");
 const addressRouter = require("./routes/addressRouter");
 const dashBoardRouter = require("./routes/dashBoardRouter");
 const paymentRouter = require("./routes/makePaymentRouter");
-const path = require("path");
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -18,6 +17,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "https://dine-express.vercel.app",
+    credentials: true,
   })
 );
 
@@ -33,10 +33,6 @@ app.use("/app/v1/admin", dashBoardRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World");
-});
-
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
 });
 
 app.listen(port, () => {
