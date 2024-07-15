@@ -79,7 +79,7 @@ function App() {
             }
           />
           <Route
-            path="/success"
+            path="/payment-success"
             element={
               <ProtectedRoute>
                 <PaymentSuccess />
@@ -87,7 +87,7 @@ function App() {
             }
           />
           <Route
-            path="/cancel"
+            path="/payment-cancel"
             element={
               <ProtectedRoute>
                 <CancelPayment />
