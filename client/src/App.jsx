@@ -78,22 +78,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/payment-success"
-            element={
-              <ProtectedRoute>
-                <PaymentSuccess />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/payment-cancel"
-            element={
-              <ProtectedRoute>
-                <CancelPayment />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/payment-cancel" element={<CancelPayment />} />
         </Routes>
       </Router>
     </div>
