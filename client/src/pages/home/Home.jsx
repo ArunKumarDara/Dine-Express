@@ -81,26 +81,22 @@ const Home = () => {
             extra={[
               <div
                 key="buttons"
-                className="flex justify-between items-center gap-3"
+                className="flex justify-between items-center gap-3 w-full"
               >
-                <div>
-                  <button
-                    className="w-full font-semibold text-white bg-orange-500 h-11"
-                    onClick={() => navigate("/trackOrder")}
-                    key="track"
-                  >
-                    TRACK
-                  </button>
-                </div>
-                <div>
-                  <button
-                    key="buy"
-                    className="w-full border-2 border-orange-500 h-11 text-orange-500 font-semibold"
-                    onClick={() => navigate("/")}
-                  >
-                    HOME
-                  </button>
-                </div>
+                <button
+                  className="w-full font-semibold text-white bg-orange-500 h-11"
+                  onClick={() => navigate("/trackOrder")}
+                  key="track"
+                >
+                  TRACK
+                </button>
+                <button
+                  key="buy"
+                  className="w-full border-2 border-orange-500 h-11 text-orange-500 font-semibold"
+                  onClick={() => navigate("/")}
+                >
+                  HOME
+                </button>
               </div>,
             ]}
           />
