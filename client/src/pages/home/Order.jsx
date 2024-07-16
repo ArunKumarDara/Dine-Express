@@ -58,6 +58,15 @@ const Order = () => {
     setMenuItems(searchedItems);
   };
 
+  const handleAddItem = (item) => {
+    const existingRestaurantId = cart.length ? cart[0].availableIn._id : null;
+    if (existingRestaurantId && existingRestaurantId !== item.availableIn._id) {
+      message.warning("Cannot add items from different restaurants");
+      return;
+    }
+    dispatch(addItems(item));
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -282,14 +291,14 @@ const Order = () => {
                                 )}
                               </Typography.Title>
                               <PlusOutlined
-                                onClick={() => dispatch(addItems(item))}
+                                onClick={() => handleAddItem(item)}
                                 className="hover:text-[#60b246]"
                               />
                             </div>
                           ) : (
                             <button
                               className="text-[#60b246] font-bold w-28 h-10  border border-gray-200 hover:bg-gray-200"
-                              onClick={() => dispatch(addItems(item))}
+                              onClick={() => handleAddItem(item)}
                             >
                               ADD
                             </button>
