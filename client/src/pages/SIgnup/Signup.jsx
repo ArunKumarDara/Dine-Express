@@ -1,7 +1,6 @@
 import {
   Form,
   Input,
-  Button,
   Space,
   Typography,
   message,
@@ -19,7 +18,6 @@ const Signup = () => {
     try {
       const response = await registerUser(values);
       if (response.success) {
-        message.success(response.message);
         navigate("/login");
       } else {
         message.error(response.message);
@@ -126,14 +124,12 @@ const Signup = () => {
                 placeholder="Enter your password"
               />
             </Form.Item>
-            <Button
-              htmlType="submit"
-              type="primary"
-              size="large"
-              className="w-full"
+            <button
+              type="submit"
+              className="w-full font-semibold text-white bg-orange-500 h-10"
             >
-              Create Account
-            </Button>
+              SIGNUP
+            </button>
           </Form>
           <Space className="mt-2">
             <Typography.Text>Already have an account? </Typography.Text>

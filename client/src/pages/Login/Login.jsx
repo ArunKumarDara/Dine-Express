@@ -1,14 +1,4 @@
-import {
-  Form,
-  Input,
-  Typography,
-  Space,
-  Button,
-  message,
-  Row,
-  Col,
-  Card,
-} from "antd";
+import { Form, Input, Typography, Space, message, Row, Col, Card } from "antd";
 import { loginUser } from "../../apiCalls/user";
 import { Link } from "react-router-dom";
 
@@ -17,7 +7,6 @@ const Login = () => {
     try {
       const response = await loginUser(values);
       if (response.success) {
-        message.success(response.message);
         localStorage.setItem("tokenForDineExpress", response.data);
         window.location.href = "/";
       } else {
@@ -67,14 +56,12 @@ const Login = () => {
                 placeholder="Enter your password"
               />
             </Form.Item>
-            <Button
-              htmlType="submit"
-              type="primary"
-              size="large"
-              className="w-full"
+            <button
+              type="submit"
+              className="w-full font-semibold text-white bg-orange-500 h-10"
             >
-              Login
-            </Button>
+              LOGIN
+            </button>
           </Form>
           <Space className="mt-2">
             <Typography.Text>New To DineExpress? </Typography.Text>
