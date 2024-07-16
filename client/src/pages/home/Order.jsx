@@ -96,7 +96,7 @@ const Order = () => {
         </Col>
         {!menuItems ? (
           <Col xs={24} lg={16}>
-            <Skeleton />
+            <Skeleton className="mt-6" />
           </Col>
         ) : (
           <>
