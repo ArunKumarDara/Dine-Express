@@ -82,10 +82,12 @@ const Order = () => {
                 ),
               },
               {
-                title: menuItems && (
+                title: menuItems ? (
                   <Typography.Text type="secondary">
                     {menuItems[0]?.availableIn?.name}
                   </Typography.Text>
+                ) : (
+                  <Spinner />
                 ),
               },
             ]}
@@ -97,48 +99,52 @@ const Order = () => {
             style={{ fontWeight: "bold" }}
             className="mt-6"
           >
-            {menuItems && menuItems[0]?.availableIn?.name}
+            {menuItems ? menuItems[0]?.availableIn?.name : <Spinner />}
           </Typography.Title>
         </Col>
         <Col xs={24} lg={16}>
-          <Card size="small" className="mt-5 shadow-md mb-4">
-            <div className="flex justify-start gap-1 items-center">
-              <div>
-                <StarFilled size="large" style={{ color: "green" }} />
+          {menuItems ? (
+            <Card size="small" className="mt-5 shadow-md mb-4">
+              <div className="flex justify-start gap-1 items-center">
+                <div>
+                  <StarFilled size="large" style={{ color: "green" }} />
+                </div>
+                <Typography.Title
+                  level={5}
+                  style={{ fontWeight: "bold", margin: 0 }}
+                >
+                  {menuItems && menuItems[0]?.availableIn?.rating}
+                </Typography.Title>
+                <Typography.Title
+                  level={5}
+                  style={{ fontWeight: "bold", margin: 0 }}
+                >
+                  (100+ ratings)
+                </Typography.Title>
               </div>
-              <Typography.Title
-                level={5}
-                style={{ fontWeight: "bold", margin: 0 }}
+              <div className="flex flex-col justify-start items-start gap-2 mt-3">
+                <Typography.Title
+                  level={5}
+                  style={{ fontWeight: "bold", margin: 0 }}
+                >
+                  <EnvironmentOutlined />
+                  Address
+                </Typography.Title>
+                <Typography.Text type="secondary" style={{ margin: 0 }}>
+                  {menuItems && menuItems[0]?.availableIn?.address}
+                </Typography.Text>
+              </div>
+              <hr className="mb-3 mt-3" />
+              <Typography.Text
+                type="secondary"
+                style={{ color: "orange", fontWeight: "bold" }}
               >
-                {menuItems && menuItems[0]?.availableIn?.rating}
-              </Typography.Title>
-              <Typography.Title
-                level={5}
-                style={{ fontWeight: "bold", margin: 0 }}
-              >
-                (100+ ratings)
-              </Typography.Title>
-            </div>
-            <div className="flex flex-col justify-start items-start gap-2 mt-3">
-              <Typography.Title
-                level={5}
-                style={{ fontWeight: "bold", margin: 0 }}
-              >
-                <EnvironmentOutlined />
-                Address
-              </Typography.Title>
-              <Typography.Text type="secondary" style={{ margin: 0 }}>
-                {menuItems && menuItems[0]?.availableIn?.address}
+                Order above 2500 discounted free delivery
               </Typography.Text>
-            </div>
-            <hr className="mb-3 mt-3" />
-            <Typography.Text
-              type="secondary"
-              style={{ color: "orange", fontWeight: "bold" }}
-            >
-              Order above 2500 discounted free delivery
-            </Typography.Text>
-          </Card>
+            </Card>
+          ) : (
+            <Spinner />
+          )}
         </Col>
         <Col xs={24} lg={16}>
           <div className="w-full text-center">

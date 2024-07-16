@@ -173,7 +173,9 @@ const Home = () => {
                 <button
                   key="buy"
                   className="w-full border-2 border-orange-500 h-11 text-orange-500 font-semibold"
-                  onClick={() => navigate("/")}
+                  onClick={() => {
+                    setSuccessModal(false), navigate("/");
+                  }}
                 >
                   HOME
                 </button>
