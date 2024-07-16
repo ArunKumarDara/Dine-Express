@@ -92,7 +92,6 @@ const OrderDetails = () => {
     try {
       const response = await addReceiverDetails({ ...values, status: true });
       if (response.success) {
-        message.success(response.message);
         fetchReceiverDetails();
         setDeliveryModal(false);
       } else {
@@ -111,7 +110,6 @@ const OrderDetails = () => {
         userId: user._id,
       });
       if (response.success) {
-        message.success(response.message);
         setAddressModal(false);
         setChangeAddress(false);
         fetchPrimaryAddress();

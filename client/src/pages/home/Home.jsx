@@ -33,7 +33,6 @@ const Home = () => {
     try {
       const response = await getAllActiveRestaurants();
       if (response.success) {
-        message.success(response.message);
         setRestaurants(response.data);
         setFilteredRestaurants(response.data);
       } else {
@@ -115,7 +114,6 @@ const Home = () => {
                 size="large"
               />
             </Col>
-
             {!restaurants ? (
               <Col xs={24} lg={16}>
                 <Skeleton active />
@@ -132,6 +130,7 @@ const Home = () => {
                     xl: 2,
                     xxl: 3,
                   }}
+                  className="mt-3"
                   dataSource={filteredRestaurants}
                   renderItem={(restaurant) => (
                     <List.Item>

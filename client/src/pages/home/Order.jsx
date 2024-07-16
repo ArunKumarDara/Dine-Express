@@ -43,7 +43,6 @@ const Order = () => {
     try {
       const response = await getMenuItems({ restaurantId: restaurantId });
       if (response.success) {
-        message.success(response.message);
         setMenuItems(response.data);
         setOriginalMenuItems(response.data);
       }
