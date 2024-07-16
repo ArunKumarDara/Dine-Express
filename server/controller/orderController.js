@@ -131,12 +131,13 @@ const updateOrderById = async (req, res) => {
   try {
     const order = await orderModel.findOneAndUpdate(
       { _id: orderId },
-      { $set: { status: "payment_completed" } }
+      { $set: { status: "payment_completed" } },
+      { new: true }
     );
 
     res.status(200).json({
       success: true,
-      message: "Order fetched Successfully",
+      message: "Order updated Successfully",
       data: order,
     });
   } catch (error) {
