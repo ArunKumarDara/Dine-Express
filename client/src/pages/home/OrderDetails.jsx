@@ -158,9 +158,6 @@ const OrderDetails = () => {
       return;
     }
     try {
-      // const stripe = await loadStripe(
-      //   "pk_test_51PabXORo1Dr4L3hknJ2U6k4E8GMqv1uS1xjvsMmEahzbxmOgRP3sFgRDEqp0aqb2mQd1BiVzl100WtYbo5f0FMEM006QT82veO"
-      // );
       const orderSummary = {
         totalAmount:
           totalAmount + restaurantCharges + deliveryFee + platformFee,
@@ -170,12 +167,6 @@ const OrderDetails = () => {
         deliverTo: primaryAddress._id,
       };
       const response = await makePayment({ cart, orderSummary });
-      // const sessionId = await response.id;
-      // stripe.redirectToCheckout({
-      //   sessionId: sessionId,
-      // });
-      console.log(response);
-
       window.location.href = response.url;
     } catch (error) {
       message.error("Payment failed. Please try again.");
