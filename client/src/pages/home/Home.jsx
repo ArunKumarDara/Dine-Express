@@ -11,7 +11,6 @@ import {
   Tag,
   Modal,
   Result,
-  Button,
 } from "antd";
 import { StarFilled } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -157,10 +156,19 @@ const Home = () => {
             title="Order Placed Successfully!"
             subTitle={`Order number: ${order.orderNo}, it takes 1-2 minutes to confirm, please wait.`}
             extra={[
-              <Button type="primary" key="console">
-                Go Console
-              </Button>,
-              <Button key="buy">Buy Again</Button>,
+              <button
+                className="w-full font-semibold text-white bg-orange-500 h-9"
+                onClick={() => navigate("/trackOrder")}
+                key="track"
+              >
+                CHECKOUT
+              </button>,
+              <button
+                key="buy"
+                className="w-full border border-orange-500 h-9 text-gray-500 font-semibold"
+              >
+                Buy Again
+              </button>,
             ]}
           />
         </Modal>
