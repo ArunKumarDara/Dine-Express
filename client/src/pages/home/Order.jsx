@@ -22,7 +22,6 @@ import {
 import { useEffect, useState } from "react";
 import { getMenuItems } from "../../apiCalls/menuItem";
 import { useParams, useNavigate } from "react-router-dom";
-import Spinner from "../../components/spinner/Spinner";
 import { useDispatch, useSelector } from "react-redux";
 import { addItems, removeItems } from "../../redux/cartSlice";
 import pluralize from "pluralize";
@@ -236,7 +235,7 @@ const Order = () => {
           <Divider />
         </Col>
         {!menuItems ? (
-          <Spinner />
+          <Skeleton active />
         ) : (
           <Col xs={24} lg={16}>
             <List
