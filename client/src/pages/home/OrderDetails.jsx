@@ -246,6 +246,7 @@ const OrderDetails = () => {
                                 <button
                                   className="w-24 h-8 bg-[#60b246] text-white font-semibold"
                                   onClick={() => {
+                                    setAddressLoader(true);
                                     updateAddress(address._id);
                                     setChangeAddress(false);
                                   }}
