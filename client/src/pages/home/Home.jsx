@@ -105,7 +105,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="xs-m-4 lg:mt-4 lg:mb-4 lg:m-0">
-          <Row>
+          <Row className="flex justify-center items-center">
             <Col xs={24} lg={24}>
               <Search
                 placeholder="Search Restaurants"
