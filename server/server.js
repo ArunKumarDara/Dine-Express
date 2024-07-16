@@ -19,8 +19,6 @@ app.use(
   cors({
     origin: "https://dine-express.onrender.com",
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
-    exposedHeaders: ["Authorization"],
   })
 );
 
