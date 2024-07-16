@@ -215,7 +215,11 @@ export default function ProtectedRoute({ children }) {
                         </Typography.Text>
                       </div>
                     }
-                  />
+                  >
+                    <Badge color="orange" size="small" count={0}>
+                      <Avatar size="small" icon={<ShoppingCartOutlined />} />
+                    </Badge>
+                  </Popover>
                 )}
               </Space>
             </Toolbar>
