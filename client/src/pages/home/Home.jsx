@@ -122,11 +122,19 @@ const Home = () => {
                 <Spinner />
               </Col>
             ) : (
-              <List
-                grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
-                dataSource={filteredRestaurants}
-                renderItem={(restaurant) => (
-                  <Col xs={24} lg={16}>
+              <Col xs={24} lg={16}>
+                <List
+                  grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 1,
+                    md: 1,
+                    lg: 1,
+                    xl: 1,
+                    xxl: 1,
+                  }}
+                  dataSource={filteredRestaurants}
+                  renderItem={(restaurant) => (
                     <List.Item>
                       <Card
                         size="large"
@@ -182,9 +190,9 @@ const Home = () => {
                         />
                       </Card>
                     </List.Item>
-                  </Col>
-                )}
-              />
+                  )}
+                />
+              </Col>
             )}
           </Row>
         </div>
