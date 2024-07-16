@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Modal,
+  Skeleton,
 } from "antd";
 import {
   PhoneOutlined,
@@ -284,7 +285,7 @@ const OrderDetails = () => {
                 </Row>
               )
             ) : addressLoader ? (
-              <Spinner />
+              <Skeleton active />
             ) : !primaryAddress ? (
               <div className="flex flex-col justify-center items-center mt-4 gap-4">
                 <Typography.Text type="secondary">
@@ -323,32 +324,30 @@ const OrderDetails = () => {
               </div>
             )}
           </Card>
-          <Card>
+          <Card className="mb-4 md:mr-4">
             <div className="flex justify-between items-center w-full mb-5">
               <div className="flex justify-center items-center gap-4">
-                <Typography.Title level={5}>Receiver details</Typography.Title>
-                {receiverDetails && (
-                  <CheckCircleFilled className="text-[#60b246]" size="large" />
-                )}
+                <Typography.Title level={5}>Deliver to</Typography.Title>
+                <CheckCircleFilled className="text-[#60b246]" size="large" />
               </div>
-              {receiverDetails && (
-                <Typography.Text
-                  strong
-                  className="cursor-pointer"
-                  style={{ color: "orange" }}
-                  onClick={() => setDeliveryModal(true)}
-                >
-                  CHANGE
-                </Typography.Text>
-              )}
+              <Typography.Text
+                strong
+                className="cursor-pointer"
+                style={{ color: "orange" }}
+                onClick={() => {
+                  setDeliveryModal(true);
+                }}
+              >
+                UPDATE
+              </Typography.Text>
             </div>
             {receiverLoader ? (
-              <Spinner />
+              <Skeleton active />
             ) : !receiverDetails ? (
               <div className="flex flex-col justify-center items-center mt-4 gap-4">
                 <Typography.Text type="secondary">
                   <ExclamationCircleOutlined className="mr-2" />
-                  No receiver details found. Please add new receiver details.
+                  No receiver details found. Please add a new receiver details.
                 </Typography.Text>
                 <div>
                   <button
@@ -366,10 +365,10 @@ const OrderDetails = () => {
                 </div>
                 <div className="flex flex-col justify-start items-start">
                   <Typography.Text type="secondary">
-                    {receiverDetails?.name}
+                    {receiverDetails?.receiverName}
                   </Typography.Text>
                   <Typography.Text type="secondary">
-                    {receiverDetails?.phoneNumber}
+                    {`+91-${receiverDetails?.phoneNumber}`}
                   </Typography.Text>
                 </div>
               </div>
@@ -377,223 +376,219 @@ const OrderDetails = () => {
           </Card>
         </Col>
         <Col xs={24} md={12} lg={8}>
-          <Card className="mb-4">
-            <Typography.Title level={5} className="uppercase">
-              {cart.length} Items
-            </Typography.Title>
-            <div>
-              <List
-                dataSource={cart}
-                renderItem={(item) => (
-                  <List.Item>
-                    <div className="flex justify-between items-center w-full">
-                      <div className="flex justify-center items-center gap-2">
-                        <div>
-                          <img
-                            src={item.type === "veg" ? veg : nonVeg}
-                            alt=""
-                            className="w-4 h-4"
-                          />
-                        </div>
-                        <div className="flex flex-col justify-start items-start">
-                          <Typography.Text>{item.name}</Typography.Text>
-                          <Typography.Text
-                            strong
-                          >{`₹${item.price}`}</Typography.Text>
-                        </div>
-                      </div>
-                      <div className="flex justify-center items-center gap-4">
-                        <MinusOutlined
-                          className="cursor-pointer"
-                          onClick={() => {
-                            dispatch(removeItems(item));
-                          }}
-                        />
-                        <Typography.Text strong>
-                          {item.quantity}
-                        </Typography.Text>
-                        <PlusOutlined
-                          className="cursor-pointer"
-                          onClick={() => {
-                            dispatch(addItems(item));
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </List.Item>
-                )}
-              />
+          <Card
+            title={
+              <div className="flex flex-col justify-start items-start m-1 mb-2">
+                <Typography.Title level={5}>
+                  {cart[0]?.availableIn?.name}
+                </Typography.Title>
+                <Typography.Text type="secondary" style={{ fontSize: 10 }}>
+                  {cart[0]?.availableIn?.address}
+                </Typography.Text>
+              </div>
+            }
+            size="small"
+          >
+            <List
+              itemLayout="horizontal"
+              dataSource={cart}
+              renderItem={(each) => (
+                <div className="flex justify-between items-center w-full m-1 mb-4">
+                  <div className="flex justify-start items-center w-32">
+                    <img src={each.isVeg ? veg : nonVeg} className="w-3 mr-2" />
+                    <Typography.Text strong>{each.name}</Typography.Text>
+                  </div>
+                  <div className="border-2 p-2 flex justify-between items-center w-20 cursor-pointer">
+                    <MinusOutlined
+                      className="hover:text-orange-500"
+                      onClick={() => dispatch(removeItems(each))}
+                    />
+                    <Typography.Text
+                      style={{ color: "#60b246", fontSize: 12 }}
+                      strong
+                    >
+                      {each.quantity}
+                    </Typography.Text>
+                    <PlusOutlined
+                      onClick={() => dispatch(addItems(each))}
+                      className="hover:text-[#60b246]"
+                    />
+                  </div>
+                  <div>
+                    <Typography.Text type="secondary">
+                      {`₹${each.quantity * each.price}`}
+                    </Typography.Text>
+                  </div>
+                </div>
+              )}
+            />
+            <hr className="mb-2 mt-2" />
+            <Typography.Text strong className="mb-2">
+              Bill details
+            </Typography.Text>
+            <div className="flex flex-col m-1 w-full">
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">Item Total</Typography.Text>
+                <Typography.Text type="secondary">
+                  {`₹${totalAmount}`}
+                </Typography.Text>
+              </div>
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">Delivery Fee</Typography.Text>
+                <Typography.Text type="secondary">
+                  {`₹${deliveryFee}`}
+                </Typography.Text>
+              </div>
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">Platform fee</Typography.Text>
+                <Typography.Text type="secondary">
+                  {`₹${platformFee}`}
+                </Typography.Text>
+              </div>
+              <div className="w-full flex justify-between items-center mb-2">
+                <Typography.Text type="secondary">
+                  GST and Restaurant Charges
+                </Typography.Text>
+                <Typography.Text type="secondary">
+                  {`₹${restaurantCharges}`}
+                </Typography.Text>
+              </div>
             </div>
-          </Card>
-          <Card className="mt-2">
-            <Typography.Title level={5} className="uppercase">
-              Bill Details
-            </Typography.Title>
-            <div className="flex justify-between items-center mt-3">
-              <Typography.Text type="secondary">Item total</Typography.Text>
-              <Typography.Text>{`₹${totalAmount}`}</Typography.Text>
-            </div>
-            <div className="flex justify-between items-center mt-3">
-              <Typography.Text type="secondary">
-                Restaurant charges
+            <hr className="mb-1 bg-black" style={{ height: "2px" }} />
+            <div className="w-full flex justify-between items-center mt-3">
+              <Typography.Text strong>TO PAY</Typography.Text>
+              <Typography.Text strong>
+                {`₹${
+                  restaurantCharges + totalAmount + platformFee + deliveryFee
+                }`}
               </Typography.Text>
-              <Typography.Text>{`₹${restaurantCharges}`}</Typography.Text>
-            </div>
-            <div className="flex justify-between items-center mt-3">
-              <Typography.Text type="secondary">Delivery fee</Typography.Text>
-              <Typography.Text>{`₹${deliveryFee}`}</Typography.Text>
-            </div>
-            <div className="flex justify-between items-center mt-3">
-              <Typography.Text type="secondary">Platform fee</Typography.Text>
-              <Typography.Text>{`₹${platformFee}`}</Typography.Text>
-            </div>
-            <div className="flex justify-between items-center mt-3">
-              <Typography.Text strong>Total</Typography.Text>
-              <Typography.Text>{`₹${
-                totalAmount + restaurantCharges + deliveryFee + platformFee
-              }`}</Typography.Text>
-            </div>
-            <div className="mt-4">
-              <button
-                className="bg-[#60b246] text-white p-2 w-full uppercase"
-                onClick={handlePayment}
-              >
-                Proceed to pay
-              </button>
             </div>
           </Card>
+          <div className="mt-4">
+            <button
+              className="w-full font-semibold text-white bg-[#60b246] h-10"
+              onClick={handlePayment}
+            >
+              PROCEED TO PAY
+            </button>
+          </div>
         </Col>
       </Row>
-      <Modal
-        title="Address Form"
-        open={addressModal}
-        onCancel={() => setAddressModal(false)}
-        footer={null}
-      >
-        <Form layout="vertical" onFinish={onFinish}>
-          <Form.Item
-            label="Address Line 1"
-            name="addressLine1"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Address Line 1!",
-              },
-            ]}
-          >
-            <Input placeholder="Address Line 1" />
-          </Form.Item>
-          <Form.Item
-            label="Address Line 2"
-            name="addressLine2"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Address Line 2!",
-              },
-            ]}
-          >
-            <Input placeholder="Address Line 2" />
-          </Form.Item>
-          <Form.Item
-            label="State"
-            name="state"
-            rules={[
-              {
-                required: true,
-                message: "Please input your State!",
-              },
-            ]}
-          >
-            <Input placeholder="State" />
-          </Form.Item>
-          <Form.Item
-            label="City"
-            name="city"
-            rules={[
-              {
-                required: true,
-                message: "Please input your City!",
-              },
-            ]}
-          >
-            <Input placeholder="City" />
-          </Form.Item>
-          <Form.Item
-            label="Landmark"
-            name="landmark"
-            rules={[
-              {
-                required: true,
-                message: "Please input your Landmark!",
-              },
-            ]}
-          >
-            <Input placeholder="Landmark" />
-          </Form.Item>
-          <Form.Item
-            label="PinCode"
-            name="pinCode"
-            rules={[
-              {
-                required: true,
-                message: "Please input your PinCode!",
-              },
-            ]}
-          >
-            <Input placeholder="PinCode" />
-          </Form.Item>
-          <div className="flex justify-end items-end">
-            <button
-              className="bg-[#60b246] text-white px-4 py-2 uppercase"
-              type="submit"
+      {addressModal && (
+        <Modal
+          title="Add Delivery Address"
+          open={addressModal}
+          onCancel={() => setAddressModal(false)}
+          footer={null}
+          size="small"
+        >
+          <Form layout="vertical" onFinish={onFinish}>
+            <Form.Item
+              label="Address Line 1"
+              name="addressLine1"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter Address line 1",
+                },
+              ]}
             >
-              Add Address
-            </button>
-          </div>
-        </Form>
-      </Modal>
-      <Modal
-        title="Receiver Details"
-        open={deliveryModal}
-        onCancel={() => setDeliveryModal(false)}
-        footer={null}
-      >
-        <Form layout="vertical" onFinish={updateReceiverDetails}>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[
-              {
-                required: true,
-                message: "Please input receiver name!",
-              },
-            ]}
-          >
-            <Input placeholder="Name" />
-          </Form.Item>
-          <Form.Item
-            label="Phone number"
-            name="phoneNumber"
-            rules={[
-              {
-                required: true,
-                message: "Please input receiver phone number!",
-              },
-            ]}
-          >
-            <Input placeholder="Phone number" />
-          </Form.Item>
-          <div className="flex justify-end items-end">
-            <button
-              className="bg-[#60b246] text-white px-4 py-2 uppercase"
-              type="submit"
+              <Input
+                type="text"
+                placeholder="enter address line 1"
+                size="large"
+              />
+            </Form.Item>
+            <Form.Item
+              label="Address Line 2"
+              name="addressLine2"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter Address line 2",
+                },
+              ]}
             >
-              Save
-            </button>
-          </div>
-        </Form>
-      </Modal>
+              <Input
+                type="text"
+                placeholder="enter address line 2"
+                size="large"
+              />
+            </Form.Item>
+            <Form.Item
+              label="City"
+              name="city"
+              rules={[{ required: true, message: "Please enter your city" }]}
+            >
+              <Input type="text" placeholder="enter your city" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="State"
+              name="state"
+              rules={[{ required: true, message: "Please enter your state" }]}
+            >
+              <Input type="text" placeholder="enter your state" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="Landmark"
+              name="landmark"
+              rules={[{ required: true, message: "Please enter landmark" }]}
+            >
+              <Input type="text" placeholder="enter landmark" size="large" />
+            </Form.Item>
+            <Form.Item
+              label="Pincode"
+              name="pinCode"
+              rules={[
+                {
+                  required: true,
+                  message: "Please enter your pincode",
+                },
+              ]}
+            >
+              <Input
+                type="text"
+                placeholder="enter your pincode"
+                size="large"
+              />
+            </Form.Item>
+            <Form.Item>
+              <button
+                type="submit"
+                className="w-full font-semibold text-white bg-orange-500 h-10"
+              >
+                SAVE ADDRESS & PROCEED
+              </button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
+      {deliveryModal && (
+        <Modal
+          open={deliveryModal}
+          onCancel={() => setDeliveryModal(false)}
+          footer={null}
+          size="small"
+          title="Update delivery user details"
+        >
+          <Form layout="vertical" onFinish={updateReceiverDetails}>
+            <Form.Item name="receiverName" label="Receiver Name">
+              <Input placeholder="Enter receiver name" size="large" />
+            </Form.Item>
+            <Form.Item name="phoneNumber" label="Phone Number">
+              <Input placeholder="Enter phone number" size="large" />
+            </Form.Item>
+            <Form.Item>
+              <button
+                type="submit"
+                className="w-full font-semibold text-white bg-orange-500 h-10"
+              >
+                UPDATE
+              </button>
+            </Form.Item>
+          </Form>
+        </Modal>
+      )}
     </>
   );
 };
