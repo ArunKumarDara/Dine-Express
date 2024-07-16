@@ -27,7 +27,6 @@ import {
   updatePrimaryAddress,
   getAllAddressNotPrimaryByUser,
 } from "../../apiCalls/address";
-import Spinner from "../../components/spinner/Spinner";
 import { addReceiverDetails, getReceiverDetails } from "../../apiCalls/user";
 import { addAddress } from "../../apiCalls/address";
 import { makePayment } from "../../apiCalls/payment";
@@ -218,7 +217,7 @@ const OrderDetails = () => {
             </div>
             {changeAddress ? (
               !userAddress ? (
-                <Spinner />
+                <Skeleton />
               ) : (
                 <Row gutter={[12, 12]}>
                   {userAddress.map((address) => {
