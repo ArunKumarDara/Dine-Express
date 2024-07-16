@@ -72,7 +72,7 @@ const Home = () => {
 
   return (
     <div className="m-4">
-      {orderId ? (
+      {orderId && order ? (
         <div className="w-full flex justify-center items-center">
           <Result
             status="success"
