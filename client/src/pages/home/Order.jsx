@@ -10,6 +10,7 @@ import {
   Input,
   Divider,
   Card,
+  Skeleton,
 } from "antd";
 import {
   PlusOutlined,
@@ -87,7 +88,7 @@ const Order = () => {
                     {menuItems[0]?.availableIn?.name}
                   </Typography.Text>
                 ) : (
-                  <Spinner />
+                  <Skeleton.Input active size="small" />
                 ),
               },
             ]}
@@ -95,7 +96,7 @@ const Order = () => {
         </Col>
         {!menuItems ? (
           <Col span={24}>
-            <Spinner />
+            <Skeleton />
           </Col>
         ) : (
           <>
