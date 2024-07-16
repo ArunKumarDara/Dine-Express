@@ -156,19 +156,26 @@ const Home = () => {
             title="Order Placed Successfully!"
             subTitle={`Order number: ${order.orderNo}, it takes 1-2 minutes to confirm, please wait.`}
             extra={[
-              <button
-                className="w-full font-semibold text-white bg-orange-500 h-9"
-                onClick={() => navigate("/trackOrder")}
-                key="track"
+              <div
+                key="buttons"
+                className="flex justify-between items-center gap-3"
               >
-                CHECKOUT
-              </button>,
-              <button
-                key="buy"
-                className="w-full border border-orange-500 h-9 text-gray-500 font-semibold"
-              >
-                Buy Again
-              </button>,
+                <button
+                  className="w-full font-semibold text-white bg-orange-500 h-11"
+                  onClick={() => navigate("/trackOrder")}
+                  key="track"
+                >
+                  CHECKOUT
+                </button>
+                ,
+                <button
+                  key="buy"
+                  className="w-full border border-orange-500 h-11 text-gray-500 font-semibold"
+                >
+                  Buy Again
+                </button>
+                ,
+              </div>,
             ]}
           />
         </Modal>
