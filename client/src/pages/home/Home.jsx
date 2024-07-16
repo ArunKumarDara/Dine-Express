@@ -9,7 +9,6 @@ import {
   Avatar,
   Input,
   Tag,
-  Modal,
   Result,
 } from "antd";
 import { StarFilled } from "@ant-design/icons";
@@ -22,7 +21,7 @@ const { Search } = Input;
 const Home = () => {
   const [restaurants, setRestaurants] = useState(null);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
-  const [successModal, setSuccessModal] = useState(false);
+  // const [successModal, setSuccessModal] = useState(false);
   const [order, setOrder] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -49,7 +48,6 @@ const Home = () => {
       const response = await updateOrderById(orderId);
       if (response.success) {
         setOrder(response.data);
-        setSuccessModal(true);
       } else {
         message.error(response.message);
       }
@@ -74,85 +72,8 @@ const Home = () => {
 
   return (
     <div className="m-4">
-      <Search
-        placeholder="Search Restaurants"
-        allowClear
-        onChange={(e) => onSearch(e.target.value)}
-        onSearch={onSearch}
-        className="w-full md:w-[50vw] mb-4"
-        size="large"
-      />
-      {!restaurants ? (
-        <Spinner />
-      ) : (
-        <List
-          grid={{
-            gutter: 16,
-            xs: 1,
-            sm: 1,
-            md: 1,
-            lg: 2,
-            xl: 2,
-            xxl: 3,
-          }}
-          dataSource={filteredRestaurants}
-          renderItem={(restaurant) => (
-            <List.Item>
-              <Card
-                size="large"
-                className="transform transition duration-200 hover:scale-105 cursor-pointer"
-                onClick={() => navigate(`/restaurants/${restaurant._id}`)}
-              >
-                <Card.Meta
-                  avatar={
-                    <Avatar
-                      style={{
-                        backgroundColor: "orange",
-                        verticalAlign: "middle",
-                      }}
-                      size="large"
-                    >
-                      {restaurant.name[0]}
-                    </Avatar>
-                  }
-                  title={
-                    <Space direction="vertical" size={0} className="w-full">
-                      <Space className="flex justify-between items-center">
-                        <Typography.Title level={5} style={{ margin: 0 }}>
-                          {restaurant.name}
-                        </Typography.Title>
-
-                        <Tag color="orange">
-                          {`${restaurant.rating} `}
-                          <StarFilled size="small" />
-                        </Tag>
-                      </Space>
-                      <Typography.Text
-                        type="secondary"
-                        className="text-sm font-normal"
-                      >
-                        {restaurant.address}
-                      </Typography.Text>
-                    </Space>
-                  }
-                  description={
-                    <Typography.Text>{restaurant.description}</Typography.Text>
-                  }
-                />
-              </Card>
-            </List.Item>
-          )}
-        />
-      )}
-      {successModal && (
-        <Modal
-          open={successModal}
-          footer={null}
-          onCancel={() => {
-            setSuccessModal(false);
-            navigate("/");
-          }}
-        >
+      {orderId ? (
+        <div className="w-full flex justify-center items-center">
           <Result
             status="success"
             title="Order Placed Successfully!"
@@ -162,28 +83,103 @@ const Home = () => {
                 key="buttons"
                 className="flex justify-between items-center gap-3"
               >
-                <button
-                  className="w-full font-semibold text-white bg-orange-500 h-11"
-                  onClick={() => navigate("/trackOrder")}
-                  key="track"
-                >
-                  TRACK
-                </button>
-                ,
-                <button
-                  key="buy"
-                  className="w-full border-2 border-orange-500 h-11 text-orange-500 font-semibold"
-                  onClick={() => {
-                    setSuccessModal(false), navigate("/");
-                  }}
-                >
-                  HOME
-                </button>
-                ,
+                <div>
+                  <button
+                    className="w-full font-semibold text-white bg-orange-500 h-11"
+                    onClick={() => navigate("/trackOrder")}
+                    key="track"
+                  >
+                    TRACK
+                  </button>
+                </div>
+                <div>
+                  <button
+                    key="buy"
+                    className="w-full border-2 border-orange-500 h-11 text-orange-500 font-semibold"
+                    onClick={() => navigate("/")}
+                  >
+                    HOME
+                  </button>
+                </div>
               </div>,
             ]}
           />
-        </Modal>
+        </div>
+      ) : (
+        <>
+          <Search
+            placeholder="Search Restaurants"
+            allowClear
+            onChange={(e) => onSearch(e.target.value)}
+            onSearch={onSearch}
+            className="w-full md:w-[50vw] mb-4"
+            size="large"
+          />
+          {!restaurants ? (
+            <Spinner />
+          ) : (
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 1,
+                md: 1,
+                lg: 2,
+                xl: 2,
+                xxl: 3,
+              }}
+              dataSource={filteredRestaurants}
+              renderItem={(restaurant) => (
+                <List.Item>
+                  <Card
+                    size="large"
+                    className="transform transition duration-200 hover:scale-105 cursor-pointer"
+                    onClick={() => navigate(`/restaurants/${restaurant._id}`)}
+                  >
+                    <Card.Meta
+                      avatar={
+                        <Avatar
+                          style={{
+                            backgroundColor: "orange",
+                            verticalAlign: "middle",
+                          }}
+                          size="large"
+                        >
+                          {restaurant.name[0]}
+                        </Avatar>
+                      }
+                      title={
+                        <Space direction="vertical" size={0} className="w-full">
+                          <Space className="flex justify-between items-center">
+                            <Typography.Title level={5} style={{ margin: 0 }}>
+                              {restaurant.name}
+                            </Typography.Title>
+
+                            <Tag color="orange">
+                              {`${restaurant.rating} `}
+                              <StarFilled size="small" />
+                            </Tag>
+                          </Space>
+                          <Typography.Text
+                            type="secondary"
+                            className="text-sm font-normal"
+                          >
+                            {restaurant.address}
+                          </Typography.Text>
+                        </Space>
+                      }
+                      description={
+                        <Typography.Text>
+                          {restaurant.description}
+                        </Typography.Text>
+                      }
+                    />
+                  </Card>
+                </List.Item>
+              )}
+            />
+          )}
+        </>
       )}
     </div>
   );
