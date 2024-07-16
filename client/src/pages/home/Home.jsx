@@ -9,6 +9,9 @@ import {
   Avatar,
   Input,
   Tag,
+  Modal,
+  Result,
+  Button,
 } from "antd";
 import { StarFilled } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -20,6 +23,8 @@ const { Search } = Input;
 const Home = () => {
   const [restaurants, setRestaurants] = useState(null);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
+  const [successModal, setSuccessModal] = useState(false);
+  const [order, setOrder] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -44,7 +49,8 @@ const Home = () => {
     try {
       const response = await updateOrderById(orderId);
       if (response.success) {
-        console.log(response.data);
+        setOrder(response.data);
+        setSuccessModal(true);
       } else {
         message.error(response.message);
       }
@@ -138,6 +144,26 @@ const Home = () => {
             </List.Item>
           )}
         />
+      )}
+      {successModal && (
+        <Modal
+          open={successModal}
+          footer={null}
+          onClose={() => setSuccessModal(false)}
+          title="Order Details"
+        >
+          <Result
+            status="success"
+            title="Order Placed Successfully!"
+            subTitle={`Order number: ${order.orderNo} it takes 1-2 minutes to confirm, please wait.`}
+            extra={[
+              <Button type="primary" key="console">
+                Go Console
+              </Button>,
+              <Button key="buy">Buy Again</Button>,
+            ]}
+          />
+        </Modal>
       )}
     </div>
   );
