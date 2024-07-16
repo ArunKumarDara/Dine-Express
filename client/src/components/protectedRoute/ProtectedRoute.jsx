@@ -173,7 +173,7 @@ export default function ProtectedRoute({ children }) {
                 </Typography.Title>
               </Space>
               <Space className="ml-6 mr-3 cursor-pointer">
-                {cart ? (
+                {cart.length > 0 ? (
                   <Popover
                     content={content}
                     placement="bottomRight"
