@@ -149,13 +149,13 @@ const Home = () => {
         <Modal
           open={successModal}
           footer={null}
-          onClose={() => setSuccessModal(false)}
+          onCancel={() => setSuccessModal(false)}
           title="Order Details"
         >
           <Result
             status="success"
             title="Order Placed Successfully!"
-            subTitle={`Order number: ${order.orderNo} it takes 1-2 minutes to confirm, please wait.`}
+            subTitle={`Order number: ${order.orderNo}, it takes 1-2 minutes to confirm, please wait.`}
             extra={[
               <Button type="primary" key="console">
                 Go Console
