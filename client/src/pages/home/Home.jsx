@@ -116,23 +116,17 @@ const Home = () => {
                 size="large"
               />
             </Col>
-            <Col xs={24} lg={16}>
-              {!restaurants ? (
+
+            {!restaurants ? (
+              <Col xs={24} lg={16}>
                 <Spinner />
-              ) : (
-                <List
-                  // grid={{
-                  //   gutter: 16,
-                  //   xs: 1,
-                  //   sm: 1,
-                  //   md: 1,
-                  //   lg: 2,
-                  //   xl: 2,
-                  //   xxl: 3,
-                  // }}
-                  itemLayout="horizontal"
-                  dataSource={filteredRestaurants}
-                  renderItem={(restaurant) => (
+              </Col>
+            ) : (
+              <List
+                itemLayout="horizontal"
+                dataSource={filteredRestaurants}
+                renderItem={(restaurant) => (
+                  <Col xs={24} lg={16}>
                     <List.Item>
                       <Card
                         size="large"
@@ -188,10 +182,10 @@ const Home = () => {
                         />
                       </Card>
                     </List.Item>
-                  )}
-                />
-              )}
-            </Col>
+                  </Col>
+                )}
+              />
+            )}
           </Row>
         </div>
       )}
