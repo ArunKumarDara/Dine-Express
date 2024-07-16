@@ -235,7 +235,9 @@ const Order = () => {
           <Divider />
         </Col>
         {!menuItems ? (
-          <Skeleton active />
+          <Col xs={24} lg={16}>
+            <Skeleton active />
+          </Col>
         ) : (
           <Col xs={24} lg={16}>
             <List
