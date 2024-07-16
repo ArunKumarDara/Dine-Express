@@ -93,59 +93,63 @@ const Order = () => {
             ]}
           />
         </Col>
-        <Col xs={24} lg={16}>
-          <Typography.Title
-            level={4}
-            style={{ fontWeight: "bold" }}
-            className="mt-6"
-          >
-            {menuItems ? menuItems[0]?.availableIn?.name : <Spinner />}
-          </Typography.Title>
-        </Col>
-        <Col xs={24} lg={16}>
-          {menuItems ? (
-            <Card size="small" className="mt-5 shadow-md mb-4">
-              <div className="flex justify-start gap-1 items-center">
-                <div>
-                  <StarFilled size="large" style={{ color: "green" }} />
-                </div>
-                <Typography.Title
-                  level={5}
-                  style={{ fontWeight: "bold", margin: 0 }}
-                >
-                  {menuItems && menuItems[0]?.availableIn?.rating}
-                </Typography.Title>
-                <Typography.Title
-                  level={5}
-                  style={{ fontWeight: "bold", margin: 0 }}
-                >
-                  (100+ ratings)
-                </Typography.Title>
-              </div>
-              <div className="flex flex-col justify-start items-start gap-2 mt-3">
-                <Typography.Title
-                  level={5}
-                  style={{ fontWeight: "bold", margin: 0 }}
-                >
-                  <EnvironmentOutlined />
-                  Address
-                </Typography.Title>
-                <Typography.Text type="secondary" style={{ margin: 0 }}>
-                  {menuItems && menuItems[0]?.availableIn?.address}
-                </Typography.Text>
-              </div>
-              <hr className="mb-3 mt-3" />
-              <Typography.Text
-                type="secondary"
-                style={{ color: "orange", fontWeight: "bold" }}
-              >
-                Order above 2500 discounted free delivery
-              </Typography.Text>
-            </Card>
-          ) : (
+        {!menuItems ? (
+          <Col span={24}>
             <Spinner />
-          )}
-        </Col>
+          </Col>
+        ) : (
+          <>
+            <Col xs={24} lg={16}>
+              <Typography.Title
+                level={4}
+                style={{ fontWeight: "bold" }}
+                className="mt-6"
+              >
+                {menuItems && menuItems[0]?.availableIn?.name}
+              </Typography.Title>
+            </Col>
+            <Col xs={24} lg={16}>
+              <Card size="small" className="mt-5 shadow-md mb-4">
+                <div className="flex justify-start gap-1 items-center">
+                  <div>
+                    <StarFilled size="large" style={{ color: "green" }} />
+                  </div>
+                  <Typography.Title
+                    level={5}
+                    style={{ fontWeight: "bold", margin: 0 }}
+                  >
+                    {menuItems && menuItems[0]?.availableIn?.rating}
+                  </Typography.Title>
+                  <Typography.Title
+                    level={5}
+                    style={{ fontWeight: "bold", margin: 0 }}
+                  >
+                    (100+ ratings)
+                  </Typography.Title>
+                </div>
+                <div className="flex flex-col justify-start items-start gap-2 mt-3">
+                  <Typography.Title
+                    level={5}
+                    style={{ fontWeight: "bold", margin: 0 }}
+                  >
+                    <EnvironmentOutlined />
+                    Address
+                  </Typography.Title>
+                  <Typography.Text type="secondary" style={{ margin: 0 }}>
+                    {menuItems && menuItems[0]?.availableIn?.address}
+                  </Typography.Text>
+                </div>
+                <hr className="mb-3 mt-3" />
+                <Typography.Text
+                  type="secondary"
+                  style={{ color: "orange", fontWeight: "bold" }}
+                >
+                  Order above 2500 discounted free delivery
+                </Typography.Text>
+              </Card>
+            </Col>
+          </>
+        )}
         <Col xs={24} lg={16}>
           <div className="w-full text-center">
             <Divider>
