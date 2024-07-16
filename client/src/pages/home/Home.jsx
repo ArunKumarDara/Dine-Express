@@ -123,7 +123,7 @@ const Home = () => {
               </Col>
             ) : (
               <List
-                itemLayout="horizontal"
+                grid={{ gutter: 16, xs: 1, sm: 1, md: 1, lg: 1, xl: 1, xxl: 1 }}
                 dataSource={filteredRestaurants}
                 renderItem={(restaurant) => (
                   <Col xs={24} lg={16}>
