@@ -210,13 +210,13 @@ export default function ProtectedRoute({ children }) {
                           Cart Empty
                         </Typography.Title>
                         <Typography.Text type="secondary">
-                          Good food is always cooking! Go ahead, order some
-                          yummy items from the menu.
+                          Good food is always cooking! Go ahead,
+                          <br /> order some yummy items from the menu.
                         </Typography.Text>
                       </div>
                     }
                   >
-                    <Badge color="orange" size="small" count={0}>
+                    <Badge color="orange" size="small" count={0} showZero>
                       <Avatar size="small" icon={<ShoppingCartOutlined />} />
                     </Badge>
                   </Popover>
