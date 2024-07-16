@@ -173,33 +173,50 @@ export default function ProtectedRoute({ children }) {
                 </Typography.Title>
               </Space>
               <Space className="ml-6 mr-3 cursor-pointer">
-                <Popover
-                  content={content}
-                  placement="bottomRight"
-                  title={
-                    <div className="flex flex-col justify-start items-start">
-                      <Typography.Title level={5}>
-                        {cart[0]?.availableIn?.name}
-                      </Typography.Title>
-                      <Typography.Text
-                        type="secondary"
-                        style={{ fontSize: 10 }}
-                      >
-                        {cart[0]?.availableIn?.address}
-                      </Typography.Text>
-                    </div>
-                  }
-                >
-                  <Badge
-                    color="orange"
-                    size="small"
-                    count={cart.reduce((acc, item) => {
-                      return acc + item.quantity;
-                    }, 0)}
+                {cart ? (
+                  <Popover
+                    content={content}
+                    placement="bottomRight"
+                    title={
+                      <div className="flex flex-col justify-start items-start">
+                        <Typography.Title level={5}>
+                          {cart[0]?.availableIn?.name}
+                        </Typography.Title>
+                        <Typography.Text
+                          type="secondary"
+                          style={{ fontSize: 10 }}
+                        >
+                          {cart[0]?.availableIn?.address}
+                        </Typography.Text>
+                      </div>
+                    }
                   >
-                    <Avatar size="small" icon={<ShoppingCartOutlined />} />
-                  </Badge>
-                </Popover>
+                    <Badge
+                      color="orange"
+                      size="small"
+                      count={cart.reduce((acc, item) => {
+                        return acc + item.quantity;
+                      }, 0)}
+                    >
+                      <Avatar size="small" icon={<ShoppingCartOutlined />} />
+                    </Badge>
+                  </Popover>
+                ) : (
+                  <Popover
+                    placement="bottomRight"
+                    title={
+                      <div className="flex flex-col justify-start items-center">
+                        <Typography.Title level={5}>
+                          Cart Empty
+                        </Typography.Title>
+                        <Typography.Text type="secondary">
+                          Good food is always cooking! Go ahead, order some
+                          yummy items from the menu.
+                        </Typography.Text>
+                      </div>
+                    }
+                  />
+                )}
               </Space>
             </Toolbar>
           </AppBar>
