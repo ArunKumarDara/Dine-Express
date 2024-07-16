@@ -73,7 +73,7 @@ const Home = () => {
   }, [orderId]);
 
   return (
-    <div className="m-4">
+    <div>
       {orderId && order ? (
         <div className="w-full flex justify-center items-center">
           <Result
@@ -106,7 +106,7 @@ const Home = () => {
       ) : (
         <div className="xs-m-4 lg:mt-4 lg:mb-4 lg:m-0">
           <Row className="flex justify-center items-center">
-            <Col xs={24} lg={24}>
+            <Col xs={24} lg={16}>
               <Search
                 placeholder="Search Restaurants"
                 allowClear
@@ -130,6 +130,7 @@ const Home = () => {
                   //   xl: 2,
                   //   xxl: 3,
                   // }}
+                  itemLayout="horizontal"
                   dataSource={filteredRestaurants}
                   renderItem={(restaurant) => (
                     <List.Item>
