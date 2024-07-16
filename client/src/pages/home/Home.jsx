@@ -149,7 +149,6 @@ const Home = () => {
           open={successModal}
           footer={null}
           onCancel={() => setSuccessModal(false)}
-          title="Order Details"
         >
           <Result
             status="success"
@@ -165,14 +164,15 @@ const Home = () => {
                   onClick={() => navigate("/trackOrder")}
                   key="track"
                 >
-                  CHECKOUT
+                  TRACK
                 </button>
                 ,
                 <button
                   key="buy"
-                  className="w-full border border-orange-500 h-11 text-gray-500 font-semibold"
+                  className="w-full border-2 border-orange-500 h-11 text-orange-500 font-semibold"
+                  onClick={() => navigate("/")}
                 >
-                  Buy Again
+                  HOME
                 </button>
                 ,
               </div>,
