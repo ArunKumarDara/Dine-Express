@@ -11,8 +11,9 @@ import {
   Tag,
 } from "antd";
 import { StarFilled } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Spinner from "../../components/spinner/Spinner";
+import { updateOrderById } from "../../apiCalls/order";
 
 const { Search } = Input;
 
@@ -20,6 +21,9 @@ const Home = () => {
   const [restaurants, setRestaurants] = useState(null);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const orderId = searchParams.get("orderId");
 
   const getData = async () => {
     try {
@@ -28,6 +32,19 @@ const Home = () => {
         message.success(response.message);
         setRestaurants(response.data);
         setFilteredRestaurants(response.data);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
+
+  const getOrderDetails = async () => {
+    try {
+      const response = await updateOrderById(orderId);
+      if (response.success) {
+        console.log(response.data);
       } else {
         message.error(response.message);
       }
@@ -45,7 +62,10 @@ const Home = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+    if (orderId) {
+      getOrderDetails();
+    }
+  }, [orderId]);
 
   return (
     <div className="m-4">
