@@ -12,10 +12,10 @@ import {
   Result,
   Row,
   Col,
+  Skeleton,
 } from "antd";
 import { StarFilled } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
-import Spinner from "../../components/spinner/Spinner";
 import { updateOrderById } from "../../apiCalls/order";
 
 const { Search } = Input;
@@ -23,7 +23,6 @@ const { Search } = Input;
 const Home = () => {
   const [restaurants, setRestaurants] = useState(null);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
-  // const [successModal, setSuccessModal] = useState(false);
   const [order, setOrder] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -119,10 +118,10 @@ const Home = () => {
 
             {!restaurants ? (
               <Col xs={24} lg={16}>
-                <Spinner />
+                <Skeleton active />
               </Col>
             ) : (
-              <Col xs={24} lg={16}>
+              <Col xs={24} lg={12}>
                 <List
                   grid={{
                     gutter: 16,
