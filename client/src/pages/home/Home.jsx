@@ -148,7 +148,10 @@ const Home = () => {
         <Modal
           open={successModal}
           footer={null}
-          onCancel={() => setSuccessModal(false)}
+          onCancel={() => {
+            setSuccessModal(false);
+            navigate("/");
+          }}
         >
           <Result
             status="success"
