@@ -115,7 +115,7 @@ const Home = () => {
               />
             </Col>
             {!restaurants ? (
-              <Col xs={24} lg={16}>
+              <Col xs={24} lg={16} className="mt-3">
                 <Skeleton active />
               </Col>
             ) : (
