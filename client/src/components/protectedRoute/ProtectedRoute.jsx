@@ -226,7 +226,7 @@ export default function ProtectedRoute({ children }) {
           </AppBar>
           {renderMenu}
         </Box>
-        <div className="mt-1 p-1">{children}</div>
+        <div>{children}</div>
       </>
     )
   );
