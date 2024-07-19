@@ -1,4 +1,13 @@
-import { Typography, Row, Col, message, Divider, Skeleton, Grid } from "antd";
+import {
+  Typography,
+  Row,
+  Col,
+  message,
+  Divider,
+  Skeleton,
+  Grid,
+  Popconfirm,
+} from "antd";
 // import UserRestaurants from "./UserRestaurants";
 // import UserOrders from "./UserOrders";
 // import MyAccount from "./MyAccount";
@@ -7,15 +16,23 @@ import {
   ShoppingOutlined,
   EnvironmentOutlined,
   SettingOutlined,
+  HomeOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { getOrdersByUserId } from "../../apiCalls/order";
+import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
+import AddressForm from "./AddressForm";
 const { useBreakpoint } = Grid;
 
 const Profile = () => {
   const { user } = useSelector((state) => state.users);
   const [selectedContainer, setSelectedContainer] = useState(1);
   const [orders, setOrders] = useState(null);
+  const [addresses, setAddresses] = useState(null);
+  const [addressDrawer, setAddressDrawer] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  // const [popover, setPopover] = useState(false);
   const screens = useBreakpoint();
 
   const getUserOrders = async () => {
@@ -31,7 +48,31 @@ const Profile = () => {
     }
   };
 
-  const getUserAddresses = () => {};
+  const getUserAddresses = async () => {
+    try {
+      const response = await getAllAddressByUser({ userId: user._id });
+      if (response.success) {
+        setAddresses(response.data);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
+
+  const handleDeleteAddress = async (address) => {
+    try {
+      const response = await deleteAddress({ addressId: address._id });
+      if (response.success) {
+        getUserAddresses();
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
 
   const handleClick = (containerId) => {
     setSelectedContainer(containerId);
@@ -45,7 +86,7 @@ const Profile = () => {
     }
   }, [selectedContainer]);
 
-  console.log(orders);
+  console.log(addresses);
 
   return (
     <Row>
@@ -113,7 +154,7 @@ const Profile = () => {
               <Col span={18}>
                 {selectedContainer === 1 ? (
                   !orders ? (
-                    <Skeleton active />
+                    <Skeleton active className="m-4" />
                   ) : (
                     <div
                       className="overflow-y-auto h-full"
@@ -167,8 +208,81 @@ const Profile = () => {
                       })}
                     </div>
                   )
+                ) : selectedContainer === 2 ? (
+                  <Col span={24}>
+                    <Row gutter={[12, 12]}>
+                      {!addresses ? (
+                        <Skeleton active className="m-4" />
+                      ) : (
+                        addresses.map((address) => {
+                          return (
+                            <Col key={address._id} span={12}>
+                              <div className="border border-gray-300 p-5 flex flex-col justify-center items-start">
+                                <div className="flex justify-start items-start gap-4">
+                                  <div>
+                                    <HomeOutlined />
+                                  </div>
+                                  <div className="flex flex-col justify-start items-start">
+                                    <Typography.Text>
+                                      {address?.addressLine1}
+                                    </Typography.Text>
+                                    <Typography.Text>
+                                      {address?.addressLine2}
+                                    </Typography.Text>
+                                    <Typography.Text>
+                                      {address?.state}
+                                    </Typography.Text>
+                                    <Typography.Text>{`${address?.city}, ${address?.landmark}`}</Typography.Text>
+                                    <Typography.Text>
+                                      {address?.pinCode}
+                                    </Typography.Text>
+                                    <div className="flex justify-start gap-7 mt-4">
+                                      <Typography.Text
+                                        strong
+                                        className="text-orange-500 cursor-pointer"
+                                        onClick={() => {
+                                          setAddressDrawer(true),
+                                            setSelectedAddress(address);
+                                        }}
+                                      >
+                                        EDIT
+                                      </Typography.Text>
+                                      <Popconfirm
+                                        title="Delete the address"
+                                        icon={
+                                          <QuestionCircleOutlined
+                                            style={{
+                                              color: "orange",
+                                            }}
+                                          />
+                                        }
+                                        description="Are you sure to delete this address?"
+                                        onConfirm={() =>
+                                          handleDeleteAddress(address)
+                                        }
+                                        onCancel
+                                        okText="Yes"
+                                        cancelText="No"
+                                      >
+                                        <Typography.Text
+                                          strong
+                                          className="text-orange-500 cursor-pointer"
+                                        >
+                                          DELETE
+                                        </Typography.Text>
+                                      </Popconfirm>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </Col>
+                          );
+                        })
+                      )}
+                    </Row>
+                  </Col>
                 ) : (
-                  <div>fjkjfnnj</div>
+                  <div>jdfnkjkgkfaknk</div>
                 )}
               </Col>
             </Row>
@@ -188,7 +302,7 @@ const Profile = () => {
                 <Typography.Text strong>Orders</Typography.Text>
               </div>
               <div
-                className={`flex justify-start items-center gap-2 w-full cursor-pointer p-3 text-center ${
+                className={`flex justify-center items-center gap-2 w-full cursor-pointer p-3 text-center ${
                   selectedContainer === 2 ? "bg-[#f5f5f5]" : "bg-gray-200"
                 }`}
                 onClick={() => handleClick(2)}
@@ -197,7 +311,7 @@ const Profile = () => {
                 <Typography.Text strong>Addresses</Typography.Text>
               </div>
               <div
-                className={`flex justify-start items-center gap-2 w-full cursor-pointer p-3 text-center ${
+                className={`flex justify-center items-center gap-2 w-full cursor-pointer p-3 text-center ${
                   selectedContainer === 3 ? "bg-[#f5f5f5]" : "bg-gray-200"
                 }`}
                 onClick={() => handleClick(3)}
@@ -210,7 +324,7 @@ const Profile = () => {
           <Col span={24}>
             {selectedContainer === 1 ? (
               !orders ? (
-                <Skeleton active className="h-full" />
+                <Skeleton active className="h-full m-4" />
               ) : (
                 <div
                   className="overflow-y-auto h-full m-4"
@@ -264,11 +378,88 @@ const Profile = () => {
                   })}
                 </div>
               )
+            ) : selectedContainer === 2 ? (
+              <div className="overflow-y-auto m-4" style={{ height: "500px" }}>
+                {!addresses ? (
+                  <Skeleton active className="m-4" />
+                ) : (
+                  addresses.map((address) => {
+                    return (
+                      <div
+                        key={address._id}
+                        className="border border-gray-300 p-5 flex flex-col justify-start items-start mb-4"
+                      >
+                        <div className="flex justify-start items-start gap-4">
+                          <div>
+                            <HomeOutlined />
+                          </div>
+                          <div className="flex flex-col justify-start items-start">
+                            <Typography.Text>
+                              {address?.addressLine1}
+                            </Typography.Text>
+                            <Typography.Text>
+                              {address?.addressLine2}
+                            </Typography.Text>
+                            <Typography.Text>{address?.state}</Typography.Text>
+                            <Typography.Text>{`${address?.city}, ${address?.landmark}`}</Typography.Text>
+                            <Typography.Text>
+                              {address?.pinCode}
+                            </Typography.Text>
+                            <div className="flex justify-start gap-7 mt-4">
+                              <Typography.Text
+                                strong
+                                className="text-orange-500 cursor-pointer"
+                                onClick={() => {
+                                  setAddressDrawer(true),
+                                    setSelectedAddress(address);
+                                }}
+                              >
+                                EDIT
+                              </Typography.Text>
+                              <Popconfirm
+                                title="Delete the address"
+                                icon={
+                                  <QuestionCircleOutlined
+                                    style={{
+                                      color: "orange",
+                                    }}
+                                  />
+                                }
+                                description="Are you sure to delete this address?"
+                                onConfirm={() => handleDeleteAddress(address)}
+                                onCancel
+                                okText="Yes"
+                                cancelText="No"
+                              >
+                                <Typography.Text
+                                  strong
+                                  className="text-orange-500 cursor-pointer"
+                                >
+                                  DELETE
+                                </Typography.Text>
+                              </Popconfirm>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
             ) : (
-              <div>fjkjfnnj</div>
+              <div>sknlklkslkdlknksd</div>
             )}
           </Col>
         </>
+      )}
+      {addressDrawer && (
+        <AddressForm
+          addressDrawer={addressDrawer}
+          selectedAddress={selectedAddress}
+          setAddressDrawer={setAddressDrawer}
+          getUserAddresses={getUserAddresses}
+          setSelectedAddress={setSelectedAddress}
+        />
       )}
     </Row>
   );
