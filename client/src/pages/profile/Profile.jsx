@@ -8,9 +8,6 @@ import {
   Grid,
   Popconfirm,
 } from "antd";
-// import UserRestaurants from "./UserRestaurants";
-// import UserOrders from "./UserOrders";
-// import MyAccount from "./MyAccount";
 import { useSelector } from "react-redux";
 import {
   ShoppingOutlined,
@@ -35,7 +32,6 @@ const Profile = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [viewOrderDetails, setViewOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  // const [popover, setPopover] = useState(false);
   const screens = useBreakpoint();
 
   const getUserOrders = async () => {
