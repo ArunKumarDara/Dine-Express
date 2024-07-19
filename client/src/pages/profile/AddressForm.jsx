@@ -1,66 +1,40 @@
 /* eslint-disable react/prop-types */
-import { Form, Modal, Input, Button, Select, message } from "antd";
-import { useSelector } from "react-redux";
-import { addAddress, editAddress } from "../../apiCalls/address";
+import { Form, Input, Select, message, Drawer } from "antd";
+import { editAddress } from "../../apiCalls/address";
 
 const AddressForm = ({
-  toggleAddressModal,
-  setToggleAddressModal,
-  getData,
+  addressDrawer,
+  setAddressDrawer,
+  getUserAddresses,
   selectedAddress,
-  title,
-  setTitle,
   setSelectedAddress,
 }) => {
-  const { user } = useSelector((state) => state.users);
   const onFinish = async (values) => {
-    if (title === "add") {
-      try {
-        const response = await addAddress({ ...values, userId: user._id });
-        if (response.success) {
-          message.success(response.message);
-          setSelectedAddress(null);
-          setToggleAddressModal(false);
-          getData();
-        } else {
-          message.error(response.message);
-          setToggleAddressModal(false);
-        }
-      } catch (error) {
-        message.error(error);
+    try {
+      const response = await editAddress({
+        addressId: selectedAddress._id,
+        address: values,
+      });
+      if (response.success) {
+        getUserAddresses();
+        setSelectedAddress(null);
+        setAddressDrawer(false);
+      } else {
+        message.error(response.message);
+        setAddressDrawer(false);
       }
-    } else {
-      try {
-        const response = await editAddress({
-          addressId: selectedAddress._id,
-          address: values,
-        });
-        if (response.success) {
-          message.success(response.message);
-          getData();
-          setSelectedAddress(null);
-          setTitle("add");
-          setToggleAddressModal(false);
-        } else {
-          message.error(response.message);
-          setToggleAddressModal(false);
-        }
-      } catch (error) {
-        message.error(error);
-      }
+    } catch (error) {
+      message.error(error);
     }
   };
 
   return (
     <>
-      <Modal
-        title={title === "add" ? "Create Address" : "Edit Address"}
-        open={toggleAddressModal}
-        onCancel={() => {
-          setToggleAddressModal(false), setTitle("add");
-        }}
-        footer={null}
-        size="small"
+      <Drawer
+        open={addressDrawer}
+        onClose={() => setAddressDrawer(false)}
+        title="Edit Address"
+        placement="left"
       >
         <Form
           layout="vertical"
@@ -128,17 +102,15 @@ const AddressForm = ({
             />
           </Form.Item>
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              className="w-full"
-              size="large"
+            <button
+              type="submit"
+              className="w-full font-semibold text-white bg-orange-500 h-10"
             >
-              Submit
-            </Button>
+              SUBMIT
+            </button>
           </Form.Item>
         </Form>
-      </Modal>
+      </Drawer>
     </>
   );
 };
