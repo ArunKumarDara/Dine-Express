@@ -23,6 +23,7 @@ import { useState, useEffect } from "react";
 import { getOrdersByUserId } from "../../apiCalls/order";
 import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
 import AddressForm from "./AddressForm";
+import ViewOrderDetails from "./ViewOrderDetails";
 const { useBreakpoint } = Grid;
 
 const Profile = () => {
@@ -32,6 +33,8 @@ const Profile = () => {
   const [addresses, setAddresses] = useState(null);
   const [addressDrawer, setAddressDrawer] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [viewOrderDetails, setViewOrderDetails] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   // const [popover, setPopover] = useState(false);
   const screens = useBreakpoint();
 
@@ -86,8 +89,6 @@ const Profile = () => {
     }
   }, [selectedContainer]);
 
-  console.log(addresses);
-
   return (
     <Row>
       <Col span={24}>
@@ -109,7 +110,7 @@ const Profile = () => {
               </div>
             </div>
             <div>
-              <button className="h-8 w-28 md:h-11 md:w-36 border border-white font-semibold text-center text-white">
+              <button className="h-8 w-28 md:h-11 md:w-36 border border-white font-semibold text-center text-white hover:bg-white hover:text-[#37718e]">
                 EDIT PROFILE
               </button>
             </div>
@@ -182,6 +183,10 @@ const Profile = () => {
                                 hovered: { color: "black" },
                               }}
                               className="mt-2 cursor-pointer"
+                              onClick={() => {
+                                setViewOrderDetails(true),
+                                  setSelectedOrder(order);
+                              }}
                             >
                               VIEW DETAILS
                             </Typography.Text>
@@ -352,6 +357,9 @@ const Profile = () => {
                             hovered: { color: "black" },
                           }}
                           className="mt-2 cursor-pointer"
+                          onClick={() => {
+                            setViewOrderDetails(true), setSelectedOrder(order);
+                          }}
                         >
                           VIEW DETAILS
                         </Typography.Text>
@@ -459,6 +467,14 @@ const Profile = () => {
           setAddressDrawer={setAddressDrawer}
           getUserAddresses={getUserAddresses}
           setSelectedAddress={setSelectedAddress}
+        />
+      )}
+      {viewOrderDetails && (
+        <ViewOrderDetails
+          selectedOrder={selectedOrder}
+          viewOrderDetails={viewOrderDetails}
+          setViewOrderDetails={setViewOrderDetails}
+          setSelectedOrder={setSelectedOrder}
         />
       )}
     </Row>
