@@ -125,10 +125,38 @@ const getReceiverDetails = async (req, res) => {
   }
 };
 
+const updateUserProfile = async (req, res) => {
+  try {
+    const { userId, firstName, lastName, phoneNumber, email } = req.body;
+    const updatedData = {
+      firstName,
+      lastName,
+      phoneNumber,
+      email,
+    };
+    const user = await userModel.findOneAndUpdate(
+      { _id: userId },
+      { $set: updatedData },
+      { new: true }
+    );
+    res.status(200).json({
+      success: true,
+      message: "User profile updated successfully",
+      data: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message || "Cannot update user profile",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   getCurrentUser,
   addReceiverDetails,
   getReceiverDetails,
+  updateUserProfile,
 };
