@@ -59,11 +59,11 @@ const ViewOrderDetails = ({
           </div>
         </div>
       </div>
-      <hr className="mb-2 mt-2" />
+      <hr className="mb-3 mt-2" />
       {selectedOrder.menuItems.map((item) => {
         return (
           <div key={item.item._id}>
-            <div className="flex justify-between pb-3">
+            <div className="flex justify-between">
               <div className="flex justify-start items-center">
                 <img
                   src={item.item.isVeg ? veg : nonVeg}
@@ -80,7 +80,7 @@ const ViewOrderDetails = ({
           </div>
         );
       })}
-      <hr className="mb-2 mt-2" />
+      <hr className="mb-2 mt-3" />
       <div className="flex justify-between items-center mb-1 w-full">
         <Typography.Text strong>Item total</Typography.Text>
         <Typography.Text strong>
