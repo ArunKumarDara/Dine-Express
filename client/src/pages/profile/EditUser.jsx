@@ -11,7 +11,7 @@ const EditUser = ({ userDrawer, setUserDrawer }) => {
       const response = await updateUserProfile({ ...values, userId: user._id });
       if (response.success) {
         setUserDrawer(false);
-        message.success("user profile updated!! please refresh the page.");
+        message.success("user profile updated. please refresh the page!!");
       } else {
         message.error(response.message);
       }
