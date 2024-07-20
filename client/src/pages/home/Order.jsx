@@ -92,7 +92,7 @@ const Order = () => {
               {
                 title: menuItems ? (
                   <Typography.Text type="secondary">
-                    {menuItems[0]?.availableIn?.name}
+                    {originalMenuItems[0]?.availableIn?.name}
                   </Typography.Text>
                 ) : (
                   <Skeleton.Input active size="small" />
@@ -113,7 +113,7 @@ const Order = () => {
                 style={{ fontWeight: "bold" }}
                 className="mt-6"
               >
-                {menuItems && menuItems[0]?.availableIn?.name}
+                {originalMenuItems && originalMenuItems[0]?.availableIn?.name}
               </Typography.Title>
             </Col>
             <Col xs={24} lg={16}>
@@ -126,7 +126,8 @@ const Order = () => {
                     level={5}
                     style={{ fontWeight: "bold", margin: 0 }}
                   >
-                    {menuItems && menuItems[0]?.availableIn?.rating}
+                    {originalMenuItems &&
+                      originalMenuItems[0]?.availableIn?.rating}
                   </Typography.Title>
                   <Typography.Title
                     level={5}
@@ -144,7 +145,8 @@ const Order = () => {
                     Address
                   </Typography.Title>
                   <Typography.Text type="secondary" style={{ margin: 0 }}>
-                    {menuItems && menuItems[0]?.availableIn?.address}
+                    {originalMenuItems &&
+                      originalMenuItems[0]?.availableIn?.address}
                   </Typography.Text>
                 </div>
                 <hr className="mb-3 mt-3" />
