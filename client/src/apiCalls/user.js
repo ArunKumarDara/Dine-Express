@@ -52,3 +52,15 @@ export const getReceiverDetails = async (payload) => {
     return error || "cannot get receiver details";
   }
 };
+
+export const updateUserProfile = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/updateUserProfile",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || "cannot update user profile";
+  }
+};
