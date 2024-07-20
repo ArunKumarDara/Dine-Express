@@ -8,8 +8,8 @@ import {
   Input,
   Row,
   Col,
-  Modal,
   Skeleton,
+  Drawer,
 } from "antd";
 import {
   PhoneOutlined,
@@ -45,8 +45,8 @@ const OrderDetails = () => {
   const [receiverDetails, setReceiverDetails] = useState(null);
   const [userAddress, setUserAddress] = useState(null);
   const [changeAddress, setChangeAddress] = useState(false);
-  const [addressModal, setAddressModal] = useState(false);
-  const [deliveryModal, setDeliveryModal] = useState(false);
+  const [addressDrawer, setAddressDrawer] = useState(false);
+  const [deliveryDrawer, setDeliveryDrawer] = useState(false);
   const [addressLoader, setAddressLoader] = useState(false);
   const [receiverLoader, setReceiverLoader] = useState(false);
   const { restaurantId } = useParams();
@@ -93,7 +93,7 @@ const OrderDetails = () => {
       const response = await addReceiverDetails({ ...values, status: true });
       if (response.success) {
         fetchReceiverDetails();
-        setDeliveryModal(false);
+        setDeliveryDrawer(false);
       } else {
         message.error(response.message);
       }
@@ -110,7 +110,7 @@ const OrderDetails = () => {
         userId: user._id,
       });
       if (response.success) {
-        setAddressModal(false);
+        setAddressDrawer(false);
         setChangeAddress(false);
         fetchPrimaryAddress();
       } else {
@@ -271,7 +271,7 @@ const OrderDetails = () => {
                           <div className="mt-3">
                             <button
                               className="w-24 h-8 bg-white text-[#60b246] font-semibold border border-[#60b246]"
-                              onClick={() => setAddressModal(true)}
+                              onClick={() => setAddressDrawer(true)}
                             >
                               Add New
                             </button>
@@ -293,7 +293,7 @@ const OrderDetails = () => {
                 <div>
                   <button
                     className="ml-4 w-24 h-8 bg-white text-[#60b246] font-semibold border border-[#60b246]"
-                    onClick={() => setAddressModal(true)}
+                    onClick={() => setAddressDrawer(true)}
                   >
                     Add New
                   </button>
@@ -333,7 +333,7 @@ const OrderDetails = () => {
                 className="cursor-pointer"
                 style={{ color: "orange" }}
                 onClick={() => {
-                  setDeliveryModal(true);
+                  setDeliveryDrawer(true);
                 }}
               >
                 UPDATE
@@ -350,7 +350,7 @@ const OrderDetails = () => {
                 <div>
                   <button
                     className="ml-4 w-24 h-8 bg-white text-[#60b246] font-semibold border border-[#60b246]"
-                    onClick={() => setDeliveryModal(true)}
+                    onClick={() => setDeliveryDrawer(true)}
                   >
                     Add New
                   </button>
@@ -472,13 +472,11 @@ const OrderDetails = () => {
           </div>
         </Col>
       </Row>
-      {addressModal && (
-        <Modal
+      {addressDrawer && (
+        <Drawer
           title="Add Delivery Address"
-          open={addressModal}
-          onCancel={() => setAddressModal(false)}
-          footer={null}
-          size="small"
+          open={addressDrawer}
+          onClose={() => setAddressDrawer(false)}
         >
           <Form layout="vertical" onFinish={onFinish}>
             <Form.Item
@@ -559,14 +557,12 @@ const OrderDetails = () => {
               </button>
             </Form.Item>
           </Form>
-        </Modal>
+        </Drawer>
       )}
-      {deliveryModal && (
-        <Modal
-          open={deliveryModal}
-          onCancel={() => setDeliveryModal(false)}
-          footer={null}
-          size="small"
+      {deliveryDrawer && (
+        <Drawer
+          open={deliveryDrawer}
+          onClose={() => setDeliveryDrawer(false)}
           title="Update delivery user details"
         >
           <Form layout="vertical" onFinish={updateReceiverDetails}>
@@ -585,7 +581,7 @@ const OrderDetails = () => {
               </button>
             </Form.Item>
           </Form>
-        </Modal>
+        </Drawer>
       )}
     </>
   );
