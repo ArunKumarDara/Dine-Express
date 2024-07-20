@@ -21,6 +21,7 @@ import { getOrdersByUserId } from "../../apiCalls/order";
 import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
 import AddressForm from "./AddressForm";
 import ViewOrderDetails from "./ViewOrderDetails";
+import EditUser from "./EditUser";
 const { useBreakpoint } = Grid;
 
 const Profile = () => {
@@ -32,6 +33,8 @@ const Profile = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [viewOrderDetails, setViewOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [userDrawer, setUserDrawer] = useState(false);
+
   const screens = useBreakpoint();
 
   const getUserOrders = async () => {
@@ -106,7 +109,10 @@ const Profile = () => {
               </div>
             </div>
             <div>
-              <button className="h-8 w-28 md:h-11 md:w-36 border border-white font-semibold text-center text-white hover:bg-white hover:text-[#37718e]">
+              <button
+                onClick={() => setUserDrawer(true)}
+                className="h-8 w-28 md:h-11 md:w-36 border border-white font-semibold text-center text-white hover:bg-white hover:text-[#37718e]"
+              >
                 EDIT PROFILE
               </button>
             </div>
@@ -472,6 +478,9 @@ const Profile = () => {
           setViewOrderDetails={setViewOrderDetails}
           setSelectedOrder={setSelectedOrder}
         />
+      )}
+      {userDrawer && (
+        <EditUser userDrawer={userDrawer} setUserDrawer={setUserDrawer} />
       )}
     </Row>
   );
