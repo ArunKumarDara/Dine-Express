@@ -34,7 +34,6 @@ const AddressForm = ({
         open={addressDrawer}
         onClose={() => setAddressDrawer(false)}
         title="Edit Address"
-        placement="left"
       >
         <Form
           layout="vertical"
