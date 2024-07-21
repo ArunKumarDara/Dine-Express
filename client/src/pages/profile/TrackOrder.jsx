@@ -41,8 +41,8 @@ const TrackOrder = ({ trackDrawer, setTrackDrawer, selectedOrder }) => {
     return (
       <div className="flex justify-start items-start gap-3">
         {withIcon && (
-          <div className="bg-blue-400 p-2 flex flex-col justify-center items-center w-32">
-            <FileDoneOutlined className="mt-2" />
+          <div className="bg-blue-400 p-1 flex flex-col justify-center items-center w-32">
+            <FileDoneOutlined className="mt-1" />
             <Typography.Text className="text-white">
               {timeLabel}
             </Typography.Text>
@@ -64,7 +64,7 @@ const TrackOrder = ({ trackDrawer, setTrackDrawer, selectedOrder }) => {
     <Drawer
       open={trackDrawer}
       onClose={() => setTrackDrawer(false)}
-      title="Live tracking details"
+      title="LIVE ORDER TRACKING"
       placement="left"
     >
       <div className="border border-gray-300 p-4 flex flex-col justify-start items-start mb-3">
@@ -104,7 +104,7 @@ const TrackOrder = ({ trackDrawer, setTrackDrawer, selectedOrder }) => {
             <>
               <Divider className="mt-2 mb-2" />
               <div className="flex justify-start items-center gap-6">
-                <div className="p-1 border border-gray-300 w-20 text-center">
+                <div className="p-1 border border-gray-300 w-24 text-center">
                   <Typography.Text type="secondary">NEXT</Typography.Text>
                 </div>
                 {renderStatusMessage(statuses[nextStatusIndex], "Next")}
@@ -117,7 +117,7 @@ const TrackOrder = ({ trackDrawer, setTrackDrawer, selectedOrder }) => {
             <>
               <Divider className="mt-2 mb-2" />
               <div className="flex justify-start items-center gap-6">
-                <div className="p-1 border border-gray-300 w-20 text-center">
+                <div className="p-1 border border-gray-300 w-24 text-center">
                   <Typography.Text type="secondary">LATER</Typography.Text>
                 </div>
                 {renderStatusMessage(statuses[laterStatusIndex], "Later")}
