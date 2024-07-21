@@ -15,6 +15,7 @@ import {
   SettingOutlined,
   HomeOutlined,
   QuestionCircleOutlined,
+  DownloadOutlined,
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { getOrdersByUserId } from "../../apiCalls/order";
@@ -22,6 +23,9 @@ import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
 import AddressForm from "./AddressForm";
 import ViewOrderDetails from "./ViewOrderDetails";
 import EditUser from "./EditUser";
+import { BlobProvider } from "@react-pdf/renderer";
+import Invoice from "../../Invoice/Invoice";
+import TrackOrder from "./TrackOrder";
 const { useBreakpoint } = Grid;
 
 const Profile = () => {
@@ -34,6 +38,7 @@ const Profile = () => {
   const [viewOrderDetails, setViewOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [userDrawer, setUserDrawer] = useState(false);
+  const [trackDrawer, setTrackDrawer] = useState(false);
 
   const screens = useBreakpoint();
 
@@ -207,9 +212,31 @@ const Profile = () => {
                                 {`Total Paid: ₹${order.totalAmount}`}
                               </Typography.Text>
                             </div>
-                            <button className="p-2 w-28 mt-3 font-semibold text-white bg-orange-500 h-10 hover:shadow-lg">
-                              TRACK
-                            </button>
+                            <div className="flex justify-start items-start gap-5">
+                              <button
+                                className="p-2 w-28 mt-3 font-semibold text-white bg-orange-500 h-10 hover:shadow-lg"
+                                onClick={() => {
+                                  setTrackDrawer(true), setSelectedOrder(order);
+                                }}
+                              >
+                                TRACK
+                              </button>
+                              {order.status === "delivered" && (
+                                <BlobProvider
+                                  document={<Invoice order={order} />}
+                                >
+                                  {({ url }) => (
+                                    <button
+                                      className="p-2 w-28 mt-3 font-semibold h-10 hover:shadow-lg border border-orange-500 text-orange-500 bg-white"
+                                      onClick={() => window.open(url, "_blank")}
+                                      icon={<DownloadOutlined />}
+                                    >
+                                      INVOICE
+                                    </button>
+                                  )}
+                                </BlobProvider>
+                              )}
+                            </div>
                           </div>
                         );
                       })}
@@ -380,9 +407,29 @@ const Profile = () => {
                             {`Total Paid: ₹${order.totalAmount}`}
                           </Typography.Text>
                         </div>
-                        <button className="text-center w-24 mt-3 font-semibold text-white bg-orange-500 h-8 hover:shadow-lg">
-                          TRACK
-                        </button>
+                        <div className="flex justify-start items-start gap-5">
+                          <button
+                            className="p-2 w-28 mt-3 font-semibold text-white bg-orange-500 h-10 hover:shadow-lg"
+                            onClick={() => {
+                              setTrackDrawer(true), setSelectedOrder(order);
+                            }}
+                          >
+                            TRACK
+                          </button>
+                          {order.status === "delivered" && (
+                            <BlobProvider document={<Invoice order={order} />}>
+                              {({ url }) => (
+                                <button
+                                  className="p-2 w-28 mt-3 font-semibold h-10 hover:shadow-lg border border-orange-500 text-orange-500 bg-white"
+                                  onClick={() => window.open(url, "_blank")}
+                                  icon={<DownloadOutlined />}
+                                >
+                                  INVOICE
+                                </button>
+                              )}
+                            </BlobProvider>
+                          )}
+                        </div>
                       </div>
                     );
                   })}
@@ -481,6 +528,13 @@ const Profile = () => {
       )}
       {userDrawer && (
         <EditUser userDrawer={userDrawer} setUserDrawer={setUserDrawer} />
+      )}
+      {trackDrawer && (
+        <TrackOrder
+          trackDrawer={trackDrawer}
+          setTrackDrawer={setTrackDrawer}
+          selectedOrder={selectedOrder}
+        />
       )}
     </Row>
   );
