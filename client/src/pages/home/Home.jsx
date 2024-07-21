@@ -85,10 +85,10 @@ const Home = () => {
               >
                 <button
                   className="w-full font-semibold text-white bg-orange-500 h-11"
-                  onClick={() => navigate("/trackOrder")}
+                  onClick={() => navigate("/profile")}
                   key="track"
                 >
-                  TRACK
+                  Go To Orders
                 </button>
                 <button
                   key="buy"
