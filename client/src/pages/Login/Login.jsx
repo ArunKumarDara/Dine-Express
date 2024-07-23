@@ -7,6 +7,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Divider, Typography, message } from "antd";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Grid from "@mui/material/Grid";
 import Oauth from "../../components/oauth/Oauth";
 import { loginUser } from "../../apiCalls/user";
 
@@ -79,16 +80,20 @@ export default function Login() {
             />
             <button
               type="submit"
-              className="w-full font-semibold text-white bg-orange-500 rounded-md mt-4 mb-3 p-3"
+              className="w-full font-semibold text-white bg-orange-500 rounded-md mt-4 mb-3 p-3 hover:shadow-md"
             >
               LOGIN
             </button>
-            <Link to="/signup" variant="body2">
-              <Typography.Text className="text-center ">
-                Don&apos;t have an account?{" "}
-                <span className="hover:text-blue-500">Sign Up</span>
-              </Typography.Text>
-            </Link>
+            <Grid container justifyContent="flex-end">
+              <Grid item>
+                <Link to="/signup" variant="body2">
+                  <Typography.Text className="text-center ">
+                    Don&apos;t have an account?{" "}
+                    <span className="hover:text-blue-500">Sign Up</span>
+                  </Typography.Text>
+                </Link>
+              </Grid>
+            </Grid>
           </Box>
         </Box>
       </Container>
