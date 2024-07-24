@@ -152,6 +152,49 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
+const googleAuthentication = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ email: req.body.email });
+    if (user) {
+      const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+      return res.status(200).json({
+        success: true,
+        message: "Login Successful",
+        data: token,
+      });
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(generatedPassword, salt);
+      const newUser = new userModel({
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        phoneNumber: req.body.phoneNumber,
+        password: hashedPassword,
+      });
+      const response = await newUser.save();
+      const token = jwt.sign({ userId: response._id }, process.env.JWT_SECRET, {
+        expiresIn: "1d",
+      });
+      return res.status(200).json({
+        success: true,
+        message: "Login Successful",
+        data: token,
+      });
+    }
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message || "Cannot sign in with google",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -159,4 +202,5 @@ module.exports = {
   addReceiverDetails,
   getReceiverDetails,
   updateUserProfile,
+  googleAuthentication,
 };
