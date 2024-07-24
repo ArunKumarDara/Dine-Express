@@ -64,3 +64,15 @@ export const updateUserProfile = async (payload) => {
     return error || "cannot update user profile";
   }
 };
+
+export const googleAuth = async (payload) => {
+  try {
+    const response = await axiosInstance.post(
+      "/app/v1/users/googleAuthentication",
+      payload
+    );
+    return response.data;
+  } catch (error) {
+    return error || "cannot sign in with google";
+  }
+};
