@@ -16,10 +16,10 @@ const Oauth = () => {
 
   const handleGoogleClick = async () => {
     try {
-      const provider = new GoogleAuthProvider();
-      const auth = getAuth(app);
+      const provider = await new GoogleAuthProvider();
+      const auth = await getAuth(app);
       const result = await signInWithPopup(auth, provider);
-      const displayName = result.user.displayName;
+      const displayName = await result.user.displayName;
       const { firstName, lastName } = splitDisplayName(displayName);
       const response = await googleAuth({
         email: result.user.email,
