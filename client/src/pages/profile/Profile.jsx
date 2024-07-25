@@ -7,6 +7,7 @@ import {
   Skeleton,
   Grid,
   Popconfirm,
+  Alert,
 } from "antd";
 import { useSelector } from "react-redux";
 import {
@@ -23,6 +24,7 @@ import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
 import AddressForm from "./AddressForm";
 import ViewOrderDetails from "./ViewOrderDetails";
 import EditUser from "./EditUser";
+import { useNavigate } from "react-router-dom";
 import { BlobProvider } from "@react-pdf/renderer";
 import Invoice from "../../Invoice/Invoice";
 import TrackOrder from "./TrackOrder";
@@ -39,6 +41,7 @@ const Profile = () => {
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [userDrawer, setUserDrawer] = useState(false);
   const [trackDrawer, setTrackDrawer] = useState(false);
+  const navigate = useNavigate();
 
   const screens = useBreakpoint();
 
@@ -158,6 +161,19 @@ const Profile = () => {
                     <Typography.Text strong>Settings</Typography.Text>
                   </div>
                 </div>
+                <Row>
+                  <Col span={24}>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("tokenForDineExpress"),
+                          navigate("/login");
+                      }}
+                      className="border border-orange-500 p-3 font-semibold bg-white text-orange-500 mt-4 w-full hover:bg-orange-500 hover:text-white"
+                    >
+                      LOG OUT
+                    </button>
+                  </Col>
+                </Row>
               </Col>
               <Col span={18}>
                 {selectedContainer === 1 ? (
@@ -165,7 +181,7 @@ const Profile = () => {
                     <Skeleton active className="m-4" />
                   ) : (
                     <div
-                      className="overflow-y-auto h-full"
+                      className="overflow-y-auto"
                       style={{ height: "500px" }}
                     >
                       {orders.map((order) => {
@@ -316,7 +332,14 @@ const Profile = () => {
                     </Row>
                   </Col>
                 ) : (
-                  <div>jdfnkjkgkfaknk</div>
+                  <div>
+                    <Alert
+                      message="Informational Notes"
+                      description="Email service will be available in a few days. Stay tuned for exciting updates!"
+                      type="info"
+                      showIcon
+                    />
+                  </div>
                 )}
               </Col>
             </Row>
@@ -504,7 +527,23 @@ const Profile = () => {
                 )}
               </div>
             ) : (
-              <div>sknlklkslkdlknksd</div>
+              <div className="m-4">
+                <Alert
+                  message="Informational Notes"
+                  description="Email service will be available in a few days. Stay tuned for exciting updates!"
+                  type="info"
+                  showIcon
+                />
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("tokenForDineExpress"),
+                      navigate("/login");
+                  }}
+                  className="border border-orange-500 p-3 font-semibold bg-white text-orange-500 mt-4 w-full hover:bg-orange-500 hover:text-white"
+                >
+                  LOG OUT
+                </button>
+              </div>
             )}
           </Col>
         </>
