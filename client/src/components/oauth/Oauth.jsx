@@ -1,4 +1,5 @@
 import { GoogleAuthProvider, signInWithPopup, getAuth } from "firebase/auth";
+import { GoogleOutlined } from "@ant-design/icons";
 import { app } from "../../firebase";
 import { googleAuth } from "../../apiCalls/user";
 import { message } from "antd";
@@ -42,9 +43,9 @@ const Oauth = () => {
     <button
       type="button"
       onClick={handleGoogleClick}
-      className=" text-gray-400 p-3 uppercase hover:opacity-95 hover:border-gray-600 hover:text-gray-600 w-full mt-3 border border-gray-400 rounded-md"
+      className=" text-gray-400 font-medium p-3 uppercase hover:opacity-95 hover:border-gray-600 hover:text-gray-600 w-full mt-3 border border-gray-400 rounded-md"
     >
-      continue with google
+      <GoogleOutlined className="mr-1" /> GOOGLE
     </button>
   );
 };
