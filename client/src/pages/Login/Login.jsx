@@ -82,7 +82,7 @@ export default function Login() {
               type="submit"
               className="w-full font-semibold text-white bg-orange-500 rounded-md mt-4 mb-3 p-3 hover:shadow-md"
             >
-              LOGIN
+              LOG IN
             </button>
             <Grid container justifyContent="flex-end">
               <Grid item>
