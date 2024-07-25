@@ -259,16 +259,18 @@ const Order = () => {
                     title={
                       <div className="flex justify-between items-center">
                         <div className="flex flex-col justify-start gap-0">
-                          <img
-                            src={item.isVeg ? veg : nonVeg}
-                            className="w-4"
-                          />
-                          <Typography.Title
-                            level={5}
-                            style={{ marginBottom: 0 }}
-                          >
-                            {item.name}
-                          </Typography.Title>
+                          <div className="flex justify-start items-center gap-1">
+                            <img
+                              src={item.isVeg ? veg : nonVeg}
+                              className="w-4"
+                            />
+                            <Typography.Title
+                              level={5}
+                              style={{ marginBottom: 0 }}
+                            >
+                              {item.name}
+                            </Typography.Title>
+                          </div>
                           <Typography.Text
                             style={{ marginTop: 0 }}
                             strong
