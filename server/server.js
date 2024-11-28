@@ -15,12 +15,14 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(
-  cors({
-    origin: "https://dine-express.onrender.com",
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: "https://dine-express.onrender.com",
+//     credentials: true,
+//   })
+// );
+
+app.use(cors());
 
 app.use("/app/v1/users", userRouter);
 app.use("/app/v1/users", restaurantRouter);
@@ -32,17 +34,9 @@ app.use("/app/v1/admin", restaurantRouter);
 app.use("/app/v1/admin", orderRouter);
 app.use("/app/v1/admin", dashBoardRouter);
 
-const __dirname1 = path.resolve();
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname1, "client", "dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname1, "client", "dist", "index.html"));
-  });
-} else {
-  app.get("/", (req, res) => {
-    res.send("Hello World");
-  });
-}
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
