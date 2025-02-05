@@ -10,20 +10,21 @@ const addressRouter = require("./routes/addressRouter");
 const dashBoardRouter = require("./routes/dashBoardRouter");
 const paymentRouter = require("./routes/makePaymentRouter");
 const path = require("path");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
-// app.use(
-//   cors({
-//     origin: "https://dine-express.onrender.com",
-//     credentials: true,
-//   })
-// );
+app.use(cookieParser());
 
-app.use(cors());
-
+// app.use(cors());
 app.use("/app/v1/users", userRouter);
 app.use("/app/v1/users", restaurantRouter);
 app.use("/app/v1/users", menuItemRouter);
