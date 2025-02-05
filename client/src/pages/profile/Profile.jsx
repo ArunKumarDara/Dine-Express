@@ -9,7 +9,7 @@ import {
   Popconfirm,
   Alert,
 } from "antd";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   ShoppingOutlined,
   EnvironmentOutlined,
@@ -24,10 +24,13 @@ import { deleteAddress, getAllAddressByUser } from "../../apiCalls/address";
 import AddressForm from "./AddressForm";
 import ViewOrderDetails from "./ViewOrderDetails";
 import EditUser from "./EditUser";
+import { logoutUser } from "../../apiCalls/user";
 import { useNavigate } from "react-router-dom";
 import { BlobProvider } from "@react-pdf/renderer";
 import Invoice from "../../Invoice/Invoice";
 import TrackOrder from "./TrackOrder";
+import { setUser } from "../../redux/userSlice";
+import Cookies from "js-cookie";
 const { useBreakpoint } = Grid;
 
 const Profile = () => {
@@ -42,8 +45,22 @@ const Profile = () => {
   const [userDrawer, setUserDrawer] = useState(false);
   const [trackDrawer, setTrackDrawer] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const screens = useBreakpoint();
+
+  const handleLogout = async () => {
+    try {
+      const response = await logoutUser();
+      if (response.success) {
+        dispatch(setUser(null));
+        Cookies.remove("authToken");
+        navigate("/login");
+      }
+    } catch (error) {
+      message.error(error);
+    }
+  };
 
   const getUserOrders = async () => {
     try {
@@ -164,10 +181,7 @@ const Profile = () => {
                 <Row>
                   <Col span={24}>
                     <button
-                      onClick={() => {
-                        localStorage.removeItem("tokenForDineExpress"),
-                          navigate("/login");
-                      }}
+                      onClick={handleLogout}
                       className="border border-orange-500 p-3 font-semibold bg-white text-orange-500 mt-4 w-full hover:bg-orange-500 hover:text-white"
                     >
                       LOG OUT
