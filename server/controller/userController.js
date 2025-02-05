@@ -52,6 +52,12 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ userId: userExists._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
+    res.cookie("authToken", token, {
+      // httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: "strict",
+    });
     return res.status(200).json({
       success: true,
       message: "Login Successful",
@@ -61,6 +67,21 @@ const loginUser = async (req, res) => {
     res.status(400).json({
       success: false,
       message: "User has entered invalid information",
+    });
+  }
+};
+
+const logoutUser = async (req, res) => {
+  try {
+    res.clearCookie("authToken");
+    res.status(200).json({
+      success: true,
+      message: "Logout Successful",
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: "Cannot Logout",
     });
   }
 };
@@ -198,6 +219,7 @@ const googleAuthentication = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  logoutUser,
   getCurrentUser,
   addReceiverDetails,
   getReceiverDetails,
