@@ -23,7 +23,6 @@ export default function Login() {
         password: data.get("password"),
       });
       if (response.success) {
-        localStorage.setItem("tokenForDineExpress", response.data);
         window.location.href = "/";
       } else {
         message.error(response.message);
