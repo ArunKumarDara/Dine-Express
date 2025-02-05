@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { getCurrentUser } from "../../apiCalls/user";
+import { getCurrentUser, logoutUser } from "../../apiCalls/user";
 import { Avatar, Badge, message, Popover, Space, Typography } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../redux/userSlice";
@@ -13,6 +13,7 @@ import { showLoading, hideLoading } from "../../redux/loaderSlice";
 import { ShoppingCartOutlined, UserOutlined } from "@ant-design/icons";
 import nonVeg from "../../assets/nonVeg.png";
 import veg from "../../assets/veg.png";
+import Cookies from "js-cookie";
 
 // eslint-disable-next-line react/prop-types
 export default function ProtectedRoute({ children }) {
@@ -29,9 +30,17 @@ export default function ProtectedRoute({ children }) {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("tokenForDineExpress");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      const response = await logoutUser();
+      if (response.success) {
+        dispatch(setUser(null));
+        Cookies.remove("authToken");
+        navigate("/login");
+      }
+    } catch (error) {
+      message.error(error);
+    }
   };
 
   const handleNavigate = () => {
@@ -62,7 +71,7 @@ export default function ProtectedRoute({ children }) {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("tokenForDineExpress")) {
+    if (Cookies.get("authToken")) {
       getPresentUser();
     } else {
       navigate("/login");
