@@ -55,12 +55,8 @@ const loginUser = async (req, res) => {
     res.cookie("authToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      domain:
-        process.env.NODE_ENV === "production"
-          ? process.env.ORIGIN_URL
-          : "localhost",
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "lax",
+      sameSite: "none",
     });
     return res.status(200).json({
       success: true,
