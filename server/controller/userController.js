@@ -52,17 +52,19 @@ const loginUser = async (req, res) => {
     const token = jwt.sign({ userId: userExists._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res.cookie("authToken", token, {
-      httpOnly: true,
-      secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "none",
-    });
-    return res.status(200).json({
-      success: true,
-      message: "Login Successful",
-      data: token,
-    });
+    return res
+      .status(200)
+      .cookie("authToken", token, {
+        maxAge: 1 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      })
+      .json({
+        message: `Welcome back ${userExists.fullName}`,
+        success: true,
+        token: token,
+      });
   } catch (error) {
     res.status(400).json({
       success: false,
