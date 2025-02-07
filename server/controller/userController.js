@@ -53,7 +53,7 @@ const loginUser = async (req, res) => {
       expiresIn: "1d",
     });
     res.cookie("authToken", token, {
-      // httpOnly: true,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: "strict",
